@@ -1,19 +1,27 @@
-import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
-  const location = useLocation();
 
   const navItems = [
-    { to: "/skills", label: "Skills" },
-    { to: "/experience", label: "Experience" },
-    { to: "/source", label: "Open Source" },
-    { to: "/achievements", label: "Achievements" },
-    { to: "/resume", label: "Resume" },
-    { to: "/contact", label: "Contact" },
+    { href: "#introduction", label: "Home" },
+    { href: "#my-skills", label: "My Skills" },
+    { href: "#education", label: "Education" },
+    { href: "#experience", label: "Experience" },
+    { href: "#projects", label: "Projects" },
+    { href: "#what-learning", label: "What I'm Learning" },
+    { href: "#achievements", label: "Achievements" },
+    { href: "#contact", label: "Contact" },
   ];
+
+  const handleScroll = (id) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+      setIsOpen(false); // Close mobile menu after clicking
+    }
+  };
 
   const mobileMenuVariants = {
     hidden: { opacity: 0, y: -20 },
@@ -32,24 +40,28 @@ function Navbar() {
       <div className="w-full py-4 flex items-center justify-between">
         
         {/* LOGO */}
-        <div className="text-lg sm:text-xl lg:text-2xl font-bold">
+        <div className="text-lg sm:text-xl lg:text-2xl font-bold cursor-pointer" onClick={() => handleScroll("introduction")}>
           Saviyo George
         </div>
 
         {/* DESKTOP MENU */}
         <ul className="hidden md:flex items-center gap-6 lg:gap-8 xl:gap-10 text-sm lg:text-base">
           {navItems.map((item) => (
-            <li key={item.to}>
-              <Link
-                to={item.to}
+            <li key={item.href}>
+              <a
+                href={item.href}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleScroll(item.href.substring(1));
+                }}
                 className={`px-2 py-1 transition ${
-                  location.pathname === item.to
+                  window.location.hash === item.href
                     ? "text-indigo-400"
                     : "hover:text-indigo-400"
                 }`}
               >
                 {item.label}
-              </Link>
+              </a>
             </li>
           ))}
         </ul>
@@ -75,14 +87,17 @@ function Navbar() {
             className="md:hidden absolute top-full left-0 w-full bg-gray-900 border-t border-gray-800"
           >
             {navItems.map((item) => (
-              <li key={item.to} className="border-b border-gray-800">
-                <Link
-                  to={item.to}
-                  onClick={() => setIsOpen(false)}
+              <li key={item.href} className="border-b border-gray-800">
+                <a
+                  href={item.href}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleScroll(item.href.substring(1));
+                  }}
                   className="block px-6 py-4 text-base hover:bg-gray-800 transition"
                 >
                   {item.label}
-                </Link>
+                </a>
               </li>
             ))}
           </motion.ul>

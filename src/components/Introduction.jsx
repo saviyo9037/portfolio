@@ -82,7 +82,6 @@ function Introduction() {
         </motion.div>
       </motion.div>
 
-      <Skills />
     </section>
   );
 }
