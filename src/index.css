@@ -1,0 +1,7 @@
+@import "tailwindcss";
+
+html,
+body,
+#root {
+  @apply bg-gradient-to-r from-slate-900 to-slate-800;
+}
