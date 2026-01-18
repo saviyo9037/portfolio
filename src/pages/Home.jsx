@@ -1,5 +1,4 @@
 import React from 'react'
-import Navbar from '../components/navbar'
 import Proficiency from '../components/Proficiency'
 import Education from '../components/Education'
 import Experiences from '../components/Experiences'
@@ -8,6 +7,8 @@ import WhatLearning from '../components/WhatLearning'
 import Contact from '../components/Contact'
 import Achievements from '../components/Achievements'
 import Introduction from '../components/Introductio'
+import Navbar from '../components/Navbars'
+
 
 
 
