@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
-import expGif from "../assets/gIF/developerActivity.svg"; // 👈 add your GIF here
+import expGif from "../assets/gif/developerActivity.svg";
 
 function Experiences() {
   const targetRef = useRef(null);
@@ -33,12 +33,10 @@ function Experiences() {
             style={{ scale, opacity }}
             className="bg-slate-900 rounded-xl overflow-hidden shadow-xl w-full sm:w-[420px]"
           >
-            {/* Top Bar */}
             <div className="bg-blue-600 h-20 sm:h-24 flex items-center justify-center">
               <h2 className="text-xl sm:text-2xl font-semibold">IROHUB</h2>
             </div>
 
-            {/* Content */}
             <div className="p-5 sm:p-6 text-center">
               <h3 className="text-lg sm:text-xl font-semibold">
                 MERN Stack Developer Intern
@@ -50,7 +48,7 @@ function Experiences() {
 
               <p className="text-gray-300 text-sm sm:text-base mt-4">
                 Worked as a MERN Stack Developer Intern, contributing to
-                full-stack web applications with a focus on performance,
+                full-stack web applications with focus on performance,
                 scalability, and clean UI design.
               </p>
 
@@ -63,16 +61,15 @@ function Experiences() {
             </div>
           </motion.div>
 
-          {/* RIGHT SIDE – GIF */}
+          {/* RIGHT SIDE – SVG / GIF */}
           <motion.img
             src={expGif}
             alt="Developer working illustration"
             className="w-[280px] sm:w-[340px] lg:w-[400px]"
             initial={{ opacity: 0, x: 60 }}
             whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.7 }}
             viewport={{ once: true }}
-            animate={{ y: [0, -10, 0] }}
+            animate={{ y: [0, -12, 0] }}
             transition={{
               duration: 4,
               repeat: Infinity,
@@ -86,3 +83,4 @@ function Experiences() {
 }
 
 export default Experiences;
+
