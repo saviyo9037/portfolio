@@ -1,3 +1,15 @@
-components
-pages
-assets
+# Ignore everything in src
+*
+
+# Include required folders
+!components/
+!pages/
+!assets/
+
+# Include all files inside them
+!components/**
+!pages/**
+!assets/**
+
+# Include this gitignore file
+!.gitignore
