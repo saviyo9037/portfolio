@@ -22,4 +22,20 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-src
+
+
+# Ignore EVERYTHING in src
+*
+
+# But keep these folders
+!components/
+!pages/
+!assets/
+
+# Keep subfolders & files inside them
+!components/**
+!pages/**
+!assets/**
+
+# Keep this .gitignore file itself
+!.gitignore
