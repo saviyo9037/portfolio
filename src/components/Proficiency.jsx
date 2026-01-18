@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import skillsGif from "../assets/gif/manOnTable.svg"; // ✅ import GIF
+import skillsGif from "../assets/Gif/manOnTable.svg"; // ✅ import GIF
 
 const proficiency = [
   { name: "Frontend / Design", level: 80 },
