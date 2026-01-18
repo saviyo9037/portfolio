@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import devImg from "../assets/Gif/devImg.mp4";
+import devImg from "../assets/Gif/programmer.svg";
 import {
   FaCss3Alt,
   FaHtml5,
@@ -49,18 +49,15 @@ function Skills() {
           items-center gap-10 md:gap-16
         "
       >
-        {/* LEFT VIDEO */}
+        {/* LEFT IMAGE */}
         <motion.div
           className="w-full md:w-1/2 flex justify-center"
-          animate={{ y: [0, -10, 0] }}
+          animate={{ y: [0, -12, 0] }}
           transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
         >
-          <video
+          <motion.img
             src={devImg}
-            autoPlay
-            loop
-            muted
-            playsInline
+            alt="Programmer illustration"
             className="
               w-60 sm:w-72 md:w-[380px] lg:w-[450px]
               rounded-xl

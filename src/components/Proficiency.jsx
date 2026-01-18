@@ -1,5 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
+import skillsGif from "../assets/gif/manOnTable.svg"; // ✅ import GIF
 
 const proficiency = [
   { name: "Frontend / Design", level: 80 },
@@ -10,6 +11,8 @@ const proficiency = [
 function Proficiency() {
   return (
     <section className="text-white md:min-h-screen flex flex-col md:flex-row items-center justify-center py-10 md:py-20 px-4">
+      
+      {/* LEFT SIDE */}
       <div className="md:w-1/2 md:pr-10">
         <h1 className="text-4xl md:text-5xl font-bold mb-8 text-center md:text-left">
           Proficiency
@@ -32,10 +35,20 @@ function Proficiency() {
         ))}
       </div>
 
-      <div className="md:w-1/2 flex justify-center mt-10 md:mt-0">
-        {/* illustration / image here */}
-        <p className="text-gray-400">Illustration/Image goes here</p>
-      </div>
+      {/* RIGHT SIDE (GIF) */}
+      <motion.div
+        className="md:w-1/2 flex justify-center mt-10 md:mt-0"
+        initial={{ opacity: 0, x: 50 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8 }}
+      >
+        <img
+          src={skillsGif}
+          alt="Skills Illustration"
+          className="w-80 md:w-96"
+        />
+      </motion.div>
     </section>
   );
 }

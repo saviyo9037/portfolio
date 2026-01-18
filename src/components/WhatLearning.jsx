@@ -1,8 +1,10 @@
 import React, { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
+import learningImg from "../assets/Gif/jsFramework.svg";
 
 function WhatLearning() {
   const targetRef = useRef(null);
+
   const { scrollYProgress } = useScroll({
     target: targetRef,
     offset: ["start end", "end start"],
@@ -21,15 +23,24 @@ function WhatLearning() {
       ref={targetRef}
       className="text-white py-16 px-6"
     >
-      <div className="mx-auto flex flex-col md:flex-row items-center gap-10">
+      <div className="mx-auto max-w-7xl flex flex-col md:flex-row items-center gap-10">
+        
         {/* LEFT SIDE IMAGE */}
-        <div className="w-full md:w-1/2 flex justify-center">
-          <img
-            // src={learningImg}
-            alt="Learning"
+        <motion.div
+          className="w-full md:w-1/2 flex justify-center"
+          initial={{ opacity: 0, x: -50 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
+        >
+          <motion.img
+            src={learningImg}
+            alt="Learning JavaScript Frameworks"
             className="w-72 sm:w-80 md:w-96 rounded-xl shadow-lg"
+            animate={{ y: [0, -10, 0] }}
+            transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
           />
-        </div>
+        </motion.div>
 
         {/* RIGHT SIDE CONTENT */}
         <div className="w-full md:w-1/2">
@@ -44,11 +55,13 @@ function WhatLearning() {
                 [0.1 * index, 0.1 * index + 0.2],
                 [0.5, 1]
               );
+
               const opacity = useTransform(
                 scrollYProgress,
                 [0.1 * index, 0.1 * index + 0.2],
                 [0, 1]
               );
+
               return (
                 <motion.li
                   key={index}
