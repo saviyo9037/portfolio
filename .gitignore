@@ -1,41 +1,15 @@
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
-
-node_modules
-dist
-dist-ssr
-*.local
-
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
-.DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
-
-
-# Ignore EVERYTHING in src
+# Ignore everything inside src
 *
 
-# But keep these folders
+# BUT include these folders
 !components/
 !pages/
 !assets/
 
-# Keep subfolders & files inside them
+# Include all files inside them
 !components/**
 !pages/**
 !assets/**
 
-# Keep this .gitignore file itself
+# Include this gitignore file itself
 !.gitignore
