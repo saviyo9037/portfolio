@@ -24,7 +24,7 @@ function Contact() {
           {/* <p className="text-gray-400 mb-2">📍 Remote</p> */}
 
           <p className="bg-blue-700 inline-block px-4 py-2 rounded mb-6">
-            Open for opportunities: <span className="font-semibold">No</span>
+            Open for opportunities: <span className="font-semibold">Yes</span>
           </p>
 
           {/* Social Icons */}
