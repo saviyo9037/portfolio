@@ -13,7 +13,9 @@ function Projects() {
   useEffect(() => {
     Promise.all(
       repos.map((repo) =>
-        fetch(`https://api.github.com/repos/${repo}`).then((res) => res.json())
+        fetch(`https://api.github.com/repos/${repo}`).then((res) =>
+          res.json()
+        )
       )
     )
       .then((data) => setProjects(data))
@@ -21,81 +23,88 @@ function Projects() {
   }, []);
 
   return (
-    <motion.section
-      className="text-white py-12 sm:py-16 px-4 sm:px-6"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ type: "spring", stiffness: 80, damping: 20 }}
-    >
-      <div className="mx-auto">
+    <section className="relative bg-[#0b0b14] text-white py-24 px-6 overflow-hidden">
+
+      {/* Background Glow */}
+      <div className="absolute top-[-120px] left-[-120px] w-80 h-80 bg-purple-600 opacity-20 blur-3xl rounded-full"></div>
+      <div className="absolute bottom-[-120px] right-[-120px] w-80 h-80 bg-indigo-600 opacity-20 blur-3xl rounded-full"></div>
+
+      <div className="relative max-w-6xl mx-auto">
 
         {/* Title */}
         <motion.h1
-          className="text-2xl sm:text-3xl md:text-4xl font-bold mb-10 sm:mb-12"
+          className="text-4xl md:text-5xl font-bold mb-16 text-center"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ type: "spring", stiffness: 100, damping: 20 }}
+          transition={{ duration: 0.6 }}
         >
-          Open Source Projects
+          My <span className="text-purple-500">Projects</span>
         </motion.h1>
 
-        {/* Projects Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+        {/* Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+
           {projects.map((repo, index) => (
             <motion.a
               key={repo.id}
               href={repo.html_url}
               target="_blank"
               rel="noopener noreferrer"
-              className="relative group bg-slate-900 p-5 sm:p-6 rounded-xl shadow-lg overflow-hidden"
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              whileHover={{ scale: 1.05 }}
-              transition={{
-                type: "spring",
-                stiffness: 120,
-                damping: 15,
-                delay: index * 0.1,
-              }}
+              transition={{ duration: 0.6, delay: index * 0.2 }}
+              whileHover={{ y: -8 }}
+              className="relative group bg-white/5 
+                         backdrop-blur-xl 
+                         border border-white/10 
+                         rounded-3xl p-8 
+                         shadow-2xl 
+                         hover:shadow-purple-500/20 
+                         transition duration-500"
             >
+
+              {/* Glow Hover Effect */}
+              <div className="absolute inset-0 bg-purple-600 
+                              opacity-0 group-hover:opacity-10 
+                              transition duration-500 rounded-3xl"></div>
+
               {/* Repo Name */}
-              <h2 className="text-lg sm:text-xl font-semibold mb-2 sm:mb-3">
+              <h2 className="relative text-xl font-semibold mb-4">
                 {repo.name || "Unnamed Repository"}
               </h2>
 
               {/* Description */}
-              <p className="text-gray-300 text-sm sm:text-base leading-relaxed mb-6">
+              <p className="relative text-gray-300 mb-8 leading-relaxed text-sm">
                 {repo.description || "No description available"}
               </p>
 
-              {/* Bottom Stats */}
-              <div className="flex justify-between text-sm opacity-90">
+              {/* Stats */}
+              <div className="relative flex justify-between items-center text-sm text-gray-400">
+
                 <div className="flex gap-4">
-                  <span>● {repo.language || "N/A"}</span>
+                  <span className="flex items-center gap-1">
+                    ● {repo.language || "N/A"}
+                  </span>
+
                   <span>🍴 {repo.forks_count ?? 0}</span>
                   <span>⭐ {repo.stargazers_count ?? 0}</span>
                 </div>
 
-                <span>
+                <span className="text-purple-400 font-medium">
                   {repo.size
                     ? `${(repo.size / 1024).toFixed(1)} MB`
                     : "—"}
                 </span>
               </div>
 
-              {/* Purple Hover Overlay */}
-              <div
-                className="absolute inset-0 bg-purple-700 opacity-0
-                           group-hover:opacity-40 transition duration-300"
-              />
             </motion.a>
           ))}
-        </div>
 
+        </div>
       </div>
-    </motion.section>
+    </section>
   );
 }
 

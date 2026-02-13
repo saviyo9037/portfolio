@@ -1,5 +1,5 @@
-import React, { useState, useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import React, { useState } from "react";
+import { motion } from "framer-motion";
 import irohub from "../assets/certificate/irohub.jpeg";
 import avodha from "../assets/certificate/avodha.jpg";
 import yip from "../assets/certificate/Yip.jpeg";
@@ -33,93 +33,105 @@ function Achievements() {
     {
       img: redteamcamp,
       title: "Red Team Camp",
-      desc: "Practical exposure to cybersecurity and penetration testing basics.",
+      desc: "Practical exposure to cybersecurity fundamentals.",
     },
   ];
 
-  const targetRef = useRef(null);
-  const { scrollYProgress } = useScroll({
-    target: targetRef,
-    offset: ["start end", "end start"],
-  });
-
   return (
-    <section
-      ref={targetRef}
-      className="text-white py-16 px-6"
-    >
-      <div className="mx-auto">
-        {/* Title */}
-        <h1 className="text-3xl sm:text-4xl font-bold mb-4">
-          Achievements & Certifications 🏆
-        </h1>
+    <section className="relative bg-[#0b0b14] text-white py-24 px-6 overflow-hidden">
 
-        <p className="text-gray-400 mb-10">
+      {/* Background glow */}
+      <div className="absolute top-[-120px] left-[-120px] w-80 h-80 bg-purple-600 opacity-20 blur-3xl rounded-full"></div>
+      <div className="absolute bottom-[-120px] right-[-120px] w-80 h-80 bg-indigo-600 opacity-20 blur-3xl rounded-full"></div>
+
+      <div className="relative max-w-6xl mx-auto">
+
+        {/* Title */}
+        <motion.h1
+          className="text-4xl md:text-5xl font-bold mb-6 text-center"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
+          Achievements & <span className="text-purple-500">Certifications</span>
+        </motion.h1>
+
+        <p className="text-gray-400 text-center mb-16">
           Click on any certificate to view it in full size.
         </p>
 
-        {/* Certificates Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-          {certificates.map((certificate, index) => {
-            const scale = useTransform(
-              scrollYProgress,
-              [0.1 * index, 0.1 * index + 0.2],
-              [0.5, 1]
-            );
-            const opacity = useTransform(
-              scrollYProgress,
-              [0.1 * index, 0.1 * index + 0.2],
-              [0, 1]
-            );
-            return (
-              <motion.div
-                key={index}
-                style={{ scale, opacity }}
-                onClick={() => setSelectedImage(certificate.img)}
-                className="bg-slate-900 rounded-xl shadow-lg overflow-hidden
-                         hover:scale-105 transition duration-300 cursor-pointer"
-              >
-                <img
-                  src={certificate.img}
-                  alt={certificate.title}
-                  className="w-full h-56 object-cover"
-                />
+        {/* Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+          {certificates.map((certificate, index) => (
+            <motion.div
+              key={index}
+              onClick={() => setSelectedImage(certificate.img)}
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: index * 0.15 }}
+              whileHover={{ y: -8 }}
+              className="relative group bg-white/5 
+                         backdrop-blur-xl 
+                         border border-white/10 
+                         rounded-3xl 
+                         overflow-hidden 
+                         shadow-2xl 
+                         hover:shadow-purple-500/20 
+                         transition duration-500 cursor-pointer"
+            >
+              {/* Hover glow */}
+              <div className="absolute inset-0 bg-purple-600 opacity-0 
+                              group-hover:opacity-10 transition duration-500"></div>
 
-                <div className="p-4">
-                  <h3 className="text-lg font-semibold">{certificate.title}</h3>
-                  <p className="text-gray-400 text-sm mt-1">
-                    {certificate.desc}
-                  </p>
-                </div>
-              </motion.div>
-            );
-          })}
+              <img
+                src={certificate.img}
+                alt={certificate.title}
+                className="w-full h-56 object-cover"
+              />
+
+              <div className="p-6">
+                <h3 className="text-lg font-semibold mb-2">
+                  {certificate.title}
+                </h3>
+                <p className="text-gray-400 text-sm">
+                  {certificate.desc}
+                </p>
+              </div>
+            </motion.div>
+          ))}
         </div>
+      </div>
 
-        {/* FULL IMAGE MODAL */}
-        {selectedImage && (
-          <div
-            className="fixed inset-0 bg-black bg-opacity-90 z-50
-                       flex items-center justify-center"
-            onClick={() => setSelectedImage(null)}
+      {/* MODAL */}
+      {selectedImage && (
+        <div
+          className="fixed inset-0 bg-black/90 backdrop-blur-lg z-50 
+                     flex items-center justify-center p-6"
+          onClick={() => setSelectedImage(null)}
+        >
+          <motion.div
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.3 }}
+            className="relative"
           >
-            {/* Close Button */}
             <button
-              className="absolute top-6 right-6 text-white text-4xl font-bold"
+              className="absolute -top-10 right-0 text-white text-3xl font-bold"
               onClick={() => setSelectedImage(null)}
             >
               ×
             </button>
 
-            {/* Image */}
             <img
               src={selectedImage}
               alt="Certificate Full View"
-              className="max-w-[90%] max-h-[90%] object-contain"
+              className="max-w-[90vw] max-h-[85vh] rounded-xl shadow-2xl"
             />
-          </div>
-        )}
-      </div>
+          </motion.div>
+        </div>
+      )}
     </section>
   );
 }

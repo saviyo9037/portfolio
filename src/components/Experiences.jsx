@@ -1,81 +1,91 @@
-import React, { useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import React from "react";
+import { motion } from "framer-motion";
 import expGif from "../assets/Gif/developerActivity.svg";
 
 function Experiences() {
-  const targetRef = useRef(null);
-
-  const { scrollYProgress } = useScroll({
-    target: targetRef,
-    offset: ["start end", "end start"],
-  });
-
-  const scale = useTransform(scrollYProgress, [0, 0.5], [0.5, 1]);
-  const opacity = useTransform(scrollYProgress, [0, 0.5], [0, 1]);
-
   return (
-    <section
-      ref={targetRef}
-      className="text-white py-16 sm:py-20 px-4 sm:px-6"
-    >
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 md:px-20">
-        
-        {/* Section Title */}
-        <h1 className="text-3xl sm:text-4xl font-bold mb-14 border-l-4 border-blue-500 pl-4">
-          Experience
+    <section className="relative bg-[#0b0b14] text-white py-24 px-6 overflow-hidden">
+
+      {/* Background glow */}
+      <div className="absolute top-[-120px] right-[-120px] w-80 h-80 bg-indigo-600 opacity-20 blur-3xl rounded-full"></div>
+      <div className="absolute bottom-[-120px] left-[-120px] w-80 h-80 bg-purple-600 opacity-20 blur-3xl rounded-full"></div>
+
+      <div className="relative max-w-6xl mx-auto">
+
+        {/* Title */}
+        <h1 className="text-4xl md:text-5xl font-bold mb-20 text-center">
+          My <span className="text-purple-500">Experience</span>
         </h1>
 
-        {/* Two Column Layout */}
-        <div className="flex flex-col lg:flex-row items-center gap-12">
-          
-          {/* LEFT SIDE – Experience Card */}
+        <div className="flex flex-col lg:flex-row items-center gap-16">
+
+          {/* LEFT – Experience Card */}
           <motion.div
-            style={{ scale, opacity }}
-            className="bg-slate-900 rounded-xl overflow-hidden shadow-xl w-full sm:w-[420px]"
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="bg-white/5 backdrop-blur-xl 
+                       border border-white/10 
+                       rounded-3xl shadow-2xl 
+                       p-8 w-full lg:w-[500px] 
+                       hover:shadow-purple-500/20 
+                       transition duration-500"
           >
-            <div className="bg-blue-600 h-20 sm:h-24 flex items-center justify-center">
-              <h2 className="text-xl sm:text-2xl font-semibold">IROHUB</h2>
+            {/* Company Badge */}
+            <div className="inline-block mb-6 px-4 py-2 
+                            bg-purple-600/20 
+                            border border-purple-500 
+                            rounded-full text-purple-400 text-sm font-semibold">
+              IROHUB INFOTECH
             </div>
 
-            <div className="p-5 sm:p-6 text-center">
-              <h3 className="text-lg sm:text-xl font-semibold">
-                MERN Stack Developer Intern
-              </h3>
+            <h2 className="text-2xl font-semibold mb-2">
+              MERN Stack Developer Intern
+            </h2>
 
-              <p className="text-gray-400 text-sm sm:text-base mt-2">
-                June 2025 – December 2025
-              </p>
+            <p className="text-gray-400 mb-6">
+              June 2025 – December 2025
+            </p>
 
-              <p className="text-gray-300 text-sm sm:text-base mt-4">
-                Worked as a MERN Stack Developer Intern, contributing to
-                full-stack web applications with focus on performance,
-                scalability, and clean UI design.
-              </p>
+            <p className="text-gray-300 mb-6 leading-relaxed">
+              Contributed to full-stack web applications focusing on scalable
+              backend architecture and modern responsive frontend design.
+            </p>
 
-              <ul className="mt-4 text-left list-disc list-inside text-gray-300 text-sm sm:text-base space-y-2">
-                <li>Developed RESTful APIs using Node.js & Express</li>
-                <li>Managed MongoDB collections using Mongoose</li>
-                <li>Built responsive UIs using React & Tailwind CSS</li>
-                <li>Used Git & GitHub for version control</li>
-              </ul>
-            </div>
+            <ul className="space-y-3 text-gray-300">
+              <li>✔ Built RESTful APIs using Node.js & Express</li>
+              <li>✔ Designed MongoDB schemas with Mongoose</li>
+              <li>✔ Developed responsive UI using React & Tailwind</li>
+              <li>✔ Used Git & GitHub for version control</li>
+            </ul>
           </motion.div>
 
-          {/* RIGHT SIDE – SVG / GIF */}
-          <motion.img
-            src={expGif}
-            alt="Developer working illustration"
-            className="w-[280px] sm:w-[340px] lg:w-[400px]"
-            initial={{ opacity: 0, x: 60 }}
-            whileInView={{ opacity: 1, x: 0 }}
+          {/* RIGHT – Illustration */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.85 }}
+            whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            animate={{ y: [0, -12, 0] }}
-            transition={{
-              duration: 4,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-          />
+            transition={{ duration: 0.7 }}
+            className="relative"
+          >
+            <div className="absolute inset-0 bg-purple-600 
+                            blur-3xl opacity-30 
+                            rounded-full"></div>
+
+            <motion.img
+              src={expGif}
+              alt="Developer Illustration"
+              className="relative w-80 md:w-[420px]"
+              animate={{ y: [0, -15, 0] }}
+              transition={{
+                duration: 4,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            />
+          </motion.div>
+
         </div>
       </div>
     </section>
@@ -83,4 +93,3 @@ function Experiences() {
 }
 
 export default Experiences;
-

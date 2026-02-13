@@ -1,21 +1,54 @@
 import React from "react";
 import { motion } from "framer-motion";
-import devImg from "../assets/Gif/programmer.svg";
 import {
-  FaCss3Alt,
   FaHtml5,
+  FaCss3Alt,
   FaJs,
-  FaNodeJs,
   FaReact,
+  FaNodeJs,
+  FaGitAlt,
 } from "react-icons/fa";
-import { SiMongodb, SiNpm, SiExpress } from "react-icons/si";
+import { SiMongodb, SiExpress, SiPostman, SiTailwindcss } from "react-icons/si";
+
+const skillCategories = [
+  {
+    title: "Frontend",
+    skills: [
+      { name: "HTML", icon: FaHtml5, color: "text-orange-500" },
+      { name: "CSS", icon: FaCss3Alt, color: "text-blue-500" },
+      { name: "JavaScript", icon: FaJs, color: "text-yellow-400" },
+      { name: "React", icon: FaReact, color: "text-cyan-400" },
+      { name: "Tailwind", icon: SiTailwindcss, color: "text-cyan-400" },
+    ],
+  },
+  {
+    title: "Backend",
+    skills: [
+      { name: "Node.js", icon: FaNodeJs, color: "text-green-500" },
+      { name: "Express.js", icon: SiExpress, color: "text-gray-400" },
+    ],
+  },
+  {
+    title: "Database",
+    skills: [
+      { name: "MongoDB", icon: SiMongodb, color: "text-green-600" },
+    ],
+  },
+  {
+    title: "Tools",
+    skills: [
+      { name: "Git", icon: FaGitAlt, color: "text-orange-600" },
+      { name: "Postman", icon: SiPostman, color: "text-orange-500" },
+    ],
+  },
+];
 
 function Skills() {
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: { staggerChildren: 0.15 },
+      transition: { staggerChildren: 0.1, delayChildren: 0.2 },
     },
   };
 
@@ -26,129 +59,82 @@ function Skills() {
       y: 0,
       transition: {
         type: "spring",
-        stiffness: 90,
-        damping: 18,
+        stiffness: 100,
+        damping: 15,
+      },
+    },
+  };
+
+  const skillItemVariants = {
+    hidden: { opacity: 0, scale: 0.8 },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      transition: {
+        type: "spring",
+        stiffness: 200,
+        damping: 15,
       },
     },
   };
 
   return (
-    <motion.section
-      className="text-white w-full"
-      variants={containerVariants}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true }}
-    >
-      <div
-        className="
-          w-full
-          px-4 sm:px-6 lg:px-12 xl:px-20
-          py-14 sm:py-16 lg:py-20
-          flex flex-col md:flex-row
-          items-center gap-10 md:gap-16
-        "
-      >
-        {/* LEFT IMAGE */}
-        <motion.div
-          className="w-full md:w-1/2 flex justify-center"
-          animate={{ y: [0, -12, 0] }}
-          transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
-        >
-          <motion.img
-            src={devImg}
-            alt="Programmer illustration"
-            className="
-              w-60 sm:w-72 md:w-[380px] lg:w-[450px]
-              rounded-xl
-            "
-          />
-        </motion.div>
+    <section id="skills" className="section-padding relative overflow-hidden">
+      {/* Background decoration */}
+      <div className="absolute top-1/2 left-0 w-72 h-72 bg-indigo-500/5 rounded-full blur-3xl" />
+      <div className="absolute top-1/3 right-0 w-96 h-96 bg-purple-500/5 rounded-full blur-3xl" />
 
-        {/* RIGHT CONTENT */}
+      <div className="container-custom relative z-10">
         <motion.div
-          className="w-full md:w-1/2 text-center md:text-left"
           variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
         >
-          <motion.h2
-            className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-3 sm:mb-4"
-            variants={itemVariants}
-          >
-            What I Do
-          </motion.h2>
-
-          <motion.p
-            className="uppercase tracking-wide text-slate-400 text-xs sm:text-sm mb-6 sm:mb-8"
-            variants={itemVariants}
-          >
-            MERN Stack Developer building modern full-stack web applications
-          </motion.p>
-
-          {/* TECH STACK ICONS */}
-          <motion.div
-            className="
-              flex flex-wrap justify-center md:justify-start
-              gap-4 sm:gap-5 lg:gap-6
-              text-2xl sm:text-3xl lg:text-4xl
-              text-slate-400
-              mb-8 sm:mb-10
-            "
-            variants={containerVariants}
-          >
-            {[
-              FaHtml5,
-              FaCss3Alt,
-              FaJs,
-              FaReact,
-              FaNodeJs,
-              SiExpress,
-              SiMongodb,
-              SiNpm,
-            ].map((Icon, index) => (
-              <motion.div
-                key={index}
-                variants={itemVariants}
-                whileHover={{
-                  scale: 1.25,
-                  rotate: 5,
-                  color: "#a855f7",
-                }}
-                transition={{ type: "spring", stiffness: 300, damping: 15 }}
-                className="cursor-pointer"
-              >
-                <Icon />
-              </motion.div>
-            ))}
+          {/* Section Title */}
+          <motion.div className="text-center mb-16" variants={itemVariants}>
+            <h2 className="text-4xl sm:text-5xl font-bold mb-4">
+              <span className="text-gradient">Skills & Technologies</span>
+            </h2>
+            <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+              A comprehensive overview of my technical expertise and the technologies I work with
+            </p>
           </motion.div>
 
-          {/* SKILLS LIST */}
-          <motion.ul
-            className="
-              space-y-3 sm:space-y-4
-              text-sm sm:text-base lg:text-lg
-              text-slate-300
-            "
-            variants={containerVariants}
-          >
-            <motion.li variants={itemVariants}>
-              ⚡ Build responsive & interactive UIs using React & Tailwind CSS
-            </motion.li>
-            <motion.li variants={itemVariants}>
-              ⚡ Develop RESTful APIs with Node.js & Express.js
-            </motion.li>
-            <motion.li variants={itemVariants}>
-              ⚡ Design & manage databases using MongoDB & Mongoose
-            </motion.li>
-            <motion.li variants={itemVariants}>
-              ⚡ Implement JWT authentication & authorization
-            </motion.li>
-            <motion.li variants={itemVariants}>
-              ⚡ Deploy full-stack apps using Vercel & Render
-            </motion.li>
-          </motion.ul>
+          {/* Skills Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {skillCategories.map((category, categoryIndex) => (
+              <motion.div
+                key={categoryIndex}
+                variants={itemVariants}
+                className="glass rounded-2xl p-6"
+                whileHover={{ y: -5 }}
+              >
+                {/* Category Title */}
+                <h3 className="text-xl font-semibold text-white mb-6 text-center">
+                  {category.title}
+                </h3>
+
+                {/* Skills List */}
+                <div className="space-y-3">
+                  {category.skills.map((skill, skillIndex) => (
+                    <motion.div
+                      key={skillIndex}
+                      variants={skillItemVariants}
+                      className="flex items-center gap-3 p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors"
+                      whileHover={{ scale: 1.05 }}
+                    >
+                      <skill.icon className={`text-2xl ${skill.color}`} />
+                      <span className="text-gray-300 font-medium">{skill.name}</span>
+                    </motion.div>
+                  ))}
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </motion.div>
       </div>
-    </motion.section>
+    </section>
   );
 }
 
