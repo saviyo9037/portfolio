@@ -22,9 +22,7 @@ function Contact() {
               SYS.OPEN<span className="text-cyan">("CONTACT")</span>
             </h1>
 
-            <p className="text-[#A1A1AA] text-lg mb-8 max-w-xl font-mono">
-              // Connection request pending. Ready to establish secure link.
-            </p>
+         
 
             {/* Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start mb-8">

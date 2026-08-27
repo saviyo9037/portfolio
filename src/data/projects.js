@@ -2,6 +2,7 @@
 export const projects = [
   {
     title: "ERP & POS Management System",
+    company: "D3innovatives",
     description: "10+ ERP modules (Product, Inventory, Billing, POS), 40+ reusable React components, 20+ REST APIs via TanStack React Query, barcode generation + thermal printing.",
     tags: ["React", "TanStack React Query", "Tailwind CSS", "REST API"],
     liveUrl: "https://app.erpgen.com/auth/login",
@@ -9,12 +10,14 @@ export const projects = [
   },
   {
     title: "OverPrint Desktop Application",
+    company: "D3innovatives",
     description: "Desktop printing utility bridging ERP/POS apps and thermal printers; WebSocket-based printing, printer discovery, USB/network receipt printing; packaged as a Windows .exe with PyInstaller.",
     tags: ["Python", "WebSocket", "PyInstaller", "Desktop"],
     featured: false,
   },
   {
     title: "Betterinu LMS",
+    company: "D3innovatives",
     description: "Full Learning Management System built solo with Next.js: courses, learning materials, assignments, assessments, progress tracking, student–faculty messaging.",
     tags: ["Next.js", "React", "LMS"],
     liveUrl: "https://betterinu-admin-v1-jj9b.vercel.app/admin/loginext",

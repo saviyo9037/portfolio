@@ -29,9 +29,14 @@ function Projects() {
               transition={{ duration: 0.5, delay: index * 0.1 }}
               className={`thermal-card receipt-edge p-8 flex flex-col h-full ${project.featured ? "md:col-span-2 lg:col-span-2 bg-[#18181B]" : ""}`}
             >
-              <h2 className="text-xl font-bold mb-4 font-mono text-[#FAFAFA]">
+              <h2 className="text-xl font-bold mb-2 font-mono text-[#FAFAFA]">
                 {project.title}
               </h2>
+              {project.company && (
+                <div className="text-sm font-mono text-[#00F0FF] mb-4 opacity-80">
+                  @ {project.company}
+                </div>
+              )}
               
               <p className="text-[#A1A1AA] mb-6 flex-grow leading-relaxed">
                 {project.description}
