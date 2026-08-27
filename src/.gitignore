@@ -5,11 +5,15 @@
 !components/
 !pages/
 !assets/
+!data/
+!context/
 
 # Include all files inside them
 !components/**
 !pages/**
 !assets/**
+!data/**
+!context/**
 
 # Include this gitignore file
 !.gitignore
