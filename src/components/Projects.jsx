@@ -1,107 +1,78 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { motion } from "framer-motion";
+import { projects } from "../data/projects";
 
 function Projects() {
-  const repos = [
-    "saviyo9037/crm_frontend",
-    "saviyo9037/Rabbit",
-    "saviyo9037/hospital_frontend",
-  ];
-
-  const [projects, setProjects] = useState([]);
-
-  useEffect(() => {
-    Promise.all(
-      repos.map((repo) =>
-        fetch(`https://api.github.com/repos/${repo}`).then((res) =>
-          res.json()
-        )
-      )
-    )
-      .then((data) => setProjects(data))
-      .catch((err) => console.error(err));
-  }, []);
-
   return (
-    <section className="relative bg-[#0b0b14] text-white py-24 px-6 overflow-hidden">
-
-      {/* Background Glow */}
-      <div className="absolute top-[-120px] left-[-120px] w-80 h-80 bg-purple-600 opacity-20 blur-3xl rounded-full"></div>
-      <div className="absolute bottom-[-120px] right-[-120px] w-80 h-80 bg-indigo-600 opacity-20 blur-3xl rounded-full"></div>
-
-      <div className="relative max-w-6xl mx-auto">
-
-        {/* Title */}
-        <motion.h1
-          className="text-4xl md:text-5xl font-bold mb-16 text-center"
+    <section className="relative bg-[#09090B] py-24 px-6 overflow-hidden">
+      <div className="relative max-w-7xl mx-auto">
+        <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
+          className="mb-16 flex flex-col items-center"
         >
-          My <span className="text-purple-500">Projects</span>
-        </motion.h1>
+          <h1 className="text-3xl md:text-5xl font-bold text-center font-mono">
+            SYS.GET<span className="text-cyan">("PROJECTS")</span>
+          </h1>
+          <div className="barcode-divider mt-6" />
+        </motion.div>
 
-        {/* Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-
-          {projects.map((repo, index) => (
-            <motion.a
-              key={repo.id}
-              href={repo.html_url}
-              target="_blank"
-              rel="noopener noreferrer"
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {projects.map((project, index) => (
+            <motion.div
+              key={index}
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: index * 0.2 }}
-              whileHover={{ y: -8 }}
-              className="relative group bg-white/5 
-                         backdrop-blur-xl 
-                         border border-white/10 
-                         rounded-3xl p-8 
-                         shadow-2xl 
-                         hover:shadow-purple-500/20 
-                         transition duration-500"
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              className={`thermal-card receipt-edge p-8 flex flex-col h-full ${project.featured ? "md:col-span-2 lg:col-span-2 bg-[#18181B]" : ""}`}
             >
-
-              {/* Glow Hover Effect */}
-              <div className="absolute inset-0 bg-purple-600 
-                              opacity-0 group-hover:opacity-10 
-                              transition duration-500 rounded-3xl"></div>
-
-              {/* Repo Name */}
-              <h2 className="relative text-xl font-semibold mb-4">
-                {repo.name || "Unnamed Repository"}
+              <h2 className="text-xl font-bold mb-4 font-mono text-[#FAFAFA]">
+                {project.title}
               </h2>
-
-              {/* Description */}
-              <p className="relative text-gray-300 mb-8 leading-relaxed text-sm">
-                {repo.description || "No description available"}
+              
+              <p className="text-[#A1A1AA] mb-6 flex-grow leading-relaxed">
+                {project.description}
               </p>
-
-              {/* Stats */}
-              <div className="relative flex justify-between items-center text-sm text-gray-400">
-
-                <div className="flex gap-4">
-                  <span className="flex items-center gap-1">
-                    ● {repo.language || "N/A"}
-                  </span>
-
-                  <span>🍴 {repo.forks_count ?? 0}</span>
-                  <span>⭐ {repo.stargazers_count ?? 0}</span>
+              
+              <div className="mt-auto">
+                {project.tags && project.tags.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mb-6">
+                    {project.tags.map((tag, i) => (
+                      <span key={i} className="text-xs font-mono text-[#FFB000] bg-[#FFB000]/10 px-2 py-1 rounded-sm border border-[#FFB000]/20">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                )}
+                
+                <div className="flex gap-4 border-t border-white/10 pt-4 mt-4 font-mono text-sm">
+                  {project.liveUrl && (
+                    <a
+                      href={project.liveUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[#00F0FF] hover:underline"
+                    >
+                      [ LIVE_DEMO ]
+                    </a>
+                  )}
+                  {project.githubUrl && (
+                    <a
+                      href={project.githubUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[#00F0FF] hover:underline"
+                    >
+                      [ SOURCE_CODE ]
+                    </a>
+                  )}
                 </div>
-
-                <span className="text-purple-400 font-medium">
-                  {repo.size
-                    ? `${(repo.size / 1024).toFixed(1)} MB`
-                    : "—"}
-                </span>
               </div>
-
-            </motion.a>
+            </motion.div>
           ))}
-
         </div>
       </div>
     </section>

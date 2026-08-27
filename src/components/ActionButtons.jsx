@@ -14,11 +14,11 @@ function ActionButtons() {
       {/* VIEW PROJECTS */}
       <motion.button
         onClick={handleScrollToProjects}
-        className="btn-gradient px-8 py-3.5 text-white font-semibold rounded-xl"
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
+        className="btn-tech-solid px-8 py-3.5 rounded-sm"
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
       >
-        View Projects
+        [ VIEW_PROJECTS ]
       </motion.button>
 
       {/* DOWNLOAD RESUME */}
@@ -27,12 +27,11 @@ function ActionButtons() {
         download
         target="_blank"
         rel="noopener noreferrer"
-        className="border-2 border-indigo-500/50 px-8 py-3.5 text-white font-semibold rounded-xl
-                   hover:bg-indigo-500/20 transition duration-300"
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
+        className="btn-tech px-8 py-3.5 rounded-sm text-center"
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
       >
-        Download Resume
+        [ DL_RESUME ]
       </motion.a>
 
     </div>
