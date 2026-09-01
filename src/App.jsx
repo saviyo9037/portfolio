@@ -3,6 +3,7 @@ import Lenis from 'lenis'
 import './App.css'
 import Home from './pages/Home'
 import CustomCursor from './components/CustomCursor'
+import Chatbot from './components/Chatbot'
 
 function App() {
   useEffect(() => {
@@ -26,6 +27,7 @@ function App() {
     <>
       <CustomCursor />
       <Home />
+      <Chatbot />
     </>
   )
 }
