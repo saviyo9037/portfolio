@@ -15,7 +15,7 @@ function Experiences() {
   };
 
   return (
-    <section className="bg-[var(--bg-base)] border-t border-[var(--border-subtle)]">
+    <section className="relative">
       <div className="container-custom section-padding">
         {/* Section Label */}
         <motion.div
@@ -25,8 +25,8 @@ function Experiences() {
           viewport={{ once: true }}
           className="flex items-center gap-4 mb-16 md:mb-24"
         >
-          <span className="text-xs tracking-[0.3em] uppercase text-[var(--text-muted)] font-medium">
-            03
+          <span className="text-xs tracking-[0.3em] uppercase text-[var(--text-dim)] font-medium">
+            (03)
           </span>
           <div className="divider flex-1" />
           <span className="text-xs tracking-[0.3em] uppercase text-[var(--text-muted)] font-medium">

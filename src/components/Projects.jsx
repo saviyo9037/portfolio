@@ -14,7 +14,7 @@ function Projects() {
   };
 
   return (
-    <section className="bg-[var(--bg-base)] border-t border-[var(--border-subtle)] relative">
+    <section className="relative">
       <div className="container-custom section-padding">
         {/* Section Label */}
         <motion.div

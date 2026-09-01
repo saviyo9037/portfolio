@@ -28,8 +28,8 @@ export const skills = [
       "WebSocket", "Socket.IO", "Barcode Integration", "QR Code Generation", 
       "Thermal Printer Integration", "Receipt Template Customization", 
       "Desktop App Development", ".exe Packaging (PyInstaller)", 
-      "Wireframing", , "Responsive Design", 
-      "JWT/Session Auth", "CRUD Operations", "Form Validation", 
+      "Wireframing", "UI/UX Design", "Responsive Web Design", 
+      "Authentication (JWT/Sessions)", "CRUD Operations", "API Integration", "Form Validation", 
       "State Management", "MVC Architecture"
     ]
   }

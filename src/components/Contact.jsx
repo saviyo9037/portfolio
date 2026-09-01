@@ -38,7 +38,7 @@ function Contact() {
     ));
 
   return (
-    <section className="bg-[var(--bg-base)] border-t border-[var(--border-subtle)]">
+    <section className="relative section-dark">
       <div className="container-custom section-padding">
         {/* Section Label */}
         <motion.div

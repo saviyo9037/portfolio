@@ -7,6 +7,7 @@ import CustomCursor from './components/CustomCursor'
 function App() {
   useEffect(() => {
     const lenis = new Lenis()
+    window.__lenis = lenis
     
     function raf(time) {
       lenis.raf(time)
@@ -16,6 +17,7 @@ function App() {
     requestAnimationFrame(raf)
     
     return () => {
+      window.__lenis = null
       lenis.destroy()
     }
   }, [])

@@ -13,7 +13,7 @@ function Skills() {
   };
 
   return (
-    <section className="bg-[var(--bg-surface)] border-t border-[var(--border-subtle)]">
+    <section className="relative">
       <div className="container-custom section-padding">
         {/* Section Label */}
         <motion.div
@@ -23,8 +23,8 @@ function Skills() {
           viewport={{ once: true }}
           className="flex items-center gap-4 mb-16 md:mb-24"
         >
-          <span className="text-xs tracking-[0.3em] uppercase text-[var(--text-muted)] font-medium">
-            02
+          <span className="text-xs tracking-[0.3em] uppercase text-[var(--text-dim)] font-medium">
+            (02)
           </span>
           <div className="divider flex-1" />
           <span className="text-xs tracking-[0.3em] uppercase text-[var(--text-muted)] font-medium">

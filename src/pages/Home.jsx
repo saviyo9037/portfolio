@@ -7,40 +7,67 @@ import Education from "../components/Education";
 import Experiences from "../components/Experiences";
 import Projects from "../components/Projects";
 import Contact from "../components/Contact";
+import StickySection from "../components/StickySection";
 
 function Home() {
   return (
-    <div className="bg-[var(--bg-base)] text-[var(--text-main)] min-h-screen">
+    <div className="bg-[var(--bg-base)] text-[var(--text-main)] min-h-screen relative">
       <Navbar />
 
-      <main>
-        <section id="introduction">
+      <main className="relative">
+        <StickySection
+          id="introduction"
+          zIndex={10}
+        >
           <Introduction />
-        </section>
+        </StickySection>
 
-        <section id="about">
+        <StickySection
+          id="about"
+          zIndex={20}
+        >
           <About />
-        </section>
+        </StickySection>
 
-        <section id="skills">
-          <Skills />
-        </section>
-
-        <section id="experience">
+        <StickySection
+          id="experience"
+          zIndex={30}
+          className="shadow-[0_-20px_50px_rgba(0,0,0,0.05)] border-t border-[var(--border-subtle)]"
+        >
           <Experiences />
-        </section>
+        </StickySection>
 
-        <section id="education">
+        <StickySection
+          id="skills"
+          zIndex={40}
+          className="shadow-[0_-20px_50px_rgba(0,0,0,0.05)] border-t border-[var(--border-subtle)]"
+        >
+          <Skills />
+        </StickySection>
+
+        <StickySection
+          id="education"
+          zIndex={50}
+          className="shadow-[0_-20px_50px_rgba(0,0,0,0.05)] border-t border-[var(--border-subtle)]"
+        >
           <Education />
-        </section>
+        </StickySection>
 
-        <section id="projects">
+        <StickySection
+          id="projects"
+          zIndex={60}
+          className="shadow-[0_-20px_50px_rgba(0,0,0,0.05)] border-t border-[var(--border-subtle)]"
+        >
           <Projects />
-        </section>
+        </StickySection>
 
-        <section id="contact">
+        <StickySection
+          id="contact"
+          zIndex={70}
+          className="shadow-[0_-20px_50px_rgba(0,0,0,0.1)]"
+        >
           <Contact />
-        </section>
+        </StickySection>
       </main>
     </div>
   );

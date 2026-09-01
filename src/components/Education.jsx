@@ -15,7 +15,7 @@ function Education() {
   };
 
   return (
-    <section className="bg-[var(--bg-surface)] border-t border-[var(--border-subtle)]">
+    <section className="relative">
       <div className="container-custom section-padding">
         {/* Section Label */}
         <motion.div

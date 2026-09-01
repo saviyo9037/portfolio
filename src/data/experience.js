@@ -2,7 +2,7 @@
 export const experience = [
   {
     type: "work",
-    company: "D3innovaties",
+    company: "D3innovatives",
     role: "MERN Stack Developer",
     period: "Apr 2026–Present",
     location: "Malappuram",
