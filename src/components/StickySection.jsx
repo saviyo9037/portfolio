@@ -14,10 +14,6 @@ function StickySection({ children, zIndex, className = "", id }) {
   // Progress bar width
   const progressWidth = useTransform(scrollYProgress, [0, 0.5, 1], ["0%", "100%", "100%"]);
 
-  // Subtle scale/opacity for entrance
-  const sectionScale = useTransform(scrollYProgress, [0, 0.1], [0.98, 1]);
-  const sectionOpacity = useTransform(scrollYProgress, [0, 0.1], [0.8, 1]);
-
   useEffect(() => {
     const handleResize = () => {
       if (sectionRef.current) {
@@ -54,8 +50,7 @@ function StickySection({ children, zIndex, className = "", id }) {
       style={{
         top: topOffset,
         zIndex,
-        scale: sectionScale,
-        opacity: sectionOpacity,
+        willChange: "transform"
       }}
     >
       {/* Scroll progress bar */}

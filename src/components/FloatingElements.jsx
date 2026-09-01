@@ -45,6 +45,7 @@ function FloatingElements() {
           className={`absolute rounded-full ${orb.size} ${orb.color} ${orb.position} ${orb.blur}`}
           style={{
             animation: `${orb.animation} ${orb.duration} ease-in-out infinite`,
+            willChange: 'transform'
           }}
         />
       ))}
