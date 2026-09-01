@@ -12,6 +12,9 @@
   --border-subtle: rgba(255, 255, 255, 0.08);
   --border-hover: rgba(255, 255, 255, 0.15);
   --accent: #EDEDED;
+  --accent-glow: rgba(255, 255, 255, 0.06);
+  --glass-bg: rgba(22, 22, 22, 0.6);
+  --glass-border: rgba(255, 255, 255, 0.1);
 }
 
 /* ===== BASE ===== */
@@ -49,6 +52,20 @@ h6 {
   color: var(--bg-base);
 }
 
+/* ===== GRAIN TEXTURE OVERLAY ===== */
+.grain-overlay::after {
+  content: '';
+  position: fixed;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9998;
+  opacity: 0.4;
+}
+
 /* ===== SCROLLBAR ===== */
 ::-webkit-scrollbar {
   width: 4px;
@@ -59,7 +76,7 @@ h6 {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--text-dim);
+  background: linear-gradient(to bottom, var(--text-dim), var(--text-muted));
   border-radius: 4px;
 }
 
@@ -74,6 +91,41 @@ h6 {
 
 .container-custom {
   @apply max-w-[1400px] mx-auto px-5 md:px-10;
+}
+
+/* ===== GLASSMORPHISM ===== */
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.glass-card:hover {
+  background: rgba(22, 22, 22, 0.8);
+  border-color: rgba(255, 255, 255, 0.18);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+/* ===== GRADIENT BORDER GLOW ===== */
+.glow-border {
+  position: relative;
+}
+
+.glow-border::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent, rgba(255,255,255,0.08));
+  border-radius: inherit;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.glow-border:hover::before {
+  opacity: 1;
 }
 
 /* ===== INFINITE MARQUEE (CSS-based for silky performance) ===== */
@@ -157,6 +209,83 @@ h6 {
   }
 }
 
+/* ===== PRELOADER ANIMATIONS ===== */
+@keyframes curtain-up {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-100%);
+  }
+}
+
+@keyframes letter-pop {
+  0% {
+    opacity: 0;
+    transform: translateY(80px) rotateX(-90deg);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(-5px) rotateX(5deg);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) rotateX(0deg);
+  }
+}
+
+/* ===== FLOATING ORB ANIMATIONS ===== */
+@keyframes float-orb-1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25% { transform: translate(80px, -60px) scale(1.1); }
+  50% { transform: translate(-40px, -100px) scale(0.95); }
+  75% { transform: translate(60px, -30px) scale(1.05); }
+}
+
+@keyframes float-orb-2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(-100px, 50px) scale(1.15); }
+  66% { transform: translate(70px, -80px) scale(0.9); }
+}
+
+@keyframes float-orb-3 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  20% { transform: translate(50px, 80px) scale(1.08); }
+  40% { transform: translate(-90px, 30px) scale(0.92); }
+  60% { transform: translate(-30px, -70px) scale(1.12); }
+  80% { transform: translate(70px, -20px) scale(0.98); }
+}
+
+/* ===== ROTATE BADGE ===== */
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.rotate-badge {
+  animation: spin-slow 12s linear infinite;
+}
+
+/* ===== PULSE GLOW ===== */
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.05);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(255, 255, 255, 0.12);
+  }
+}
+
+/* ===== TIMELINE DRAW ===== */
+@keyframes draw-line {
+  from {
+    height: 0;
+  }
+  to {
+    height: 100%;
+  }
+}
+
 /* ===== BUTTON ===== */
 .btn-minimal {
   font-family: 'Inter', sans-serif;
@@ -201,6 +330,15 @@ h6 {
   z-index: 1;
 }
 
+/* ===== MAGNETIC BUTTON ===== */
+.btn-magnetic {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
 /* ===== LINK UNDERLINE EFFECT ===== */
 .link-underline {
   position: relative;
@@ -228,3 +366,175 @@ h6 {
   height: 1px;
   background: var(--border-subtle);
 }
+
+/* ===== 3D TILT CARD ===== */
+.tilt-card {
+  transform-style: preserve-3d;
+  perspective: 1000px;
+  transition: transform 0.1s ease-out;
+}
+
+.tilt-card-inner {
+  transform-style: preserve-3d;
+}
+
+.tilt-card-inner > * {
+  transform: translateZ(20px);
+}
+
+/* ===== GRADIENT TEXT ===== */
+.gradient-text-hover {
+  transition: background-size 0.6s ease;
+  background: linear-gradient(90deg, var(--text-main) 0%, #888 50%, var(--text-main) 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-text-hover:hover {
+  background-position: right center;
+}
+
+/* ===== CURSOR TRAIL ===== */
+.cursor-trail-dot {
+  position: fixed;
+  pointer-events: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  z-index: 9998;
+  mix-blend-mode: difference;
+}
+
+/* ===== NO SCROLLBAR UTILITY ===== */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* ===== SECTION PROGRESS BAR ===== */
+.section-progress-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--text-main), transparent);
+  z-index: 10;
+  transform-origin: left;
+}
+
+/* ===== RONNSQUARE-STYLE BUTTON (fill sweep up) ===== */
+.btn-fill {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  padding: 1rem 2.5rem;
+  border: none;
+  background: var(--bg-elevated);
+  color: var(--text-main);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  transition: color 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.btn-fill::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--text-main);
+  transform: scaleY(0);
+  transform-origin: bottom;
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.btn-fill:hover {
+  color: var(--bg-base);
+}
+
+.btn-fill:hover::before {
+  transform: scaleY(1);
+}
+
+.btn-fill span {
+  position: relative;
+  z-index: 1;
+}
+
+/* ===== TICKER CONTAINER ===== */
+.ticker-container {
+  will-change: transform;
+}
+
+/* ===== CURVED SECTION TRANSITION ===== */
+.curved-section {
+  position: relative;
+}
+
+.curved-section::before {
+  content: '';
+  position: absolute;
+  top: -60px;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: inherit;
+  clip-path: ellipse(60% 100% at 50% 100%);
+}
+
+/* ===== RUNNING LINE / TICKER ANIMATION ===== */
+@keyframes ticker-scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.ticker-auto {
+  display: flex;
+  width: max-content;
+  animation: ticker-scroll 40s linear infinite;
+}
+
+.ticker-auto:hover {
+  animation-play-state: paused;
+}
+
+/* ===== TEXT STROKE EFFECT (like ronnsquare large outlined text) ===== */
+.text-stroke {
+  -webkit-text-stroke: 1px var(--text-dim);
+  -webkit-text-fill-color: transparent;
+  transition: -webkit-text-fill-color 0.5s ease;
+}
+
+.text-stroke:hover {
+  -webkit-text-fill-color: var(--text-main);
+}
+
+/* ===== STAGGER CHILDREN ANIMATION HELPER ===== */
+.stagger-reveal > * {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.stagger-reveal.is-visible > * {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.stagger-reveal.is-visible > *:nth-child(1) { transition-delay: 0s; }
+.stagger-reveal.is-visible > *:nth-child(2) { transition-delay: 0.1s; }
+.stagger-reveal.is-visible > *:nth-child(3) { transition-delay: 0.2s; }
+.stagger-reveal.is-visible > *:nth-child(4) { transition-delay: 0.3s; }
+.stagger-reveal.is-visible > *:nth-child(5) { transition-delay: 0.4s; }
+.stagger-reveal.is-visible > *:nth-child(6) { transition-delay: 0.5s; }

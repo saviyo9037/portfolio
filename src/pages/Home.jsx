@@ -6,8 +6,10 @@ import Skills from "../components/Skills";
 import Education from "../components/Education";
 import Experiences from "../components/Experiences";
 import Projects from "../components/Projects";
+import ProjectTicker from "../components/ProjectTicker";
 import Contact from "../components/Contact";
 import StickySection from "../components/StickySection";
+import { CurvedDivider } from "../components/CurvedDivider";
 
 function Home() {
   return (
@@ -28,6 +30,11 @@ function Home() {
         >
           <About />
         </StickySection>
+
+        {/* Curved wave transition */}
+        <div className="relative z-[25]">
+          <CurvedDivider color="var(--bg-surface)" />
+        </div>
 
         <StickySection
           id="experience"
@@ -53,6 +60,11 @@ function Home() {
           <Education />
         </StickySection>
 
+        {/* Horizontal Project Ticker — Ronnsquare-style running line */}
+        <div className="relative z-[55]">
+          <ProjectTicker />
+        </div>
+
         <StickySection
           id="projects"
           zIndex={60}
@@ -60,6 +72,11 @@ function Home() {
         >
           <Projects />
         </StickySection>
+
+        {/* Curved wave before contact */}
+        <div className="relative z-[65]">
+          <CurvedDivider color="var(--bg-surface)" inverted />
+        </div>
 
         <StickySection
           id="contact"

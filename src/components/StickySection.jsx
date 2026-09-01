@@ -1,8 +1,22 @@
 import React, { useRef, useEffect, useState } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 
 function StickySection({ children, zIndex, className = "", id }) {
   const sectionRef = useRef(null);
   const [topOffset, setTopOffset] = useState("0px");
+
+  // Scroll progress for this section
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"],
+  });
+
+  // Progress bar width
+  const progressWidth = useTransform(scrollYProgress, [0, 0.5, 1], ["0%", "100%", "100%"]);
+
+  // Subtle scale/opacity for entrance
+  const sectionScale = useTransform(scrollYProgress, [0, 0.1], [0.98, 1]);
+  const sectionOpacity = useTransform(scrollYProgress, [0, 0.1], [0.8, 1]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -33,14 +47,24 @@ function StickySection({ children, zIndex, className = "", id }) {
   }, []);
 
   return (
-    <section
+    <motion.section
       id={id}
       ref={sectionRef}
       className={`sticky w-full bg-[var(--bg-base)] ${className}`}
-      style={{ top: topOffset, zIndex }}
+      style={{
+        top: topOffset,
+        zIndex,
+        scale: sectionScale,
+        opacity: sectionOpacity,
+      }}
     >
+      {/* Scroll progress bar */}
+      <motion.div
+        className="section-progress-bar"
+        style={{ width: progressWidth }}
+      />
       {children}
-    </section>
+    </motion.section>
   );
 }
 

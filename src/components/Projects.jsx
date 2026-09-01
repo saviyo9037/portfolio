@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import React, { useState, useRef } from "react";
+import { motion, AnimatePresence, useMotionValue, useSpring } from "framer-motion";
 import { projects } from "../data/projects";
 import { FiArrowUpRight, FiBriefcase, FiCode, FiLayers } from "react-icons/fi";
 
@@ -31,6 +31,15 @@ function Projects() {
     }),
   };
 
+  const clipReveal = {
+    hidden: { clipPath: "inset(0 100% 0 0)", opacity: 0 },
+    visible: (i = 0) => ({
+      clipPath: "inset(0 0% 0 0)",
+      opacity: 1,
+      transition: { duration: 0.7, delay: i * 0.08, ease: [0.76, 0, 0.24, 1] },
+    }),
+  };
+
   return (
     <section className="relative">
       <div className="container-custom section-padding">
@@ -45,7 +54,14 @@ function Projects() {
           <span className="text-xs tracking-[0.3em] uppercase text-[var(--text-dim)] font-medium">
             (05)
           </span>
-          <div className="divider flex-1" />
+          <motion.div
+            className="divider flex-1"
+            initial={{ scaleX: 0 }}
+            whileInView={{ scaleX: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+            style={{ transformOrigin: "left" }}
+          />
           <span className="text-xs tracking-[0.3em] uppercase text-[var(--text-dim)] font-medium">
             Projects
           </span>
@@ -73,9 +89,14 @@ function Projects() {
             className="flex items-center gap-2 text-xs text-[var(--text-dim)] tracking-widest uppercase"
           >
             <span>Showing</span>
-            <span className="text-[var(--text-main)] font-semibold">
+            <motion.span
+              key={filteredProjects.length}
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-[var(--text-main)] font-semibold"
+            >
               {filteredProjects.length}
-            </span>
+            </motion.span>
             <span>of {projects.length} Projects</span>
           </motion.div>
         </div>
@@ -138,7 +159,7 @@ function Projects() {
               {filteredProjects.map((project, index) => (
                 <motion.div
                   key={project.id || project.title}
-                  variants={fadeUp}
+                  variants={clipReveal}
                   custom={index}
                   initial="hidden"
                   animate="visible"
@@ -149,12 +170,18 @@ function Projects() {
                       href={project.liveUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="block border-t border-[var(--border-subtle)] py-8 md:py-12 hover:bg-[var(--bg-surface)] transition-all duration-500 -mx-5 md:-mx-10 px-5 md:px-10"
+                      data-cursor-label="View"
+                      className="block border-t border-[var(--border-subtle)] py-8 md:py-12 hover:bg-[var(--bg-surface)] transition-all duration-500 -mx-5 md:-mx-10 px-5 md:px-10 relative"
                     >
                       <ProjectRow project={project} index={index} />
+                      {/* Hover glow */}
+                      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
+                        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[var(--text-main)]/20 to-transparent" />
+                        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[var(--text-main)]/10 to-transparent" />
+                      </div>
                     </a>
                   ) : (
-                    <div className="border-t border-[var(--border-subtle)] py-8 md:py-12 hover:bg-[var(--bg-surface)] transition-all duration-500 -mx-5 md:-mx-10 px-5 md:px-10 cursor-default">
+                    <div className="border-t border-[var(--border-subtle)] py-8 md:py-12 hover:bg-[var(--bg-surface)] transition-all duration-500 -mx-5 md:-mx-10 px-5 md:px-10 cursor-default relative">
                       <ProjectRow project={project} index={index} />
                     </div>
                   )}
@@ -174,9 +201,13 @@ function ProjectRow({ project, index }) {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-8 items-start md:items-center relative z-10">
-      {/* Index */}
-      <div className="md:col-span-1 hidden md:block">
-        <span className="text-xs text-[var(--text-dim)] font-medium tabular-nums group-hover:text-[var(--text-main)] transition-colors duration-300">
+      {/* Index with watermark */}
+      <div className="md:col-span-1 hidden md:block relative">
+        <span className="text-xs text-[var(--text-dim)] font-medium tabular-nums group-hover:text-[var(--text-main)] transition-colors duration-300 relative z-10">
+          {String(index + 1).padStart(2, "0")}
+        </span>
+        {/* Large watermark number */}
+        <span className="absolute -top-8 -left-2 text-[5rem] font-['Anton'] text-white/[0.02] group-hover:text-white/[0.04] leading-none pointer-events-none transition-colors duration-500">
           {String(index + 1).padStart(2, "0")}
         </span>
       </div>
@@ -184,15 +215,18 @@ function ProjectRow({ project, index }) {
       {/* Title & Category Badge */}
       <div className="md:col-span-4 transition-transform duration-500 group-hover:translate-x-4">
         <div className="flex flex-wrap items-center gap-2 mb-1.5">
-          <span
+          <motion.span
             className={`text-[9px] tracking-[0.15em] uppercase font-mono px-2 py-0.5 rounded-md border ${
               isCompany
                 ? "bg-amber-500/10 text-amber-300 border-amber-500/20"
                 : "bg-cyan-500/10 text-cyan-300 border-cyan-500/20"
             }`}
+            initial={{ opacity: 0, scale: 0 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: index * 0.05 + 0.2, type: "spring", stiffness: 400 }}
           >
             {isCompany ? "Company Project" : "Personal Project"}
-          </span>
+          </motion.span>
           {project.company && (
             <span className="text-[10px] tracking-[0.12em] uppercase text-[var(--text-dim)]">
               • {project.company}
@@ -200,10 +234,20 @@ function ProjectRow({ project, index }) {
           )}
         </div>
 
-        <h3 className="text-2xl md:text-4xl font-['Anton'] uppercase leading-tight text-[var(--text-main)] flex items-center gap-3">
+        <h3 
+          className="text-xl md:text-3xl font-sans normal-case font-semibold tracking-tight leading-tight text-[var(--text-main)] flex items-center gap-3"
+          style={{ fontFamily: 'Inter, sans-serif' }}
+        >
           {project.title}
           {project.liveUrl && (
-            <FiArrowUpRight className="text-lg opacity-0 -translate-x-4 translate-y-4 group-hover:opacity-100 group-hover:translate-x-0 group-hover:translate-y-0 transition-all duration-500 ease-[cubic-bezier(0.76,0,0.24,1)]" />
+            <motion.span
+              className="inline-block"
+              animate={{ rotate: 0 }}
+              whileHover={{ rotate: 360 }}
+              transition={{ duration: 0.5 }}
+            >
+              <FiArrowUpRight className="text-lg opacity-0 -translate-x-4 translate-y-4 group-hover:opacity-100 group-hover:translate-x-0 group-hover:translate-y-0 transition-all duration-500 ease-[cubic-bezier(0.76,0,0.24,1)]" />
+            </motion.span>
           )}
         </h3>
       </div>
@@ -215,16 +259,24 @@ function ProjectRow({ project, index }) {
         </p>
       </div>
 
-      {/* Tags */}
+      {/* Tags with pop animation */}
       <div className="md:col-span-2 flex flex-wrap gap-2 transition-transform duration-500 group-hover:translate-x-2">
         {project.tags &&
           project.tags.slice(0, 3).map((tag, i) => (
-            <span
+            <motion.span
               key={i}
               className="text-[10px] tracking-[0.1em] uppercase text-[var(--text-dim)] border border-[var(--border-subtle)] rounded-full px-3 py-1 group-hover:border-[var(--text-main)] group-hover:text-[var(--text-main)] transition-all duration-300"
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{
+                delay: i * 0.08 + 0.15,
+                type: "spring",
+                stiffness: 500,
+                damping: 20,
+              }}
             >
               {tag}
-            </span>
+            </motion.span>
           ))}
       </div>
     </div>

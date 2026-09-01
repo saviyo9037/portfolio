@@ -8,20 +8,26 @@ function Introduction() {
     offset: ["start start", "end start"],
   });
 
-  // Stagger text reveal
-  const containerVariants = {
-    hidden: {},
-    visible: {
-      transition: { staggerChildren: 0.15, delayChildren: 0.3 },
-    },
-  };
+  // Parallax for the main text
+  const textY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
+  const textOpacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
 
-  const lineVariants = {
-    hidden: { y: "110%" },
-    visible: {
+  // Split text animation for name
+  const nameFirstLine = "Saviyo";
+  const nameSecondLine = "George";
+
+  const charVariants = {
+    hidden: { y: "110%", opacity: 0, rotateX: -40 },
+    visible: (i) => ({
       y: "0%",
-      transition: { duration: 1, ease: [0.76, 0, 0.24, 1] },
-    },
+      opacity: 1,
+      rotateX: 0,
+      transition: {
+        duration: 0.8,
+        delay: 0.4 + i * 0.04,
+        ease: [0.22, 1, 0.36, 1],
+      },
+    }),
   };
 
   const fadeUp = {
@@ -37,11 +43,15 @@ function Introduction() {
     [...Array(count)].map((_, i) => (
       <span
         key={i}
-        className="text-[18vw] md:text-[12vw] font-['Anton'] uppercase leading-[0.9] tracking-tight whitespace-nowrap px-[2vw]"
+        className="text-[18vw] md:text-[12vw] font-['Anton'] uppercase leading-[0.9] tracking-tight whitespace-nowrap px-[2vw] text-[var(--text-main)]"
       >
         {text}
+        <span className="text-[var(--text-dim)] mx-[1vw]">•</span>
       </span>
     ));
+
+  // Rotating "Available" badge SVG text
+  const badgeText = "AVAILABLE FOR WORK • OPEN TO OPPORTUNITIES • ";
 
   return (
     <section
@@ -49,40 +59,98 @@ function Introduction() {
       className="relative min-h-screen w-full flex flex-col justify-between overflow-hidden bg-[var(--bg-base)]"
     >
       {/* ===== HERO CONTENT ===== */}
-      <div className="flex-1 flex flex-col justify-center relative pt-28 md:pt-36">
+      <motion.div
+        className="flex-1 flex flex-col justify-center relative pt-28 md:pt-36"
+        style={{ y: textY, opacity: textOpacity }}
+      >
         {/* Main Heading */}
-        <motion.div
-          className="container-custom"
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-        >
+        <div className="container-custom">
           {/* Subtitle */}
-          <motion.div variants={fadeUp} className="mb-6 md:mb-8">
-            <span className="text-xs md:text-sm tracking-[0.3em] uppercase text-[var(--text-muted)] font-medium">
-              Full Stack Developer — Available for work
+          <motion.div
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            className="mb-6 md:mb-8"
+          >
+            <span className="text-xs md:text-sm tracking-[0.3em] uppercase text-[var(--text-muted)] font-medium inline-flex items-center gap-3">
+              <motion.span
+                className="inline-block w-8 h-px bg-[var(--text-muted)]"
+                initial={{ scaleX: 0 }}
+                animate={{ scaleX: 1 }}
+                transition={{ duration: 0.8, delay: 0.6 }}
+                style={{ transformOrigin: "left" }}
+              />
+              Full Stack Developer
             </span>
           </motion.div>
 
-          {/* Name - Massive Typography */}
-          <div className="overflow-hidden">
-            <motion.h1
-              variants={lineVariants}
-              className="text-[16vw] md:text-[11vw] font-['Anton'] uppercase leading-[0.88] tracking-tight"
-            >
-              Saviyo
-            </motion.h1>
+          {/* Name - Split character animation */}
+          <div className="overflow-hidden" style={{ perspective: "1000px" }}>
+            <div className="flex flex-wrap">
+              {nameFirstLine.split("").map((char, i) => (
+                <motion.span
+                  key={`first-${i}`}
+                  custom={i}
+                  variants={charVariants}
+                  initial="hidden"
+                  animate="visible"
+                  className="text-[16vw] md:text-[11vw] font-['Anton'] uppercase leading-[0.88] tracking-tight inline-block"
+                  style={{ transformOrigin: "bottom center" }}
+                >
+                  {char}
+                </motion.span>
+              ))}
+            </div>
           </div>
-          <div className="overflow-hidden">
-            <motion.h1
-              variants={lineVariants}
-              className="text-[16vw] md:text-[11vw] font-['Anton'] uppercase leading-[0.88] tracking-tight md:ml-[15vw]"
-            >
-              George
-            </motion.h1>
+
+          <div className="overflow-hidden md:ml-[15vw]" style={{ perspective: "1000px" }}>
+            <div className="flex flex-wrap">
+              {nameSecondLine.split("").map((char, i) => (
+                <motion.span
+                  key={`second-${i}`}
+                  custom={i + nameFirstLine.length}
+                  variants={charVariants}
+                  initial="hidden"
+                  animate="visible"
+                  className="text-[16vw] md:text-[11vw] font-['Anton'] uppercase leading-[0.88] tracking-tight inline-block"
+                  style={{ transformOrigin: "bottom center" }}
+                >
+                  {char}
+                </motion.span>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Rotating badge */}
+        <motion.div
+          className="absolute top-32 right-8 md:top-40 md:right-20 w-24 h-24 md:w-32 md:h-32"
+          initial={{ opacity: 0, scale: 0 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 1.5, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <svg
+            viewBox="0 0 200 200"
+            className="w-full h-full rotate-badge"
+          >
+            <defs>
+              <path
+                id="circlePath"
+                d="M 100, 100 m -75, 0 a 75,75 0 1,1 150,0 a 75,75 0 1,1 -150,0"
+              />
+            </defs>
+            <text className="fill-[var(--text-muted)]" style={{ fontSize: "14px", letterSpacing: "3px", fontFamily: "Inter, sans-serif", textTransform: "uppercase" }}>
+              <textPath xlinkHref="#circlePath">
+                {badgeText}
+              </textPath>
+            </text>
+          </svg>
+          {/* Center dot */}
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="w-3 h-3 rounded-full bg-green-400 animate-pulse" />
           </div>
         </motion.div>
-      </div>
+      </motion.div>
 
       {/* ===== MARQUEE STRIP ===== */}
       <div className="border-t border-[var(--border-subtle)] py-4 md:py-6 overflow-hidden">
@@ -92,8 +160,8 @@ function Introduction() {
       {/* ===== BOTTOM INFO BAR ===== */}
       <motion.div
         className="container-custom py-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-t border-[var(--border-subtle)]"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 1.5, duration: 0.8 }}
       >
         <p className="text-sm text-[var(--text-muted)] max-w-md leading-relaxed">

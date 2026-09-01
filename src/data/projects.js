@@ -15,6 +15,7 @@ export const projects = [
     description: "10+ ERP modules (Product, Inventory, Billing, POS), 40+ reusable React components, 20+ REST APIs via TanStack React Query, barcode generation + thermal printing.",
     tags: ["React", "TanStack React Query", "Tailwind CSS", "REST API"],
     liveUrl: "https://app.erpgen.com/auth/login",
+    image: "erp.png", // Add your image import here (e.g. image: myImage)
     featured: true,
   },
   {
@@ -25,6 +26,7 @@ export const projects = [
     company: "D3innovatives",
     description: "Desktop printing utility bridging ERP/POS apps and thermal printers; WebSocket-based printing, printer discovery, USB/network receipt printing; packaged as a Windows .exe with PyInstaller.",
     tags: ["Python", "WebSocket", "PyInstaller", "Desktop"],
+    image: "",
     featured: false,
   },
   {
@@ -36,6 +38,7 @@ export const projects = [
     description: "Full Learning Management System built solo with Next.js: courses, learning materials, assignments, assessments, progress tracking, student–faculty messaging.",
     tags: ["Next.js", "React", "LMS"],
     liveUrl: "https://betterinu-admin-v1-jj9b.vercel.app/admin/loginext",
+    image: "lms.jpeg",
     featured: false,
   },
   {
@@ -46,6 +49,7 @@ export const projects = [
     company: "Irohub Infotech",
     description: "MERN CRM with JWT auth, RESTful APIs for clients/users/business data, interactive dashboards, MongoDB schema design.",
     tags: ["MongoDB", "Express", "React", "Node.js", "JWT"],
+    image: "",
     featured: false,
   },
   {
@@ -58,6 +62,7 @@ export const projects = [
     "Offline-first personal money tracking and automatic expense management app built with Flutter, Dart, Riverpod and Drift/SQLite. Includes automatic SMS/notification transaction detection, duplicate detection, smart categorization, balance tracking, budgets, analytics, search, backup and restore.",
   tags: ["Flutter", "Dart", "Riverpod", "Drift", "SQLite"],
   liveUrl: "https://github.com/saviyo9037/money-tracking-app",
+  image: "moneytrac.jpeg",
   featured: true,
 },
  {
@@ -70,8 +75,31 @@ export const projects = [
       "Enterprise Learning Management and Academic ERP System with AI-powered study planning, student, faculty and admin portals, placement ERP, ATS resume matching, fees and EMI management, biometric attendance, assignments, exams and analytics.",
     tags: ["Next.js 15", "React 19", "TypeScript", "Tailwind CSS"],
     liveUrl: "https://github.com/saviyo9037/lms",
+    image: "apzxrtra.png",
     featured: true,
   },
+  {
+  id: "nova-voice-os",
+  title: "NOVA Voice OS",
+  category: "personal",
+  categoryLabel: "Personal Project",
+  company: null,
+  description:
+    "A modular AI-powered voice operating system and speech orchestrator with real-time speech-to-text, LLM-based intent processing, multilingual text-to-speech, offline NLP fallback, and an extensible voice plugin architecture.",
+  tags: [
+    "React",
+    "TypeScript",
+    "Node.js",
+    "Express",
+    "Sarvam AI",
+    "OpenAI",
+    "Framer Motion",
+  ],
+  liveUrl: "https://github.com/saviyo9037/speech-ai",
+  githubUrl: "https://github.com/saviyo9037/speech-ai",
+  image: "",
+  featured: true,
+},
   {
     id: "rabbit-ecommerce",
     title: "Rabbit-Ecommerce",
@@ -81,6 +109,7 @@ export const projects = [
     description: "Full-stack e-commerce platform: product filtering, auth, cart, REST APIs for products/orders.",
     tags: ["MERN", "E-commerce", "REST API"],
     liveUrl: "https://rabbit-h7kc.vercel.app/",
+    image: "rabbit.png",
     featured: false,
   },
   {
@@ -92,17 +121,19 @@ export const projects = [
     description: "Healthcare app: role-based access, appointment management, in-app messaging, REST APIs for patients/appointments.",
     tags: ["React", "Healthcare", "Role-based Auth"],
     liveUrl: "https://hospital-frontend-phi-sandy.vercel.app",
+    image: "hospital.png",
     featured: false,
   },
-  {
-    id: "portfolio-v1",
-    title: "Portfolio (v1)",
-    category: "personal",
-    categoryLabel: "Personal Project",
-    company: null,
-    description: "Earlier personal portfolio, React.js + Tailwind CSS.",
-    tags: ["React.js", "Tailwind CSS"],
-    liveUrl: "https://saviyogeorge.vercel.app",
-    featured: false,
-  },
+  // {
+  //   id: "portfolio-v1",
+  //   title: "Portfolio (v1)",
+  //   category: "personal",
+  //   categoryLabel: "Personal Project",
+  //   company: null,
+  //   description: "Earlier personal portfolio, React.js + Tailwind CSS.",
+  //   tags: ["React.js", "Tailwind CSS"],
+  //   liveUrl: "https://saviyogeorge.vercel.app",
+  //   image: "",
+  //   featured: false,
+  // },
 ];
