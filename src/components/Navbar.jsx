@@ -1,16 +1,13 @@
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import React from "react";
+import { motion } from "framer-motion";
 
 function Navbar() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = React.useState(false);
 
   const navItems = [
-    { href: "#introduction", label: "HOME" },
-    { href: "#skills", label: "SKILLS" },
-    { href: "#experience", label: "EXPERIENCE" },
-    { href: "#education", label: "EDUCATION" },
-    { href: "#projects", label: "PROJECTS" },
-    { href: "#contact", label: "CONTACT" },
+    { href: "#about", label: "About" },
+    { href: "#projects", label: "Projects" },
+    { href: "#contact", label: "Contact" },
   ];
 
   const handleScroll = (id) => {
@@ -21,80 +18,96 @@ function Navbar() {
     }
   };
 
-  const mobileMenuVariants = {
-    hidden: { opacity: 0, y: -20 },
-    visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 120, damping: 20 } },
-    exit: { opacity: 0, y: -20 },
-  };
-
   return (
-    <nav className="fixed top-0 z-50 w-full bg-[#09090B] border-b border-[#18181B] font-mono text-sm shadow-md">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
-        {/* Brand */}
-        <motion.div
-          className="text-lg sm:text-xl font-bold cursor-pointer text-[#FAFAFA] flex items-center gap-2"
-          onClick={() => handleScroll("introduction")}
-          whileHover={{ opacity: 0.8 }}
-        >
-          <span className="text-cyan cursor-blink">&gt;</span> SAVIYO GEORGE
-        </motion.div>
+    <>
+      <nav className="fixed top-0 w-full z-50 mix-blend-difference text-white">
+        <div className="container-custom py-6 md:py-8 flex items-center justify-between">
+          {/* Brand */}
+          <motion.a
+            href="#introduction"
+            onClick={(e) => {
+              e.preventDefault();
+              handleScroll("introduction");
+            }}
+            className="flex flex-col leading-[0.85] cursor-pointer"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+          >
+            <span className="text-2xl md:text-3xl font-['Anton'] uppercase tracking-tight">
+              Saviyo
+            </span>
+            <span className="text-2xl md:text-3xl font-['Anton'] uppercase tracking-tight ml-6 md:ml-8">
+              George
+            </span>
+          </motion.a>
 
-        {/* Desktop Menu */}
-        <ul className="hidden md:flex items-center gap-6">
-          {navItems.map((item) => (
-            <li key={item.href}>
+          {/* Desktop Nav */}
+          <motion.div
+            className="hidden md:flex items-center gap-10"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            {navItems.map((item, i) => (
               <a
+                key={item.href}
                 href={item.href}
                 onClick={(e) => {
                   e.preventDefault();
                   handleScroll(item.href.substring(1));
                 }}
-                className="text-[#A1A1AA] hover:text-[#00F0FF] transition-colors relative group uppercase tracking-widest"
+                className="link-underline text-sm uppercase tracking-[0.15em] font-medium hover:opacity-60 transition-opacity"
               >
                 {item.label}
               </a>
-            </li>
-          ))}
-        </ul>
-
-        {/* Mobile Menu Button */}
-        <button
-          onClick={() => setIsOpen(!isOpen)}
-          className="md:hidden text-[#00F0FF] p-2"
-          aria-label="Toggle Menu"
-        >
-          {isOpen ? "[ X ]" : "[ = ]"}
-        </button>
-      </div>
-
-      {/* Mobile Menu */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.ul
-            variants={mobileMenuVariants}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-            className="md:hidden absolute top-full left-0 w-full bg-[#18181B] border-b border-white/5 font-mono text-center"
-          >
-            {navItems.map((item) => (
-              <li key={item.href} className="border-b border-white/5 last:border-0">
-                <a
-                  href={item.href}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handleScroll(item.href.substring(1));
-                  }}
-                  className="block px-6 py-4 text-[#A1A1AA] hover:text-[#00F0FF] hover:bg-black/20 transition-all uppercase tracking-widest"
-                >
-                  {item.label}
-                </a>
-              </li>
             ))}
-          </motion.ul>
-        )}
-      </AnimatePresence>
-    </nav>
+          </motion.div>
+
+          {/* Mobile Toggle */}
+          <motion.button
+            onClick={() => setIsOpen(!isOpen)}
+            className="md:hidden text-sm uppercase tracking-[0.15em] font-medium"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3 }}
+          >
+            {isOpen ? "Close" : "Menu"}
+          </motion.button>
+        </div>
+      </nav>
+
+      {/* Mobile Overlay */}
+      <div
+        className={`fixed inset-0 z-40 bg-[var(--bg-base)] flex flex-col items-start justify-center px-10 transition-all duration-700 ease-[cubic-bezier(0.76,0,0.24,1)] ${
+          isOpen
+            ? "opacity-100 pointer-events-auto"
+            : "opacity-0 pointer-events-none"
+        }`}
+      >
+        <nav className="flex flex-col gap-6">
+          {navItems.map((item, i) => (
+            <motion.a
+              key={item.href}
+              href={item.href}
+              onClick={(e) => {
+                e.preventDefault();
+                handleScroll(item.href.substring(1));
+              }}
+              className="text-5xl font-['Anton'] uppercase tracking-tight hover:opacity-50 transition-opacity"
+              initial={false}
+              animate={
+                isOpen
+                  ? { y: 0, opacity: 1, transition: { delay: 0.1 + i * 0.08 } }
+                  : { y: 30, opacity: 0 }
+              }
+            >
+              {item.label}
+            </motion.a>
+          ))}
+        </nav>
+      </div>
+    </>
   );
 }
 

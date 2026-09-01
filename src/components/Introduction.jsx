@@ -1,59 +1,127 @@
-import React from "react";
-import SocialIcons from "./SocialIcons";
-import ActionButtons from "./ActionButtons";
-import { motion } from "framer-motion";
+import React, { useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 
 function Introduction() {
+  const sectionRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end start"],
+  });
+
+  // Stagger text reveal
   const containerVariants = {
-    hidden: { opacity: 0 },
+    hidden: {},
     visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.15, delayChildren: 0.1 },
+      transition: { staggerChildren: 0.15, delayChildren: 0.3 },
     },
   };
 
-  const itemVariants = {
-    hidden: { opacity: 0, y: 15 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
+  const lineVariants = {
+    hidden: { y: "110%" },
+    visible: {
+      y: "0%",
+      transition: { duration: 1, ease: [0.76, 0, 0.24, 1] },
+    },
   };
 
-  return (
-    <section className="min-h-screen flex items-center justify-center relative overflow-hidden bg-[#09090B]">
-      {/* Decorative scanline background */}
-      <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'linear-gradient(transparent 50%, rgba(0,0,0,0.25) 50%)', backgroundSize: '100% 4px' }} />
-      
-      <motion.div
-        className="max-w-7xl mx-auto px-6 py-20 relative z-10 flex flex-col items-center justify-center"
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
+  const fadeUp = {
+    hidden: { opacity: 0, y: 30 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] },
+    },
+  };
+
+  const marqueeItems = (text, count = 8) =>
+    [...Array(count)].map((_, i) => (
+      <span
+        key={i}
+        className="text-[18vw] md:text-[12vw] font-['Anton'] uppercase leading-[0.9] tracking-tight whitespace-nowrap px-[2vw]"
       >
-        {/* CENTERED CONTENT */}
-        <motion.div className="w-full max-w-4xl flex flex-col items-center text-center" variants={itemVariants}>
-          <motion.p className="font-mono text-[#00F0FF] mb-2 text-sm md:text-base" variants={itemVariants}>
-            SYS.INIT // USER DETECTED
-          </motion.p>
-          
-          <motion.h1 className="text-4xl sm:text-5xl md:text-7xl font-bold mb-4 font-mono tracking-tighter" variants={itemVariants}>
-            SAVIYO GEORGE
-          </motion.h1>
-          
-          <motion.h2 className="text-lg sm:text-xl md:text-2xl font-semibold text-[#FFB000] mb-8 font-mono" variants={itemVariants}>
-            Full Stack Developer | MERN Stack | React.js | Node.js | PHP
-          </motion.h2>
+        {text}
+      </span>
+    ));
 
-          <motion.p className="text-base sm:text-lg md:text-xl text-[#A1A1AA] mb-12 leading-relaxed" variants={itemVariants}>
-            As a Full Stack Developer specializing in the MERN stack, I excel in building responsive and scalable web applications. With hands-on experience integrating front-end and back-end technologies, I've contributed to real-world applications through project-based training. My technical skills, paired with a commitment to continuous learning, let me deliver effective solutions.
-          </motion.p>
+  return (
+    <section
+      ref={sectionRef}
+      className="relative min-h-screen w-full flex flex-col justify-between overflow-hidden bg-[var(--bg-base)]"
+    >
+      {/* ===== HERO CONTENT ===== */}
+      <div className="flex-1 flex flex-col justify-center relative pt-28 md:pt-36">
+        {/* Main Heading */}
+        <motion.div
+          className="container-custom"
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          {/* Subtitle */}
+          <motion.div variants={fadeUp} className="mb-6 md:mb-8">
+            <span className="text-xs md:text-sm tracking-[0.3em] uppercase text-[var(--text-muted)] font-medium">
+              Full Stack Developer — Available for work
+            </span>
+          </motion.div>
 
-          <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-center justify-center gap-8 w-full">
-            <ActionButtons />
-          </motion.div>
-          
-          <motion.div variants={itemVariants} className="mt-8">
-             <SocialIcons />
-          </motion.div>
+          {/* Name - Massive Typography */}
+          <div className="overflow-hidden">
+            <motion.h1
+              variants={lineVariants}
+              className="text-[16vw] md:text-[11vw] font-['Anton'] uppercase leading-[0.88] tracking-tight"
+            >
+              Saviyo
+            </motion.h1>
+          </div>
+          <div className="overflow-hidden">
+            <motion.h1
+              variants={lineVariants}
+              className="text-[16vw] md:text-[11vw] font-['Anton'] uppercase leading-[0.88] tracking-tight md:ml-[15vw]"
+            >
+              George
+            </motion.h1>
+          </div>
         </motion.div>
+      </div>
+
+      {/* ===== MARQUEE STRIP ===== */}
+      <div className="border-t border-[var(--border-subtle)] py-4 md:py-6 overflow-hidden">
+        <div className="marquee-track">{marqueeItems("MERN Stack")}{marqueeItems("MERN Stack")}</div>
+      </div>
+
+      {/* ===== BOTTOM INFO BAR ===== */}
+      <motion.div
+        className="container-custom py-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-t border-[var(--border-subtle)]"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.5, duration: 0.8 }}
+      >
+        <p className="text-sm text-[var(--text-muted)] max-w-md leading-relaxed">
+          Crafting responsive, scalable web applications with clean architecture and pixel-perfect interfaces.
+        </p>
+        <div className="flex items-center gap-3">
+          <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+          <span className="text-xs tracking-[0.2em] uppercase text-[var(--text-muted)]">
+            Based in Kerala, India
+          </span>
+        </div>
+      </motion.div>
+
+      {/* Scroll Indicator */}
+      <motion.div
+        className="absolute bottom-32 md:bottom-24 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 2, duration: 0.6 }}
+      >
+        <motion.div
+          className="w-[1px] h-12 bg-gradient-to-b from-[var(--text-muted)] to-transparent origin-top"
+          animate={{ scaleY: [1, 0.3, 1] }}
+          transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <span className="text-[10px] tracking-[0.3em] uppercase text-[var(--text-dim)]">
+          Scroll
+        </span>
       </motion.div>
     </section>
   );

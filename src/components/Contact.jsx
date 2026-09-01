@@ -1,93 +1,192 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import SocialIcons from "./SocialIcons";
-import saviyo from "../assets/saviyo.jpeg";
+import { FiMail, FiPhone, FiCopy, FiCheck } from "react-icons/fi";
 
 function Contact() {
-  const [showEmail, setShowEmail] = useState(false);
-  const [showPhone, setShowPhone] = useState(false);
+  const [copiedEmail, setCopiedEmail] = useState(false);
+  const [copiedPhone, setCopiedPhone] = useState(false);
+
+  const copyToClipboard = (text, type) => {
+    navigator.clipboard.writeText(text);
+    if (type === "email") {
+      setCopiedEmail(true);
+      setTimeout(() => setCopiedEmail(false), 2000);
+    } else {
+      setCopiedPhone(true);
+      setTimeout(() => setCopiedPhone(false), 2000);
+    }
+  };
+
+  const fadeUp = {
+    hidden: { opacity: 0, y: 40 },
+    visible: (i = 0) => ({
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.8, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] },
+    }),
+  };
+
+  const marqueeItems = (text, count = 6) =>
+    [...Array(count)].map((_, i) => (
+      <span
+        key={i}
+        className="text-[14vw] md:text-[10vw] font-['Anton'] uppercase leading-[0.9] tracking-tight whitespace-nowrap px-[2vw] text-[var(--text-main)]"
+      >
+        {text}
+      </span>
+    ));
 
   return (
-    <section className="relative bg-[#09090B] py-24 px-6 overflow-hidden">
-      <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-16">
-        
-        <div className="md:w-2/3 text-center md:text-left">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
+    <section className="bg-[var(--bg-base)] border-t border-[var(--border-subtle)]">
+      <div className="container-custom section-padding">
+        {/* Section Label */}
+        <motion.div
+          variants={fadeUp}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          className="flex items-center gap-4 mb-16 md:mb-24"
+        >
+          <span className="text-xs tracking-[0.3em] uppercase text-[var(--text-muted)] font-medium">
+            06
+          </span>
+          <div className="divider flex-1" />
+          <span className="text-xs tracking-[0.3em] uppercase text-[var(--text-muted)] font-medium">
+            Contact
+          </span>
+        </motion.div>
+
+        {/* Big CTA Heading */}
+        <div className="overflow-hidden mb-12 md:mb-16">
+          <motion.h2
+            className="text-5xl md:text-7xl lg:text-[8vw] font-['Anton'] uppercase leading-[0.9]"
+            initial={{ y: "100%" }}
+            whileInView={{ y: "0%" }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
           >
-            <h1 className="text-4xl md:text-5xl font-bold mb-6 font-mono">
-              SYS.OPEN<span className="text-cyan">("CONTACT")</span>
-            </h1>
-
-         
-
-            {/* Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start mb-8">
-              <button
-                onClick={() => setShowEmail(!showEmail)}
-                className="btn-tech px-6 py-3 rounded-sm"
-              >
-                [ DECRYPT_EMAIL ]
-              </button>
-
-              <button
-                onClick={() => setShowPhone(!showPhone)}
-                className="btn-tech px-6 py-3 rounded-sm"
-              >
-                [ DECRYPT_PHONE ]
-              </button>
-            </div>
-
-            {/* Reveal Section */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start mb-8 min-h-[60px]">
-              {showEmail && (
-                <motion.div
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  className="bg-[#18181B] border-l-2 border-cyan px-6 py-3 font-mono text-cyan"
-                >
-                  saviyogeorge903734@gmail.com
-                </motion.div>
-              )}
-
-              {showPhone && (
-                <motion.div
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  className="bg-[#18181B] border-l-2 border-amber px-6 py-3 font-mono text-amber"
-                >
-                  +91 9037348073
-                </motion.div>
-              )}
-            </div>
-
-            <SocialIcons />
-          </motion.div>
+            Let's Work
+            <br />
+            Together
+          </motion.h2>
         </div>
 
-        {/* Image */}
-        <motion.div 
-          className="md:w-1/3 flex justify-center"
-          initial={{ opacity: 0, scale: 0.9 }}
-          whileInView={{ opacity: 1, scale: 1 }}
+        <motion.p
+          className="text-base md:text-lg text-[var(--text-muted)] leading-[1.8] max-w-xl mb-12"
+          variants={fadeUp}
+          custom={1}
+          initial="hidden"
+          whileInView="visible"
           viewport={{ once: true }}
         >
-          <div className="relative p-2 border border-[#18181B] bg-[#18181B]">
-            {/* Tech corner accents */}
-            <div className="absolute -top-1 -left-1 w-2 h-2 bg-[#00F0FF]" />
-            <div className="absolute -bottom-1 -right-1 w-2 h-2 bg-[#00F0FF]" />
-            
-            <img
-              src={saviyo}
-              alt="Saviyo"
-              className="w-56 h-56 md:w-72 md:h-72 object-cover filter grayscale contrast-125 hover:grayscale-0 transition-all duration-500"
-            />
+          Currently open to new opportunities. Feel free to reach out for
+          collaborations, freelance projects, or just a friendly chat.
+        </motion.p>
+
+        {/* Contact Info Grid */}
+        <motion.div
+          className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 mb-16"
+          variants={fadeUp}
+          custom={2}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+        >
+          {/* Email */}
+          <div className="border border-[var(--border-subtle)] p-6 md:p-8 group hover:border-[var(--border-hover)] transition-colors duration-500">
+            <div className="flex items-center justify-between mb-4">
+              <span className="text-xs tracking-[0.2em] uppercase text-[var(--text-dim)]">
+                Email
+              </span>
+              <FiMail className="text-[var(--text-dim)]" />
+            </div>
+            <a
+              href="mailto:saviyogeorge903734@gmail.com"
+              className="text-lg md:text-xl font-medium break-all hover:text-[var(--text-muted)] transition-colors block mb-4"
+            >
+              saviyogeorge903734@gmail.com
+            </a>
+            <button
+              onClick={() =>
+                copyToClipboard("saviyogeorge903734@gmail.com", "email")
+              }
+              className="text-xs tracking-[0.15em] uppercase text-[var(--text-dim)] hover:text-[var(--text-main)] transition-colors flex items-center gap-2"
+            >
+              {copiedEmail ? (
+                <>
+                  <FiCheck className="text-sm" /> Copied
+                </>
+              ) : (
+                <>
+                  <FiCopy className="text-sm" /> Copy
+                </>
+              )}
+            </button>
+          </div>
+
+          {/* Phone */}
+          <div className="border border-[var(--border-subtle)] p-6 md:p-8 group hover:border-[var(--border-hover)] transition-colors duration-500">
+            <div className="flex items-center justify-between mb-4">
+              <span className="text-xs tracking-[0.2em] uppercase text-[var(--text-dim)]">
+                Phone
+              </span>
+              <FiPhone className="text-[var(--text-dim)]" />
+            </div>
+            <a
+              href="tel:+919037348073"
+              className="text-lg md:text-xl font-medium hover:text-[var(--text-muted)] transition-colors block mb-4"
+            >
+              +91 9037 348 073
+            </a>
+            <button
+              onClick={() => copyToClipboard("+919037348073", "phone")}
+              className="text-xs tracking-[0.15em] uppercase text-[var(--text-dim)] hover:text-[var(--text-main)] transition-colors flex items-center gap-2"
+            >
+              {copiedPhone ? (
+                <>
+                  <FiCheck className="text-sm" /> Copied
+                </>
+              ) : (
+                <>
+                  <FiCopy className="text-sm" /> Copy
+                </>
+              )}
+            </button>
           </div>
         </motion.div>
 
+        {/* Social Icons */}
+        <motion.div
+          variants={fadeUp}
+          custom={3}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          className="mb-20"
+        >
+          <SocialIcons />
+        </motion.div>
+      </div>
+
+      {/* Marquee Footer Strip */}
+      <div className="border-t border-[var(--border-subtle)] py-6 overflow-hidden">
+        <div className="marquee-track-reverse">
+          {marqueeItems("Say Hello")}
+          {marqueeItems("Say Hello")}
+        </div>
+      </div>
+
+      {/* Footer */}
+      <div className="container-custom py-8 border-t border-[var(--border-subtle)]">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-xs text-[var(--text-dim)] tracking-widest uppercase">
+            © 2026 Saviyo George
+          </p>
+          <p className="text-xs text-[var(--text-dim)] tracking-wider">
+            Built with React & Framer Motion
+          </p>
+        </div>
       </div>
     </section>
   );

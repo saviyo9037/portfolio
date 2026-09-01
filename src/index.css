@@ -1,38 +1,57 @@
-/* Import Google Fonts - Space Mono for Display, Inter for Body */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@300;400;500;600;700&display=swap');
 
 @import "tailwindcss";
 
 :root {
-  --bg-base: #09090B;
-  --bg-surface: #18181B;
-  --bg-surface-hover: #27272A;
-  --accent-cyan: #00F0FF;
-  --accent-amber: #FFB000;
-  --text-main: #FAFAFA;
-  --text-muted: #A1A1AA;
-  --border-subtle: rgba(255, 255, 255, 0.1);
+  --bg-base: #0E0E0E;
+  --bg-surface: #161616;
+  --bg-elevated: #1E1E1E;
+  --text-main: #EDEDED;
+  --text-muted: #888888;
+  --text-dim: #555555;
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-hover: rgba(255, 255, 255, 0.15);
+  --accent: #EDEDED;
 }
 
-/* Base styles */
+/* ===== BASE ===== */
 html,
 body,
 #root {
   background-color: var(--bg-base);
   color: var(--text-main);
   font-family: 'Inter', sans-serif;
-  scroll-behavior: smooth;
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Headings use Space Mono */
-h1, h2, h3, h4, h5, h6, .font-mono {
-  font-family: 'Space Mono', monospace;
+@media (pointer: fine) {
+  body, a, button, input, textarea, select {
+    cursor: none !important;
+  }
 }
 
-/* Custom scrollbar - Tech style */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Anton', sans-serif;
+  text-transform: uppercase;
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+}
+
+::selection {
+  background: var(--text-main);
+  color: var(--bg-base);
+}
+
+/* ===== SCROLLBAR ===== */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 4px;
 }
 
 ::-webkit-scrollbar-track {
@@ -40,182 +59,172 @@ h1, h2, h3, h4, h5, h6, .font-mono {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--bg-surface-hover);
-  border-radius: 0px;
+  background: var(--text-dim);
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--accent-cyan);
+  background: var(--text-muted);
 }
 
-/* Thermal Card Base */
-.thermal-card {
-  background-color: var(--bg-surface);
-  border: 1px solid var(--border-subtle);
-  position: relative;
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+/* ===== LAYOUT ===== */
+.section-padding {
+  @apply py-24 md:py-40;
 }
 
-/* The Perforated Receipt Edge Effect */
-.receipt-edge {
-  position: relative;
-  padding-bottom: 24px; /* Space for the jagged edge */
+.container-custom {
+  @apply max-w-[1400px] mx-auto px-5 md:px-10;
 }
 
-.receipt-edge::after {
-  content: '';
-  position: absolute;
-  bottom: -6px; /* Hangs off the bottom */
-  left: 0;
-  width: 100%;
-  height: 12px;
-  background-size: 20px 12px; /* size of each tooth */
-  background-repeat: repeat-x;
-  background-image: radial-gradient(
-    circle at 10px 12px, 
-    transparent 12px, 
-    var(--bg-surface) 13px
-  );
-  transition: background-image 0.3s ease;
-  z-index: 10;
+/* ===== INFINITE MARQUEE (CSS-based for silky performance) ===== */
+@keyframes marquee-scroll {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
 }
 
-/* Thermal Card Hover Effects */
-.thermal-card:hover {
-  transform: translateY(-4px);
-  border-color: rgba(0, 240, 255, 0.3);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 15px rgba(0, 240, 255, 0.1);
+@keyframes marquee-scroll-reverse {
+  0% {
+    transform: translateX(-50%);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
 }
 
-.thermal-card:hover.receipt-edge::after {
-  background-image: radial-gradient(
-    circle at 10px 12px, 
-    transparent 12px, 
-    var(--bg-surface-hover) 13px /* Slightly lighter tooth */
-  );
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee-scroll 20s linear infinite;
 }
 
-.thermal-card:hover {
-  background-color: var(--bg-surface-hover);
+.marquee-track-reverse {
+  display: flex;
+  width: max-content;
+  animation: marquee-scroll-reverse 25s linear infinite;
 }
 
-/* Barcode Divider */
-.barcode-divider {
-  height: 40px;
-  width: 100%;
-  max-width: 200px;
-  margin: 2rem 0;
-  background-image: linear-gradient(
-    to right,
-    var(--text-muted) 0%, var(--text-muted) 10%,
-    transparent 10%, transparent 15%,
-    var(--text-muted) 15%, var(--text-muted) 20%,
-    transparent 20%, transparent 30%,
-    var(--text-muted) 30%, var(--text-muted) 45%,
-    transparent 45%, transparent 50%,
-    var(--text-muted) 50%, var(--text-muted) 55%,
-    transparent 55%, transparent 65%,
-    var(--text-muted) 65%, var(--text-muted) 80%,
-    transparent 80%, transparent 85%,
-    var(--accent-cyan) 85%, var(--accent-cyan) 95%,
-    transparent 95%, transparent 100%
-  );
-  opacity: 0.5;
-  transition: opacity 0.3s ease;
+.marquee-track:hover,
+.marquee-track-reverse:hover {
+  animation-play-state: paused;
 }
 
-.barcode-divider:hover {
-  opacity: 1;
+/* ===== REVEAL ANIMATIONS ===== */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-/* Text Highlights */
-.text-cyan {
-  color: var(--accent-cyan);
+@keyframes clip-reveal {
+  from {
+    clip-path: inset(100% 0 0 0);
+  }
+
+  to {
+    clip-path: inset(0 0 0 0);
+  }
 }
 
-.text-amber {
-  color: var(--accent-amber);
+@keyframes line-grow {
+  from {
+    transform: scaleX(0);
+  }
+
+  to {
+    transform: scaleX(1);
+  }
 }
 
-/* Glow button */
-.btn-tech {
-  background: transparent;
-  border: 1px solid var(--accent-cyan);
-  color: var(--accent-cyan);
-  font-family: 'Space Mono', monospace;
-  transition: all 0.2s ease;
+@keyframes text-slide-up {
+  from {
+    transform: translateY(110%);
+  }
+
+  to {
+    transform: translateY(0);
+  }
+}
+
+/* ===== BUTTON ===== */
+.btn-minimal {
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  font-size: 0.8125rem;
+  letter-spacing: 0.08em;
+  padding: 0.875rem 2rem;
+  border: 1px solid var(--border-hover);
+  background: transparent;
+  color: var(--text-main);
+  border-radius: 999px;
+  cursor: pointer;
   position: relative;
   overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.btn-tech:hover {
-  background: rgba(0, 240, 255, 0.1);
-  box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
-}
-
-.btn-tech::before {
+.btn-minimal::before {
   content: '';
   position: absolute;
   top: 0;
-  left: -100%;
+  left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.2), transparent);
-  transition: left 0.5s ease;
+  background: var(--text-main);
+  transform: translateY(100%);
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.btn-tech:hover::before {
-  left: 100%;
-}
-
-.btn-tech-solid {
-  background: var(--accent-cyan);
+.btn-minimal:hover {
   color: var(--bg-base);
-  font-weight: bold;
-  border: 1px solid var(--accent-cyan);
-  font-family: 'Space Mono', monospace;
-  transition: all 0.2s ease;
-  text-transform: uppercase;
+  border-color: var(--text-main);
 }
 
-.btn-tech-solid:hover {
-  background: transparent;
-  color: var(--accent-cyan);
-  box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
+.btn-minimal:hover::before {
+  transform: translateY(0);
 }
 
-/* Section padding */
-.section-padding {
-  @apply py-16 sm:py-20 lg:py-24;
+.btn-minimal span {
+  position: relative;
+  z-index: 1;
 }
 
-/* Container */
-.container-custom {
-  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+/* ===== LINK UNDERLINE EFFECT ===== */
+.link-underline {
+  position: relative;
+  display: inline-block;
 }
 
-/* Selection color */
-::selection {
-  background: var(--accent-cyan);
-  color: var(--bg-base);
+.link-underline::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 0;
+  height: 1px;
+  background: var(--text-main);
+  transition: width 0.3s ease;
 }
 
-/* Focus states */
-:focus-visible {
-  outline: 2px solid var(--accent-cyan);
-  outline-offset: 2px;
+.link-underline:hover::after {
+  width: 100%;
 }
 
-/* Blinking cursor effect */
-.cursor-blink::after {
-  content: '_';
-  animation: blink 1s step-end infinite;
-  color: var(--accent-cyan);
-}
-
-@keyframes blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
+/* ===== HORIZONTAL RULE ===== */
+.divider {
+  width: 100%;
+  height: 1px;
+  background: var(--border-subtle);
 }

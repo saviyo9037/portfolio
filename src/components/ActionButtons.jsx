@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { FiArrowDown, FiDownload } from "react-icons/fi";
 
 function ActionButtons() {
   const handleScrollToProjects = () => {
@@ -9,16 +10,17 @@ function ActionButtons() {
   };
 
   return (
-    <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+    <div className="flex flex-col sm:flex-row gap-4 justify-center">
       
       {/* VIEW PROJECTS */}
       <motion.button
         onClick={handleScrollToProjects}
-        className="btn-tech-solid px-8 py-3.5 rounded-sm"
+        className="btn-tech-solid px-8 py-3.5 flex items-center justify-center gap-2"
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
       >
-        [ VIEW_PROJECTS ]
+        <span>VIEW PROJECTS</span>
+        <FiArrowDown className="text-sm" />
       </motion.button>
 
       {/* DOWNLOAD RESUME */}
@@ -27,11 +29,12 @@ function ActionButtons() {
         download
         target="_blank"
         rel="noopener noreferrer"
-        className="btn-tech px-8 py-3.5 rounded-sm text-center"
+        className="btn-tech px-8 py-3.5 text-center flex items-center justify-center gap-2"
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
       >
-        [ DL_RESUME ]
+        <span>DOWNLOAD CV</span>
+        <FiDownload className="text-sm" />
       </motion.a>
 
     </div>

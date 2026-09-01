@@ -7,38 +7,19 @@ import {
 
 function SocialIcons() {
   return (
-    <div className="flex gap-4 justify-center md:justify-start">
-
-      <Icon
-        href="https://github.com/saviyo9037"
-        label="GitHub"
-        external
-      >
+    <div className="flex gap-4">
+      <Icon href="https://github.com/saviyo9037" label="GitHub" external>
         <FaGithub />
       </Icon>
-
-      <Icon
-        href="https://linkedin.com/in/saviyo-george"
-        label="LinkedIn"
-        external
-      >
+      <Icon href="https://linkedin.com/in/saviyo-george" label="LinkedIn" external>
         <FaLinkedinIn />
       </Icon>
-
-      <Icon
-        href="mailto:saviyogeorge903734@gmail.com"
-        label="Email"
-      >
+      <Icon href="mailto:saviyogeorge903734@gmail.com" label="Email">
         <FaEnvelope />
       </Icon>
-
-      <Icon
-        href="tel:+919037348073"
-        label="Call"
-      >
+      <Icon href="tel:+919037348073" label="Call">
         <FaPhone />
       </Icon>
-
     </div>
   );
 }
@@ -52,8 +33,10 @@ function Icon({ children, href, label, external }) {
         rel: "noopener noreferrer",
       })}
       aria-label={label}
-      className="w-12 h-12 border border-[#00F0FF] text-[#00F0FF] rounded-sm flex items-center justify-center 
-                  text-xl cursor-pointer hover:bg-[#00F0FF]/10 transition-colors duration-300"
+      className="w-12 h-12 border border-[var(--border-subtle)] text-[var(--text-dim)]
+                 flex items-center justify-center text-lg cursor-pointer
+                 hover:bg-[var(--text-main)] hover:text-[var(--bg-base)] hover:border-[var(--text-main)]
+                 transition-all duration-300"
     >
       {children}
     </a>

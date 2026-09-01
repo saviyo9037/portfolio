@@ -3,59 +3,95 @@ import { motion } from "framer-motion";
 import { experience } from "../data/experience";
 
 function Experiences() {
-  const workExperience = experience.filter(item => item.type === "work");
+  const workExperience = experience.filter((item) => item.type === "work");
+
+  const fadeUp = {
+    hidden: { opacity: 0, y: 40 },
+    visible: (i = 0) => ({
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.7, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] },
+    }),
+  };
 
   return (
-    <section className="relative bg-[#09090B] py-24 px-6 overflow-hidden">
-      <div className="relative max-w-4xl mx-auto">
+    <section className="bg-[var(--bg-base)] border-t border-[var(--border-subtle)]">
+      <div className="container-custom section-padding">
+        {/* Section Label */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          variants={fadeUp}
+          initial="hidden"
+          whileInView="visible"
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="mb-16 flex flex-col items-center md:items-start"
+          className="flex items-center gap-4 mb-16 md:mb-24"
         >
-          <h1 className="text-3xl md:text-5xl font-bold font-mono">
-            SYS.GET<span className="text-cyan">("EXPERIENCE")</span>
-          </h1>
-          <div className="barcode-divider mt-6 self-center md:self-start" />
+          <span className="text-xs tracking-[0.3em] uppercase text-[var(--text-muted)] font-medium">
+            03
+          </span>
+          <div className="divider flex-1" />
+          <span className="text-xs tracking-[0.3em] uppercase text-[var(--text-muted)] font-medium">
+            Experience
+          </span>
         </motion.div>
 
-        <div className="flex flex-col gap-8 border-l-2 border-[#18181B] pl-6 ml-4">
+        {/* Heading */}
+        <div className="overflow-hidden mb-16 md:mb-20">
+          <motion.h2
+            className="text-5xl md:text-7xl lg:text-8xl font-['Anton'] uppercase leading-[0.9]"
+            initial={{ y: "100%" }}
+            whileInView={{ y: "0%" }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
+          >
+            Career Journey
+          </motion.h2>
+        </div>
+
+        {/* Timeline */}
+        <div className="flex flex-col">
           {workExperience.map((exp, index) => (
             <motion.div
               key={index}
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
+              variants={fadeUp}
+              custom={index}
+              initial="hidden"
+              whileInView="visible"
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="relative thermal-card receipt-edge p-6 sm:p-8"
+              className="group border-t border-[var(--border-subtle)] py-10 md:py-14 grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-10 hover:bg-[var(--bg-surface)] transition-colors duration-500 -mx-5 md:-mx-10 px-5 md:px-10"
             >
-              {/* Timeline marker */}
-              <div className="absolute w-4 h-4 rounded-full bg-[#00F0FF] -left-[35px] top-10 border-4 border-[#09090B]" />
-              
-              <div className="flex flex-col md:flex-row md:items-center justify-between mb-4 gap-2">
-                <h2 className="text-xl md:text-2xl font-bold font-mono text-[#FAFAFA]">
-                  {exp.role}
-                </h2>
-                <span className="text-sm font-mono text-[#FFB000] bg-[#FFB000]/10 px-3 py-1 rounded-sm border border-[#FFB000]/20">
+              {/* Period */}
+              <div className="md:col-span-3">
+                <span className="text-xs tracking-[0.2em] uppercase text-[var(--text-dim)] font-medium">
                   {exp.period}
                 </span>
               </div>
-              
-              <div className="flex items-center gap-2 mb-6 font-mono text-[#A1A1AA]">
-                <span className="font-semibold text-white">{exp.company}</span>
-                <span>//</span>
-                <span>{exp.location}</span>
+
+              {/* Role & Company */}
+              <div className="md:col-span-4">
+                <h3 className="text-2xl md:text-3xl font-['Anton'] uppercase leading-tight mb-2 group-hover:text-white transition-colors">
+                  {exp.role}
+                </h3>
+                <div className="flex items-center gap-2 text-sm text-[var(--text-muted)]">
+                  <span className="font-medium text-[var(--text-main)]">
+                    {exp.company}
+                  </span>
+                  <span className="text-[var(--text-dim)]">·</span>
+                  <span>{exp.location}</span>
+                </div>
               </div>
-              
-              {exp.description && (
-                <p className="text-[#A1A1AA] leading-relaxed">
-                  {exp.description}
-                </p>
-              )}
+
+              {/* Description */}
+              <div className="md:col-span-5">
+                {exp.description && (
+                  <p className="text-sm text-[var(--text-muted)] leading-[1.8]">
+                    {exp.description}
+                  </p>
+                )}
+              </div>
             </motion.div>
           ))}
+          {/* Bottom border */}
+          <div className="border-t border-[var(--border-subtle)]" />
         </div>
       </div>
     </section>

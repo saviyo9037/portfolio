@@ -1,6 +1,7 @@
 import React from "react";
 import Navbar from "../components/Navbar";
 import Introduction from "../components/Introduction";
+import About from "../components/About";
 import Skills from "../components/Skills";
 import Education from "../components/Education";
 import Experiences from "../components/Experiences";
@@ -9,14 +10,16 @@ import Contact from "../components/Contact";
 
 function Home() {
   return (
-    <div className="bg-[#09090B] text-[#FAFAFA] scroll-smooth min-h-screen">
-      {/* Fixed Navbar */}
+    <div className="bg-[var(--bg-base)] text-[var(--text-main)] min-h-screen">
       <Navbar />
 
-      {/* Sections */}
-      <main className="pt-20">
+      <main>
         <section id="introduction">
           <Introduction />
+        </section>
+
+        <section id="about">
+          <About />
         </section>
 
         <section id="skills">
@@ -26,7 +29,7 @@ function Home() {
         <section id="experience">
           <Experiences />
         </section>
-        
+
         <section id="education">
           <Education />
         </section>
