@@ -8,83 +8,59 @@ import Experiences from "../components/Experiences";
 import Projects from "../components/Projects";
 import ProjectTicker from "../components/ProjectTicker";
 import Contact from "../components/Contact";
-import StickySection from "../components/StickySection";
 import { CurvedDivider } from "../components/CurvedDivider";
 
 function Home() {
   return (
-    <div className="bg-[var(--bg-base)] text-[var(--text-main)] min-h-screen relative">
+    <div className="bg-[var(--bg-base)] text-[var(--text-main)] min-h-screen relative selection:bg-[var(--accent)] selection:text-black">
       <Navbar />
 
-      <main className="relative">
-        <StickySection
-          id="introduction"
-          zIndex={10}
-        >
+      <main className="relative bg-[var(--bg-base)]">
+        <section id="introduction" className="relative z-10 bg-[var(--bg-base)]">
           <Introduction />
-        </StickySection>
+        </section>
 
-        <StickySection
-          id="about"
-          zIndex={20}
-        >
+        <section id="about" className="relative z-20 bg-[var(--bg-base)] border-t border-[var(--border-subtle)]">
           <About />
-        </StickySection>
+        </section>
 
         {/* Curved wave transition */}
-        <div className="relative z-[25]">
+        <div className="relative z-[25] bg-[var(--bg-base)]">
           <CurvedDivider color="var(--bg-surface)" />
         </div>
 
-        <StickySection
-          id="experience"
-          zIndex={30}
-          className="shadow-[0_-20px_50px_rgba(0,0,0,0.05)] border-t border-[var(--border-subtle)]"
-        >
+        <section id="experience" className="relative z-30 bg-[var(--bg-base)] border-t border-[var(--border-subtle)]">
           <Experiences />
-        </StickySection>
+        </section>
 
-        <StickySection
-          id="skills"
-          zIndex={40}
-          className="shadow-[0_-20px_50px_rgba(0,0,0,0.05)] border-t border-[var(--border-subtle)]"
-        >
+        <section id="skills" className="relative z-40 bg-[var(--bg-base)] border-t border-[var(--border-subtle)]">
           <Skills />
-        </StickySection>
+        </section>
 
-        <StickySection
-          id="education"
-          zIndex={50}
-          className="shadow-[0_-20px_50px_rgba(0,0,0,0.05)] border-t border-[var(--border-subtle)]"
-        >
+        <section id="education" className="relative z-50 bg-[var(--bg-base)] border-t border-[var(--border-subtle)]">
           <Education />
-        </StickySection>
+        </section>
 
-        {/* Horizontal Project Ticker — Ronnsquare-style running line */}
-        <div className="relative z-[55]">
+        {/* Horizontal Project Ticker */}
+        <div className="relative z-[55] bg-[var(--bg-base)]">
           <ProjectTicker />
         </div>
 
-        <StickySection
+        <div
           id="projects"
-          zIndex={60}
-          className="shadow-[0_-20px_50px_rgba(0,0,0,0.05)] border-t border-[var(--border-subtle)]"
+          className="relative z-[60] bg-[var(--bg-base)] border-t border-[var(--border-subtle)]"
         >
           <Projects />
-        </StickySection>
+        </div>
 
         {/* Curved wave before contact */}
-        <div className="relative z-[65]">
+        <div className="relative z-[65] bg-[var(--bg-base)]">
           <CurvedDivider color="var(--bg-surface)" inverted />
         </div>
 
-        <StickySection
-          id="contact"
-          zIndex={70}
-          className="shadow-[0_-20px_50px_rgba(0,0,0,0.1)]"
-        >
+        <section id="contact" className="relative z-70 bg-[var(--bg-base)] border-t border-[var(--border-subtle)]">
           <Contact />
-        </StickySection>
+        </section>
       </main>
     </div>
   );

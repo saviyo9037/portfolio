@@ -9,9 +9,9 @@ function CustomCursor() {
   const trailPositions = useRef(Array.from({ length: 5 }, () => ({ x: 0, y: 0 })));
   const rafId = useRef(null);
 
-  // Smooth springs for cursor position
-  const cursorX = useSpring(0, { stiffness: 500, damping: 28 });
-  const cursorY = useSpring(0, { stiffness: 500, damping: 28 });
+  // Ultra-responsive springs for cursor position (eliminates mouse lag)
+  const cursorX = useSpring(0, { stiffness: 1800, damping: 65 });
+  const cursorY = useSpring(0, { stiffness: 1800, damping: 65 });
 
   // Velocity for deformation
   const mouseX = useMotionValue(0);

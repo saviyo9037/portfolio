@@ -4,58 +4,63 @@ import { motion } from "framer-motion";
 const orbs = [
   {
     size: "w-[600px] h-[600px]",
-    color: "bg-white/[0.02]",
     position: "top-[10%] -left-[200px]",
-    animation: "float-orb-1",
-    duration: "25s",
-    blur: "blur-[120px]",
+    gradient: "radial-gradient(circle, rgba(255,255,255,0.025) 0%, transparent 70%)",
   },
   {
     size: "w-[500px] h-[500px]",
-    color: "bg-white/[0.015]",
-    position: "top-[40%] -right-[150px]",
-    animation: "float-orb-2",
-    duration: "30s",
-    blur: "blur-[100px]",
+    position: "top-[45%] -right-[150px]",
+    gradient: "radial-gradient(circle, rgba(255,255,255,0.02) 0%, transparent 70%)",
   },
   {
-    size: "w-[400px] h-[400px]",
-    color: "bg-white/[0.025]",
+    size: "w-[450px] h-[450px]",
     position: "bottom-[15%] left-[20%]",
-    animation: "float-orb-3",
-    duration: "35s",
-    blur: "blur-[80px]",
-  },
-  {
-    size: "w-[350px] h-[350px]",
-    color: "bg-white/[0.01]",
-    position: "top-[60%] right-[30%]",
-    animation: "float-orb-1",
-    duration: "28s",
-    blur: "blur-[110px]",
+    gradient: "radial-gradient(circle, rgba(255,255,255,0.025) 0%, transparent 70%)",
   },
 ];
 
 function FloatingElements() {
   return (
     <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+      {/* Ambient orbs using lightweight radial gradients */}
       {orbs.map((orb, i) => (
         <div
           key={i}
-          className={`absolute rounded-full ${orb.size} ${orb.color} ${orb.position} ${orb.blur}`}
+          className={`absolute rounded-full ${orb.size} ${orb.position}`}
           style={{
-            animation: `${orb.animation} ${orb.duration} ease-in-out infinite`,
-            willChange: 'transform'
+            background: orb.gradient,
+            transform: "translateZ(0)",
           }}
         />
       ))}
 
       {/* Subtle dot grid pattern */}
       <div
-        className="absolute inset-0 opacity-[0.03]"
+        className="absolute inset-0 opacity-[0.025]"
         style={{
           backgroundImage: `radial-gradient(circle, rgba(255,255,255,0.5) 1px, transparent 1px)`,
-          backgroundSize: "40px 40px",
+          backgroundSize: "60px 60px",
+        }}
+      />
+
+      {/* Horizontal scan line — very subtle */}
+      <motion.div
+        className="absolute left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent"
+        animate={{ top: ["0%", "100%", "0%"] }}
+        transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+      />
+
+      {/* Ambient diagonal lines */}
+      <div
+        className="absolute inset-0 opacity-[0.012]"
+        style={{
+          backgroundImage: `repeating-linear-gradient(
+            -45deg,
+            transparent,
+            transparent 80px,
+            rgba(255,255,255,0.5) 80px,
+            rgba(255,255,255,0.5) 81px
+          )`,
         }}
       />
     </div>

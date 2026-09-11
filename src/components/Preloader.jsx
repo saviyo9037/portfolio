@@ -1,144 +1,88 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 function Preloader({ onComplete }) {
-  const [phase, setPhase] = useState("letters"); // letters → hold → exit
-  const name = "SAVIYO GEORGE";
-  const letters = name.split("");
+  const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    // Phase 1: Letters animate in (stagger ~80ms * 13 letters ≈ 1s + 0.6s anim)
-    const holdTimer = setTimeout(() => setPhase("hold"), 1600);
-    const exitTimer = setTimeout(() => setPhase("exit"), 2200);
-    const completeTimer = setTimeout(() => onComplete(), 3000);
+    // Fast & smooth loading process
+    const duration = 1100; // 1.1 seconds loading time
+    const intervalTime = 20;
+    const steps = duration / intervalTime;
+    let currentStep = 0;
 
-    return () => {
-      clearTimeout(holdTimer);
-      clearTimeout(exitTimer);
-      clearTimeout(completeTimer);
-    };
+    const timer = setInterval(() => {
+      currentStep++;
+      const nextProgress = Math.min(Math.floor((currentStep / steps) * 100), 100);
+      setProgress(nextProgress);
+
+      if (currentStep >= steps) {
+        clearInterval(timer);
+        setTimeout(() => {
+          onComplete();
+        }, 150);
+      }
+    }, intervalTime);
+
+    return () => clearInterval(timer);
   }, [onComplete]);
 
-  const letterVariants = {
-    hidden: {
-      opacity: 0,
-      y: 80,
-      rotateX: -90,
-    },
-    visible: (i) => ({
-      opacity: 1,
-      y: 0,
-      rotateX: 0,
-      transition: {
-        duration: 0.6,
-        delay: i * 0.08,
-        ease: [0.22, 1, 0.36, 1],
-      },
-    }),
-  };
-
-  const subtitleVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.6, delay: 1.2, ease: [0.22, 1, 0.36, 1] },
-    },
-  };
-
-  const lineVariants = {
-    hidden: { scaleX: 0 },
-    visible: {
-      scaleX: 1,
-      transition: { duration: 0.8, delay: 0.8, ease: [0.22, 1, 0.36, 1] },
-    },
-  };
-
   return (
-    <AnimatePresence>
-      {phase !== "done" && (
-        <motion.div
-          className="fixed inset-0 z-[10000] flex flex-col items-center justify-center bg-[var(--bg-base)]"
-          initial={{ y: 0 }}
-          animate={phase === "exit" ? { y: "-100%" } : { y: 0 }}
-          exit={{ y: "-100%" }}
-          transition={{
-            duration: 0.8,
-            ease: [0.76, 0, 0.24, 1],
-          }}
-        >
-          {/* Grain overlay */}
-          <div className="absolute inset-0 opacity-30 pointer-events-none"
-            style={{
-              backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E")`,
-            }}
-          />
+    <motion.div
+      className="fixed inset-0 z-[1000] flex flex-col items-center justify-center bg-[var(--bg-base)] overflow-hidden"
+      initial={{ y: "0%" }}
+      exit={{ y: "-100%" }}
+      transition={{ duration: 1.2, ease: [0.76, 0, 0.24, 1] }}
+    >
+      {/* Decorative background grid */}
+      <div
+        className="absolute inset-0 opacity-[0.03]"
+        style={{
+          backgroundImage: `radial-gradient(circle, var(--text-main) 1px, transparent 1px)`,
+          backgroundSize: "40px 40px",
+        }}
+      />
 
-          {/* Decorative line */}
+      <div className="relative z-10 flex flex-col items-center">
+        {/* Loading Counter */}
+        <div className="overflow-hidden mb-4">
           <motion.div
-            className="absolute top-1/2 left-[10%] right-[10%] h-px bg-[var(--border-subtle)] origin-center"
-            variants={lineVariants}
-            initial="hidden"
-            animate="visible"
-          />
-
-          {/* Name letters */}
-          <div className="relative z-10 flex items-center justify-center gap-[0.02em] perspective-[1000px]">
-            {letters.map((letter, i) => (
-              <motion.span
-                key={i}
-                custom={i}
-                variants={letterVariants}
-                initial="hidden"
-                animate="visible"
-                className={`text-[12vw] md:text-[8vw] font-['Anton'] uppercase leading-none tracking-tight ${
-                  letter === " " ? "mx-[2vw]" : ""
-                }`}
-                style={{ display: "inline-block", transformOrigin: "bottom center" }}
-              >
-                {letter === " " ? "\u00A0" : letter}
-              </motion.span>
-            ))}
-          </div>
-
-          {/* Subtitle */}
-          <motion.p
-            className="relative z-10 mt-6 text-xs md:text-sm tracking-[0.4em] uppercase text-[var(--text-dim)]"
-            variants={subtitleVariants}
-            initial="hidden"
-            animate="visible"
+            initial={{ y: "100%" }}
+            animate={{ y: "0%" }}
+            transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
+            className="flex items-baseline"
           >
-            Full Stack Developer
-          </motion.p>
+            <span className="text-7xl md:text-9xl font-['Anton'] text-[var(--text-main)] tabular-nums tracking-tighter">
+              {progress}
+            </span>
+            <span className="text-3xl md:text-5xl font-['Anton'] text-[var(--text-dim)] ml-2">
+              %
+            </span>
+          </motion.div>
+        </div>
 
-          {/* Bottom progress bar */}
+        {/* Loading Bar */}
+        <div className="w-64 md:w-96 h-[2px] bg-[var(--border-subtle)] relative overflow-hidden">
           <motion.div
-            className="absolute bottom-0 left-0 h-[2px] bg-[var(--text-main)]"
+            className="absolute top-0 left-0 bottom-0 bg-[var(--accent)]"
             initial={{ width: "0%" }}
-            animate={{ width: "100%" }}
-            transition={{ duration: 2.2, ease: "linear" }}
+            animate={{ width: `${progress}%` }}
+            transition={{ duration: 0.1, ease: "linear" }}
           />
+        </div>
 
-          {/* Corner decorations */}
-          <motion.span
-            className="absolute top-8 left-8 text-[10px] tracking-[0.3em] uppercase text-[var(--text-dim)]"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5 }}
-          >
-            Portfolio / 2026
-          </motion.span>
-          <motion.span
-            className="absolute top-8 right-8 text-[10px] tracking-[0.3em] uppercase text-[var(--text-dim)]"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5 }}
-          >
-            Loading
-          </motion.span>
+        <motion.div
+          className="mt-8 overflow-hidden"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5, duration: 1 }}
+        >
+          <span className="text-xs tracking-[0.3em] uppercase text-[var(--text-dim)] font-medium">
+            Loading Experience
+          </span>
         </motion.div>
-      )}
-    </AnimatePresence>
+      </div>
+    </motion.div>
   );
 }
 

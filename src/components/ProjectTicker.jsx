@@ -16,7 +16,7 @@ function ProjectTicker() {
 
   return (
     <>
-      <section className="relative py-16 md:py-24 overflow-hidden border-t border-b border-[var(--border-subtle)]">
+      <section className="relative py-16 md:py-24 overflow-hidden border-t border-b border-[var(--border-subtle)] bg-[var(--bg-base)]">
         {/* Section Label */}
         <div className="container-custom mb-10">
           <motion.div

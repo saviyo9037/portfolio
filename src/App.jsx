@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import Lenis from 'lenis'
 import './App.css'
 import Home from './pages/Home'
@@ -17,7 +18,12 @@ function App() {
   useEffect(() => {
     if (isLoading) return
 
-    const lenis = new Lenis()
+    const lenis = new Lenis({
+      duration: 0.7,
+      wheelMultiplier: 1.6,
+      touchMultiplier: 2.0,
+      smoothWheel: true,
+    })
     window.__lenis = lenis
     
     function raf(time) {
@@ -36,13 +42,15 @@ function App() {
   return (
     <div className="grain-overlay">
       <CustomCursor />
-      <Preloader onComplete={handlePreloaderComplete} />
+      <AnimatePresence>
+        {isLoading && <Preloader onComplete={handlePreloaderComplete} />}
+      </AnimatePresence>
       {!isLoading && (
-        <>
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }}>
           <FloatingElements />
           <Home />
           <Chatbot />
-        </>
+        </motion.div>
       )}
     </div>
   )

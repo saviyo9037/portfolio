@@ -1,5 +1,5 @@
-import React, { useState, useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import React, { useState, useRef, useEffect } from "react";
+import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import SocialIcons from "./SocialIcons";
 import { FiMail, FiPhone, FiCopy, FiCheck } from "react-icons/fi";
 
@@ -7,6 +7,7 @@ function Contact() {
   const [copiedEmail, setCopiedEmail] = useState(false);
   const [copiedPhone, setCopiedPhone] = useState(false);
   const headingRef = useRef(null);
+  const sectionRef = useRef(null);
 
   // Scroll-driven heading reveal
   const { scrollYProgress } = useScroll({
@@ -16,6 +17,8 @@ function Contact() {
   const headingX = useTransform(scrollYProgress, [0, 1], ["-20%", "0%"]);
   const headingX2 = useTransform(scrollYProgress, [0, 1], ["20%", "0%"]);
   const headingOpacity = useTransform(scrollYProgress, [0, 0.5], [0, 1]);
+  const headingScale = useTransform(scrollYProgress, [0, 1], [0.8, 1]);
+  const headingRotate = useTransform(scrollYProgress, [0, 1], [-5, 0]);
 
   const copyToClipboard = (text, type) => {
     navigator.clipboard.writeText(text);
@@ -41,7 +44,7 @@ function Contact() {
     [...Array(count)].map((_, i) => (
       <span
         key={i}
-        className="text-[14vw] md:text-[10vw] font-['Anton'] uppercase leading-[0.9] tracking-tight whitespace-nowrap px-[2vw] text-[var(--text-main)]"
+        className="text-[14vw] md:text-[10vw] font-['Anton'] uppercase leading-[0.9] tracking-tight whitespace-nowrap px-[2vw] text-transparent text-stroke"
       >
         {text}
         <span className="text-[var(--text-dim)] mx-[1vw]">✦</span>
@@ -58,8 +61,8 @@ function Contact() {
       const centerX = rect.left + rect.width / 2;
       const centerY = rect.top + rect.height / 2;
       setPos({
-        x: (e.clientX - centerX) * 0.2,
-        y: (e.clientY - centerY) * 0.2,
+        x: (e.clientX - centerX) * 0.3,
+        y: (e.clientY - centerY) * 0.3,
       });
     };
 
@@ -80,8 +83,30 @@ function Contact() {
   };
 
   return (
-    <section className="relative section-dark">
-      <div className="container-custom section-padding">
+    <section ref={sectionRef} className="relative section-dark overflow-hidden">
+      {/* Animated mesh background */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <motion.div
+          className="absolute top-[-20%] left-[-10%] w-[600px] h-[600px] rounded-full bg-white/[0.02] blur-[120px]"
+          animate={{
+            x: [0, 100, -50, 0],
+            y: [0, -80, 60, 0],
+            scale: [1, 1.2, 0.9, 1],
+          }}
+          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+        />
+        <motion.div
+          className="absolute bottom-[-20%] right-[-10%] w-[500px] h-[500px] rounded-full bg-white/[0.015] blur-[100px]"
+          animate={{
+            x: [0, -80, 50, 0],
+            y: [0, 60, -40, 0],
+            scale: [1, 0.9, 1.15, 1],
+          }}
+          transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+        />
+      </div>
+
+      <div className="container-custom section-padding relative z-10">
         {/* Section Label */}
         <motion.div
           variants={fadeUp}
@@ -90,7 +115,7 @@ function Contact() {
           viewport={{ once: true }}
           className="flex items-center gap-4 mb-16 md:mb-24"
         >
-          <span className="text-xs tracking-[0.3em] uppercase text-[var(--text-muted)] font-medium">
+          <span className="text-xs tracking-[0.3em] uppercase text-[var(--accent)] font-medium bg-[var(--glass-bg)] px-4 py-2 rounded-full border border-[var(--glass-border)] backdrop-blur-md">
             06
           </span>
           <motion.div
@@ -106,22 +131,22 @@ function Contact() {
           </span>
         </motion.div>
 
-        {/* Big CTA Heading — Scroll-driven reveal from sides */}
-        <div ref={headingRef} className="overflow-hidden mb-12 md:mb-16">
-          <motion.div style={{ x: headingX, opacity: headingOpacity }}>
-            <h2 className="text-5xl md:text-7xl lg:text-[8vw] font-['Anton'] uppercase leading-[0.9]">
+        {/* Big CTA Heading — 3D Scroll-driven reveal */}
+        <div ref={headingRef} className="overflow-hidden mb-12 md:mb-16" style={{ perspective: "1500px" }}>
+          <motion.div style={{ x: headingX, opacity: headingOpacity, scale: headingScale, rotateX: headingRotate }}>
+            <h2 className="text-6xl md:text-8xl lg:text-[9vw] font-['Anton'] uppercase leading-[0.85] text-transparent text-stroke">
               Let's Work
             </h2>
           </motion.div>
-          <motion.div style={{ x: headingX2, opacity: headingOpacity }}>
-            <h2 className="text-5xl md:text-7xl lg:text-[8vw] font-['Anton'] uppercase leading-[0.9] md:ml-[10vw]">
+          <motion.div style={{ x: headingX2, opacity: headingOpacity, scale: headingScale, rotateX: headingRotate }}>
+            <h2 className="text-6xl md:text-8xl lg:text-[9vw] font-['Anton'] uppercase leading-[0.85] md:ml-[10vw] text-[var(--text-main)] drop-shadow-[0_0_60px_rgba(255,255,255,0.2)]">
               Together
             </h2>
           </motion.div>
         </div>
 
         <motion.p
-          className="text-base md:text-lg text-[var(--text-muted)] leading-[1.8] max-w-xl mb-12"
+          className="text-lg md:text-xl text-[var(--text-muted)] leading-[1.8] max-w-xl mb-16 font-light"
           variants={fadeUp}
           custom={1}
           initial="hidden"
@@ -132,7 +157,7 @@ function Contact() {
           collaborations, freelance projects, or just a friendly chat.
         </motion.p>
 
-        {/* Contact Info Grid — Glassmorphism */}
+        {/* Contact Info Grid — Premium Glassmorphism */}
         <motion.div
           className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 mb-16"
           variants={fadeUp}
@@ -143,37 +168,40 @@ function Contact() {
         >
           {/* Email — Glass Card */}
           <motion.div
-            className="glass-card p-6 md:p-8 group rounded-xl relative overflow-hidden"
-            whileHover={{ y: -4 }}
-            transition={{ duration: 0.3 }}
+            className="relative p-8 md:p-10 group rounded-2xl overflow-hidden bg-[var(--glass-bg)] backdrop-blur-xl border border-[var(--glass-border)] shadow-[0_8px_32px_rgba(0,0,0,0.3)]"
+            whileHover={{ y: -8, scale: 1.02 }}
+            transition={{ type: "spring", stiffness: 300, damping: 20 }}
           >
             {/* Animated gradient border */}
-            <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
-              <div className="absolute inset-0 rounded-xl border border-white/10" />
-              <div className="absolute -top-[50%] -left-[50%] w-[200%] h-[200%] rounded-xl"
+            <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none overflow-hidden">
+              <div className="absolute -top-[50%] -left-[50%] w-[200%] h-[200%]"
                 style={{
-                  background: "conic-gradient(from 0deg, transparent, rgba(255,255,255,0.08), transparent, transparent)",
+                  background: "conic-gradient(from 0deg, transparent, rgba(255,255,255,0.1), transparent, transparent)",
                   animation: "spin-slow 4s linear infinite",
                 }}
               />
             </div>
 
+            {/* Glare on hover */}
+            <div className="absolute inset-0 bg-gradient-to-br from-white/[0.08] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-2xl" />
+
             <div className="relative z-10">
-              <div className="flex items-center justify-between mb-4">
-                <span className="text-xs tracking-[0.2em] uppercase text-[var(--text-dim)]">
+              <div className="flex items-center justify-between mb-6">
+                <span className="text-xs tracking-[0.2em] uppercase text-[var(--text-dim)] bg-[var(--bg-elevated)] px-3 py-1.5 rounded-full border border-[var(--border-subtle)]">
                   Email
                 </span>
-                <FiMail className="text-[var(--text-dim)] group-hover:text-[var(--text-main)] transition-colors" />
+                <FiMail className="text-xl text-[var(--text-dim)] group-hover:text-white group-hover:drop-shadow-[0_0_10px_rgba(255,255,255,0.5)] transition-all duration-500" />
               </div>
               <a
                 href="mailto:saviyogeorge903734@gmail.com"
-                className="text-lg md:text-xl font-medium break-all hover:text-[var(--text-muted)] transition-colors block mb-4"
+                className="text-xl md:text-3xl font-light hover:text-[var(--text-main)] hover:italic transition-all duration-300 link-underline block mb-6 break-all"
+                data-cursor-label="HIRE ME"
               >
                 saviyogeorge903734@gmail.com
               </a>
               <MagneticButton
                 onClick={() => copyToClipboard("saviyogeorge903734@gmail.com", "email")}
-                className="text-xs tracking-[0.15em] uppercase text-[var(--text-dim)] hover:text-[var(--text-main)] transition-colors flex items-center gap-2"
+                className="text-xs tracking-[0.15em] uppercase text-[var(--text-dim)] hover:text-[var(--text-main)] transition-colors flex items-center gap-2 bg-[var(--bg-elevated)] px-4 py-2 rounded-full border border-[var(--border-subtle)]"
               >
                 {copiedEmail ? (
                   <>
@@ -197,31 +225,38 @@ function Contact() {
 
           {/* Phone — Glass Card */}
           <motion.div
-            className="glass-card p-6 md:p-8 group rounded-xl relative overflow-hidden"
-            whileHover={{ y: -4 }}
-            transition={{ duration: 0.3 }}
+            className="relative p-8 md:p-10 group rounded-2xl overflow-hidden bg-[var(--glass-bg)] backdrop-blur-xl border border-[var(--glass-border)] shadow-[0_8px_32px_rgba(0,0,0,0.3)]"
+            whileHover={{ y: -8, scale: 1.02 }}
+            transition={{ type: "spring", stiffness: 300, damping: 20 }}
           >
             {/* Animated gradient border */}
-            <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
-              <div className="absolute inset-0 rounded-xl border border-white/10" />
+            <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none overflow-hidden">
+              <div className="absolute -top-[50%] -left-[50%] w-[200%] h-[200%]"
+                style={{
+                  background: "conic-gradient(from 180deg, transparent, rgba(255,255,255,0.1), transparent, transparent)",
+                  animation: "spin-slow 4s linear infinite",
+                }}
+              />
             </div>
 
+            <div className="absolute inset-0 bg-gradient-to-br from-white/[0.08] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-2xl" />
+
             <div className="relative z-10">
-              <div className="flex items-center justify-between mb-4">
-                <span className="text-xs tracking-[0.2em] uppercase text-[var(--text-dim)]">
+              <div className="flex items-center justify-between mb-6">
+                <span className="text-xs tracking-[0.2em] uppercase text-[var(--text-dim)] bg-[var(--bg-elevated)] px-3 py-1.5 rounded-full border border-[var(--border-subtle)]">
                   Phone
                 </span>
-                <FiPhone className="text-[var(--text-dim)] group-hover:text-[var(--text-main)] transition-colors" />
+                <FiPhone className="text-xl text-[var(--text-dim)] group-hover:text-white group-hover:drop-shadow-[0_0_10px_rgba(255,255,255,0.5)] transition-all duration-500" />
               </div>
               <a
                 href="tel:+919037348073"
-                className="text-lg md:text-xl font-medium hover:text-[var(--text-muted)] transition-colors block mb-4"
+                className="text-xl md:text-2xl font-semibold hover:text-[var(--text-muted)] transition-colors block mb-6 tracking-tight"
               >
                 +91 9037 348 073
               </a>
               <MagneticButton
                 onClick={() => copyToClipboard("+919037348073", "phone")}
-                className="text-xs tracking-[0.15em] uppercase text-[var(--text-dim)] hover:text-[var(--text-main)] transition-colors flex items-center gap-2"
+                className="text-xs tracking-[0.15em] uppercase text-[var(--text-dim)] hover:text-[var(--text-main)] transition-colors flex items-center gap-2 bg-[var(--bg-elevated)] px-4 py-2 rounded-full border border-[var(--border-subtle)]"
               >
                 {copiedPhone ? (
                   <>
@@ -257,17 +292,9 @@ function Contact() {
         </motion.div>
       </div>
 
-      {/* Marquee Footer Strip */}
-      <div className="border-t border-[var(--border-subtle)] py-6 overflow-hidden">
-        <div className="marquee-track-reverse">
-          {marqueeItems("Say Hello")}
-          {marqueeItems("Say Hello")}
-        </div>
-      </div>
-
       {/* Footer */}
       <motion.div
-        className="container-custom py-8 border-t border-[var(--border-subtle)]"
+        className="container-custom py-10 border-t border-[var(--border-subtle)] relative z-10"
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
@@ -277,7 +304,8 @@ function Contact() {
           <p className="text-xs text-[var(--text-dim)] tracking-widest uppercase">
             © 2026 Saviyo George
           </p>
-          <p className="text-xs text-[var(--text-dim)] tracking-wider">
+          <p className="text-xs text-[var(--text-dim)] tracking-wider flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse shadow-[0_0_8px_#4ade80]" />
             Built with React & Framer Motion
           </p>
         </div>

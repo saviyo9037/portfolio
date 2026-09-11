@@ -1,286 +1,298 @@
-import React, { useState, useRef } from "react";
-import { motion, AnimatePresence, useMotionValue, useSpring } from "framer-motion";
+import React, { useRef, useState, useEffect } from "react";
+import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import { projects } from "../data/projects";
-import { FiArrowUpRight, FiBriefcase, FiCode, FiLayers } from "react-icons/fi";
+import { FiArrowUpRight, FiGithub, FiExternalLink } from "react-icons/fi";
 
 const CATEGORIES = [
-  { key: "all", label: "All Projects", icon: FiLayers },
-  { key: "company", label: "Company Work", icon: FiBriefcase },
-  { key: "personal", label: "Personal / Side Projects", icon: FiCode },
+  { key: "all", label: "All Projects" },
+  { key: "company", label: "Company Work" },
+  { key: "personal", label: "Personal Projects" },
+];
+
+// Vibrant gradients for project mockups
+const gradients = [
+  "bg-gradient-to-br from-purple-500 to-indigo-600",
+  "bg-gradient-to-tr from-emerald-400 to-cyan-500",
+  "bg-gradient-to-br from-orange-400 to-rose-500",
+  "bg-gradient-to-bl from-blue-500 to-violet-600",
+  "bg-gradient-to-t from-pink-500 to-amber-400",
 ];
 
 function Projects() {
   const [activeCategory, setActiveCategory] = useState("all");
+  const targetRef = useRef(null);
+  const carouselRef = useRef(null);
+  const widthRef = useRef(0);
+  const [width, setWidth] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
 
   const filteredProjects = projects.filter((project) => {
     if (activeCategory === "all") return true;
     return project.category === activeCategory;
   });
 
-  const getCategoryCount = (catKey) => {
-    if (catKey === "all") return projects.length;
-    return projects.filter((p) => p.category === catKey).length;
-  };
+  useEffect(() => {
+    const updateDimensions = () => {
+      const mobile = window.innerWidth <= 768;
+      setIsMobile(mobile);
 
-  const fadeUp = {
-    hidden: { opacity: 0, y: 30 },
-    visible: (i = 0) => ({
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.5, delay: i * 0.05, ease: [0.22, 1, 0.36, 1] },
-    }),
-  };
+      if (carouselRef.current && !mobile) {
+        // Calculate the total scrollable width minus the viewport width plus padding
+        const maxScroll = Math.max(0, carouselRef.current.scrollWidth - window.innerWidth + 120);
+        widthRef.current = maxScroll;
+        setWidth(maxScroll);
+      }
+    };
 
-  const clipReveal = {
-    hidden: { clipPath: "inset(0 100% 0 0)", opacity: 0 },
-    visible: (i = 0) => ({
-      clipPath: "inset(0 0% 0 0)",
-      opacity: 1,
-      transition: { duration: 0.7, delay: i * 0.08, ease: [0.76, 0, 0.24, 1] },
-    }),
-  };
+    updateDimensions();
+    const timer = setTimeout(updateDimensions, 150);
+    window.addEventListener("resize", updateDimensions);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener("resize", updateDimensions);
+    };
+  }, [filteredProjects]);
+
+  const { scrollYProgress } = useScroll({
+    target: targetRef,
+    offset: ["start start", "end end"],
+  });
+
+  // Dynamically calculate horizontal translation from scroll progress
+  // Travels from 0px to -width between 0% and 80% of vertical scroll, then holds still before unpinning
+  const x = useTransform(scrollYProgress, (progress) => {
+    if (isMobile) return "0px";
+    const currentWidth = widthRef.current || width;
+    const p = Math.min(progress / 0.8, 1);
+    return `-${p * currentWidth}px`;
+  });
 
   return (
-    <section className="relative">
-      <div className="container-custom section-padding">
-        {/* Section Label */}
-        <motion.div
-          variants={fadeUp}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          className="flex items-center gap-4 mb-12 md:mb-16"
-        >
-          <span className="text-xs tracking-[0.3em] uppercase text-[var(--text-dim)] font-medium">
-            (05)
-          </span>
+    <section 
+      ref={targetRef} 
+      className="relative bg-[var(--bg-base)] md:h-[260vh] py-12 md:py-0"
+    >
+      <div className="md:sticky md:top-0 md:h-screen md:overflow-hidden bg-[var(--bg-base)] flex flex-col justify-between py-6 md:py-8 lg:py-10">
+        <div className="container-custom flex-shrink-0">
+          {/* Section Label */}
           <motion.div
-            className="divider flex-1"
-            initial={{ scaleX: 0 }}
-            whileInView={{ scaleX: 1 }}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 1, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-            style={{ transformOrigin: "left" }}
-          />
-          <span className="text-xs tracking-[0.3em] uppercase text-[var(--text-dim)] font-medium">
-            Projects
-          </span>
-        </motion.div>
-
-        {/* Heading & Meta */}
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12">
-          <div className="overflow-hidden">
-            <motion.h2
-              className="text-5xl md:text-7xl lg:text-8xl font-['Anton'] uppercase leading-[0.9] text-[var(--text-main)]"
-              initial={{ y: "100%" }}
-              whileInView={{ y: "0%" }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
-            >
-              Selected Work
-            </motion.h2>
-          </div>
-
-          <motion.div
-            variants={fadeUp}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            className="flex items-center gap-2 text-xs text-[var(--text-dim)] tracking-widest uppercase"
+            className="flex items-center gap-4 mb-4 md:mb-6"
           >
-            <span>Showing</span>
-            <motion.span
-              key={filteredProjects.length}
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="text-[var(--text-main)] font-semibold"
-            >
-              {filteredProjects.length}
-            </motion.span>
-            <span>of {projects.length} Projects</span>
+            <span className="text-xs tracking-[0.3em] uppercase text-[var(--accent)] font-medium">
+              (05)
+            </span>
+            <div className="divider flex-1" />
+            <span className="text-xs tracking-[0.3em] uppercase text-[var(--text-muted)] font-medium">
+              Selected Work
+            </span>
+          </motion.div>
+
+          {/* Heading & Tabs */}
+          <div className="mb-4 md:mb-6 flex flex-col md:flex-row justify-between items-start md:items-end gap-4 md:gap-8">
+            <h2 className="text-4xl md:text-6xl lg:text-7xl font-['Anton'] uppercase leading-[0.88] text-transparent text-stroke">
+              Digital<br /> <span className="text-[var(--text-main)] drop-shadow-[0_0_20px_var(--accent-glow)]">Experiences</span>
+            </h2>
+
+            <div className="inline-flex flex-wrap gap-2 p-1.5 rounded-full bg-[var(--bg-elevated)] border border-[var(--border-subtle)] shadow-inner">
+              {CATEGORIES.map((cat) => {
+                const isActive = activeCategory === cat.key;
+                return (
+                  <button
+                    key={cat.key}
+                    onClick={() => setActiveCategory(cat.key)}
+                    className={`relative px-4 md:px-5 py-2 md:py-2.5 rounded-full text-xs font-bold tracking-widest uppercase transition-all duration-300 ${
+                      isActive ? "text-[var(--bg-base)]" : "text-[var(--text-muted)] hover:text-[var(--text-main)]"
+                    }`}
+                  >
+                    {isActive && (
+                      <motion.div
+                        layoutId="activePillProjects"
+                        className="absolute inset-0 bg-[var(--text-main)] rounded-full z-0 shadow-md"
+                        transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                      />
+                    )}
+                    <span className="relative z-10">{cat.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+
+        {/* Horizontal Scroll-Linked Carousel */}
+        <div className="pl-5 md:pl-10 my-auto overflow-hidden">
+          <motion.div style={isMobile ? {} : { x }} className="py-2 md:py-4 w-full md:w-max will-change-transform">
+            <div ref={carouselRef} className="flex flex-col md:flex-row gap-6 md:gap-8 w-full md:w-max pr-5 md:pr-10">
+              <AnimatePresence mode="popLayout">
+                {filteredProjects.map((project, index) => (
+                  <motion.div
+                    key={project.id || project.title}
+                    initial={{ opacity: 0, scale: 0.95, x: 40 }}
+                    animate={{ opacity: 1, scale: 1, x: 0 }}
+                    exit={{ opacity: 0, scale: 0.9, x: -40 }}
+                    transition={{ duration: 0.4, delay: index * 0.04 }}
+                    className="w-full md:w-[75vw] lg:w-[65vw] max-w-[1050px] flex-shrink-0 perspective-[2000px]"
+                  >
+                    <ProjectCard project={project} index={index} />
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </div>
           </motion.div>
         </div>
 
-        {/* Category Tabs */}
-        <div className="mb-12">
-          <div className="inline-flex flex-wrap gap-2 p-1.5 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)]">
-            {CATEGORIES.map((cat) => {
-              const Icon = cat.icon;
-              const isActive = activeCategory === cat.key;
-              const count = getCategoryCount(cat.key);
-
-              return (
-                <button
-                  key={cat.key}
-                  onClick={() => setActiveCategory(cat.key)}
-                  className={`relative flex items-center gap-2 px-4 md:px-5 py-2.5 rounded-xl text-xs md:text-sm font-medium tracking-wider uppercase transition-all duration-300 ${
-                    isActive
-                      ? "text-[var(--bg-base)] font-semibold"
-                      : "text-[var(--text-muted)] hover:text-[var(--text-main)]"
-                  }`}
-                >
-                  {isActive && (
-                    <motion.div
-                      layoutId="activeCategoryPill"
-                      className="absolute inset-0 bg-[var(--text-main)] rounded-xl z-0"
-                      transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                    />
-                  )}
-                  <span className="relative z-10 flex items-center gap-2">
-                    <Icon className="text-sm" />
-                    <span>{cat.label}</span>
-                    <span
-                      className={`text-[10px] px-2 py-0.5 rounded-full font-mono transition-colors duration-300 ${
-                        isActive
-                          ? "bg-[var(--bg-base)] text-[var(--text-main)]"
-                          : "bg-[var(--bg-elevated)] text-[var(--text-dim)] border border-[var(--border-subtle)]"
-                      }`}
-                    >
-                      {count}
-                    </span>
-                  </span>
-                </button>
-              );
-            })}
+        {/* Scroll Indicator */}
+        <div className="container-custom mt-2 flex-shrink-0 hidden md:block">
+          <div className="flex items-center justify-center gap-4 text-[var(--text-muted)]">
+            <div className="h-px w-12 bg-gradient-to-r from-transparent to-[var(--border-hover)]" />
+            <span className="text-[10px] tracking-[0.3em] uppercase font-medium">Scroll to explore</span>
+            <div className="h-px w-12 bg-gradient-to-l from-transparent to-[var(--border-hover)]" />
           </div>
-        </div>
-
-        {/* Project List */}
-        <div className="flex flex-col relative min-h-[300px]">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeCategory}
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -15 }}
-              transition={{ duration: 0.35, ease: "easeInOut" }}
-              className="flex flex-col"
-            >
-              {filteredProjects.map((project, index) => (
-                <motion.div
-                  key={project.id || project.title}
-                  variants={clipReveal}
-                  custom={index}
-                  initial="hidden"
-                  animate="visible"
-                  className="group"
-                >
-                  {project.liveUrl ? (
-                    <a
-                      href={project.liveUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      data-cursor-label="View"
-                      className="block border-t border-[var(--border-subtle)] py-8 md:py-12 hover:bg-[var(--bg-surface)] transition-all duration-500 -mx-5 md:-mx-10 px-5 md:px-10 relative"
-                    >
-                      <ProjectRow project={project} index={index} />
-                      {/* Hover glow */}
-                      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
-                        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[var(--text-main)]/20 to-transparent" />
-                        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[var(--text-main)]/10 to-transparent" />
-                      </div>
-                    </a>
-                  ) : (
-                    <div className="border-t border-[var(--border-subtle)] py-8 md:py-12 hover:bg-[var(--bg-surface)] transition-all duration-500 -mx-5 md:-mx-10 px-5 md:px-10 cursor-default relative">
-                      <ProjectRow project={project} index={index} />
-                    </div>
-                  )}
-                </motion.div>
-              ))}
-            </motion.div>
-          </AnimatePresence>
-          <div className="border-t border-[var(--border-subtle)]" />
         </div>
       </div>
     </section>
   );
 }
 
-function ProjectRow({ project, index }) {
-  const isCompany = project.category === "company";
+const ProjectCard = ({ project, index }) => {
+  const cardRef = useRef(null);
+  const [tilt, setTilt] = useState({ x: 0, y: 0 });
+  const gradientClass = gradients[index % gradients.length];
+
+  const handleMouseMove = (e) => {
+    if (!cardRef.current || window.innerWidth <= 768) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width;
+    const y = (e.clientY - rect.top) / rect.height;
+    setTilt({
+      x: (y - 0.5) * -6, // Subtle rotation for carousel
+      y: (x - 0.5) * 6,
+    });
+  };
+
+  const handleMouseLeave = () => {
+    setTilt({ x: 0, y: 0 });
+  };
+
+  const imageSrc = project.image
+    ? project.image.startsWith("/")
+      ? project.image
+      : `/${project.image}`
+    : null;
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-8 items-start md:items-center relative z-10">
-      {/* Index with watermark */}
-      <div className="md:col-span-1 hidden md:block relative">
-        <span className="text-xs text-[var(--text-dim)] font-medium tabular-nums group-hover:text-[var(--text-main)] transition-colors duration-300 relative z-10">
-          {String(index + 1).padStart(2, "0")}
-        </span>
-        {/* Large watermark number */}
-        <span className="absolute -top-8 -left-2 text-[5rem] font-['Anton'] text-white/[0.02] group-hover:text-white/[0.04] leading-none pointer-events-none transition-colors duration-500">
-          {String(index + 1).padStart(2, "0")}
-        </span>
-      </div>
+    <motion.div
+      ref={cardRef}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      animate={{ rotateX: tilt.x, rotateY: tilt.y }}
+      transition={{ type: "spring", stiffness: 300, damping: 20 }}
+      className="relative w-full h-auto md:h-[55vh] md:min-h-[400px] md:max-h-[520px] rounded-[1.75rem] bg-[var(--bg-surface)] border border-[var(--border-subtle)] shadow-[0_20px_40px_rgba(0,0,0,0.08)] overflow-hidden group transform-style-3d flex flex-col md:flex-row hover:border-amber-400 hover:shadow-[0_20px_40px_rgba(0,0,0,0.5),0_0_25px_rgba(251,191,36,0.2)] transition-all duration-300"
+    >
+      {/* Content Side */}
+      <div className="flex-1 p-6 md:p-8 lg:p-10 flex flex-col justify-between z-10 bg-[var(--bg-surface)] relative order-2 md:order-1">
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent to-[var(--bg-base)] opacity-5 pointer-events-none" />
 
-      {/* Title & Category Badge */}
-      <div className="md:col-span-4 transition-transform duration-500 group-hover:translate-x-4">
-        <div className="flex flex-wrap items-center gap-2 mb-1.5">
-          <motion.span
-            className={`text-[9px] tracking-[0.15em] uppercase font-mono px-2 py-0.5 rounded-md border ${
-              isCompany
-                ? "bg-amber-500/10 text-amber-300 border-amber-500/20"
-                : "bg-cyan-500/10 text-cyan-300 border-cyan-500/20"
-            }`}
-            initial={{ opacity: 0, scale: 0 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: index * 0.05 + 0.2, type: "spring", stiffness: 400 }}
-          >
-            {isCompany ? "Company Project" : "Personal Project"}
-          </motion.span>
-          {project.company && (
-            <span className="text-[10px] tracking-[0.12em] uppercase text-[var(--text-dim)]">
-              • {project.company}
+        <div className="transform-style-3d translate-z-[30px]">
+          <div className="flex items-center gap-3 mb-3 md:mb-5">
+            <span className="text-2xl md:text-3xl font-['Anton'] text-[var(--border-hover)] select-none">
+              {String(index + 1).padStart(2, "0")}
             </span>
-          )}
+            <span className="px-3 py-0.5 text-[10px] tracking-widest uppercase font-mono bg-[var(--bg-elevated)] border border-[var(--border-subtle)] rounded-full text-[var(--text-main)]">
+              {project.company ? project.company : "Independent"}
+            </span>
+          </div>
+
+          <h3 className="text-2xl md:text-4xl font-sans font-bold tracking-tight text-[var(--text-main)] mb-2 md:mb-3 leading-tight">
+            {project.title}
+          </h3>
+
+          <p className="text-xs md:text-sm text-[var(--text-muted)] max-w-md leading-relaxed mb-4 md:mb-6 line-clamp-2 md:line-clamp-3">
+            {project.description}
+          </p>
+
+          <div className="flex flex-wrap items-center gap-2 mb-4 md:mb-6">
+            {project.tags && project.tags.slice(0, 4).map((tag, i) => (
+              <span key={i} className="text-[10px] font-mono uppercase tracking-widest text-[var(--text-dim)] border border-[var(--border-subtle)] px-2.5 py-1 rounded-full bg-[var(--bg-base)]">
+                {tag}
+              </span>
+            ))}
+            {project.tags && project.tags.length > 4 && (
+              <span className="text-[10px] font-mono tracking-widest text-[var(--text-dim)] px-2">
+                +{project.tags.length - 4} more
+              </span>
+            )}
+          </div>
         </div>
 
-        <h3 
-          className="text-xl md:text-3xl font-sans normal-case font-semibold tracking-tight leading-tight text-[var(--text-main)] flex items-center gap-3"
-          style={{ fontFamily: 'Inter, sans-serif' }}
-        >
-          {project.title}
+        <div className="flex items-center gap-4 transform-style-3d translate-z-[50px] relative z-20 pt-2 border-t border-[var(--border-subtle)]">
           {project.liveUrl && (
-            <motion.span
-              className="inline-block"
-              animate={{ rotate: 0 }}
-              whileHover={{ rotate: 360 }}
-              transition={{ duration: 0.5 }}
+            <a
+              href={project.liveUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              data-cursor-label="VIEW"
+              className="group/btn flex items-center justify-center w-11 h-11 md:w-13 md:h-13 rounded-full bg-[var(--text-main)] text-[var(--bg-base)] hover:scale-110 hover:bg-amber-400 transition-all duration-300 shadow-xl"
             >
-              <FiArrowUpRight className="text-lg opacity-0 -translate-x-4 translate-y-4 group-hover:opacity-100 group-hover:translate-x-0 group-hover:translate-y-0 transition-all duration-500 ease-[cubic-bezier(0.76,0,0.24,1)]" />
-            </motion.span>
+              <FiArrowUpRight className="text-xl md:text-2xl group-hover/btn:rotate-45 transition-transform duration-300" />
+            </a>
           )}
-        </h3>
+
+          <button className="btn-minimal px-5 py-2.5 text-xs hover:border-amber-400/60" data-cursor-label="DETAILS">
+            <span>Case Study</span>
+          </button>
+        </div>
       </div>
 
-      {/* Description */}
-      <div className="md:col-span-5 transition-transform duration-500 group-hover:translate-x-2">
-        <p className="text-sm text-[var(--text-muted)] leading-[1.7] group-hover:text-[var(--text-main)] transition-colors duration-300">
-          {project.description}
-        </p>
+      {/* Visual Mockup Side */}
+      <div className="h-52 md:h-auto md:w-5/12 lg:w-1/2 relative overflow-hidden order-1 md:order-2 border-b md:border-b-0 md:border-l border-[var(--border-subtle)]">
+        <div className={`absolute inset-0 ${gradientClass} opacity-80`} />
+
+        {/* Real Screenshot or Abstract Mockup */}
+        <div className="absolute inset-0 flex items-center justify-center transform-style-3d translate-z-[60px] p-4 md:p-6">
+          <div className="w-[90%] h-[95%] md:h-[85%] bg-[var(--bg-base)] rounded-xl shadow-2xl border border-[var(--border-subtle)] overflow-hidden relative group-hover:-translate-y-2 md:group-hover:-translate-y-4 group-hover:scale-[1.02] transition-all duration-700 ease-out flex flex-col">
+            <div className="w-full h-7 bg-[var(--bg-elevated)] border-b border-[var(--border-subtle)] flex items-center px-3 gap-1.5 flex-shrink-0">
+              <div className="w-2 h-2 rounded-full bg-red-400/80" />
+              <div className="w-2 h-2 rounded-full bg-amber-400/80" />
+              <div className="w-2 h-2 rounded-full bg-green-400/80" />
+            </div>
+
+            {imageSrc ? (
+              <div className="flex-1 w-full overflow-hidden relative">
+                <img
+                  src={imageSrc}
+                  alt={project.title}
+                  className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
+                  onError={(e) => {
+                    e.target.style.display = "none";
+                  }}
+                />
+              </div>
+            ) : (
+              /* Abstract mockup content lines */
+              <div className="p-4 md:p-5 space-y-3 opacity-30 flex-1 flex flex-col justify-center">
+                <div className="h-3 w-3/4 bg-[var(--text-dim)] rounded" />
+                <div className="h-2.5 w-1/2 bg-[var(--text-muted)] rounded" />
+                <div className="h-16 md:h-24 w-full bg-[var(--bg-surface)] rounded mt-3 border border-[var(--border-subtle)]" />
+                <div className="h-2.5 w-5/6 bg-[var(--text-muted)] rounded" />
+              </div>
+            )}
+
+            {/* Overlay gradient */}
+            <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-base)] via-transparent to-transparent opacity-60 pointer-events-none" />
+          </div>
+        </div>
+
+        {/* Floating elements */}
+        <div className="absolute top-1/4 -left-8 w-20 h-20 bg-white/10 backdrop-blur-xl rounded-full border border-white/20 blur-[2px] transform-style-3d translate-z-[80px] group-hover:translate-x-6 transition-transform duration-1000 ease-out pointer-events-none" />
+        <div className="absolute bottom-1/4 -right-8 w-24 h-24 bg-black/10 backdrop-blur-xl rounded-full border border-white/10 blur-[3px] transform-style-3d translate-z-[40px] group-hover:-translate-x-6 transition-transform duration-1000 ease-out pointer-events-none" />
       </div>
 
-      {/* Tags with pop animation */}
-      <div className="md:col-span-2 flex flex-wrap gap-2 transition-transform duration-500 group-hover:translate-x-2">
-        {project.tags &&
-          project.tags.slice(0, 3).map((tag, i) => (
-            <motion.span
-              key={i}
-              className="text-[10px] tracking-[0.1em] uppercase text-[var(--text-dim)] border border-[var(--border-subtle)] rounded-full px-3 py-1 group-hover:border-[var(--text-main)] group-hover:text-[var(--text-main)] transition-all duration-300"
-              initial={{ opacity: 0, scale: 0 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{
-                delay: i * 0.08 + 0.15,
-                type: "spring",
-                stiffness: 500,
-                damping: 20,
-              }}
-            >
-              {tag}
-            </motion.span>
-          ))}
-      </div>
-    </div>
+    </motion.div>
   );
-}
+};
 
 export default Projects;
