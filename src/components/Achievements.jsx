@@ -8,7 +8,7 @@ import redteamcamp from "../assets/certificate/redteamcamp.jpeg";
 
 function Achievements() {
   const [selectedImage, setSelectedImage] = useState(null);
-
+//......................................
   const certificates = [
     {
       img: irohub,
