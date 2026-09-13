@@ -133,7 +133,7 @@ function Navbar() {
             }}
             className="flex items-center gap-2 cursor-pointer group"
           >
-            <span className="text-xl md:text-2xl font-['Anton'] uppercase tracking-wider text-[var(--text-main)] mix-blend-difference relative overflow-hidden">
+            <span className="text-lg md:text-xl font-['Anton'] uppercase tracking-widest text-[var(--text-main)] border border-[var(--text-dim)] px-2 py-1 rounded mix-blend-difference relative overflow-hidden bg-black/20">
               <motion.span
                 className="inline-block"
                 whileHover={{

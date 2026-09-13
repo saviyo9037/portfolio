@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect } from "react";
 import { motion, useInView } from "framer-motion";
 import { FiArrowUpRight, FiLayers, FiZap, FiCpu, FiTerminal, FiMapPin, FiCheckCircle, FiGithub, FiMail } from "react-icons/fi";
 import saviyoImage from "../assets/saviyo.jpeg";
+import NeonBorder from "./NeonBorder";
 
 // Animated counter hook
 function useCounter(target, duration = 1800, isVisible = true) {
@@ -284,14 +285,16 @@ function About() {
                 </div>
 
                 {/* Portrait Photo with Smooth Parallax & Grayscale Hover */}
-                <div className="w-full h-full relative overflow-hidden">
-                  <img
-                    src={saviyoImage}
-                    alt="Saviyo George"
-                    className="w-full h-full object-cover object-center grayscale contrast-110 group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 ease-out"
-                  />
-                  {/* Subtle dark vignette */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-base)] via-transparent to-black/30 pointer-events-none z-10" />
+                <div className="w-full h-full relative overflow-hidden rounded-2xl">
+                  <NeonBorder color="#4ade80" rounded={16} thickness={2} borderSize={40} speed={12}>
+                    <img
+                      src={saviyoImage}
+                      alt="Saviyo George"
+                      className="w-full h-full object-cover object-center grayscale contrast-110 group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 ease-out absolute inset-0"
+                    />
+                    {/* Subtle dark vignette */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-base)] via-transparent to-black/30 pointer-events-none z-10" />
+                  </NeonBorder>
                 </div>
 
                 {/* Glare Sheen Reflection */}

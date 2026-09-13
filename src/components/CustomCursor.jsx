@@ -64,9 +64,17 @@ function CustomCursor() {
 
     const handleMouseLeave = () => setIsVisible(false);
     const handleMouseEnter = () => setIsVisible(true);
+    
+    // Hide when mouse leaves the html document
+    const handleDocumentLeave = (e) => {
+      if (e.clientY <= 0 || e.clientX <= 0 || (e.clientX >= window.innerWidth || e.clientY >= window.innerHeight)) {
+        setIsVisible(false);
+      }
+    };
 
     window.addEventListener("mousemove", handleMouseMove);
     document.addEventListener("mouseleave", handleMouseLeave);
+    document.documentElement.addEventListener("mouseleave", handleDocumentLeave);
     document.addEventListener("mouseenter", handleMouseEnter);
 
     // Start trail animation loop
@@ -75,6 +83,7 @@ function CustomCursor() {
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("mouseleave", handleMouseLeave);
+      document.documentElement.removeEventListener("mouseleave", handleDocumentLeave);
       document.removeEventListener("mouseenter", handleMouseEnter);
       if (rafId.current) cancelAnimationFrame(rafId.current);
     };

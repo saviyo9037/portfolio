@@ -56,7 +56,7 @@ function Introduction() {
     [...Array(count)].map((_, i) => (
       <span
         key={i}
-        className="text-[18vw] md:text-[12vw] font-['Anton'] uppercase leading-[0.9] tracking-tight whitespace-nowrap px-[2vw] text-transparent text-stroke"
+        className="text-[10vw] md:text-[6vw] font-['Anton'] uppercase leading-[1.1] tracking-tight whitespace-nowrap px-[2vw] text-transparent text-stroke"
       >
         {text}
         <span className="text-[var(--text-dim)] mx-[1vw]">•</span>
@@ -102,7 +102,7 @@ function Introduction() {
 
           {/* Name - 4D Split character animation */}
           <div className="overflow-hidden" style={{ perspective: "1000px" }}>
-            <div className="flex flex-wrap transform-style-3d">
+            <div className="flex flex-wrap transform-style-3d justify-start">
               {nameFirstLine.split("").map((char, i) => (
                 <motion.span
                   key={`first-${i}`}
@@ -110,7 +110,7 @@ function Introduction() {
                   variants={charVariants}
                   initial="hidden"
                   animate="visible"
-                  className="text-[16vw] md:text-[12vw] font-['Anton'] uppercase leading-[0.85] tracking-tighter inline-block text-[var(--text-main)] drop-shadow-2xl hover:text-transparent hover:text-stroke transition-colors duration-300"
+                  className="text-[14vw] md:text-[10vw] font-['Anton'] uppercase leading-[0.85] tracking-tighter inline-block text-[var(--text-main)] drop-shadow-2xl hover:text-transparent hover:text-stroke transition-colors duration-300"
                   style={{ transformOrigin: "bottom center" }}
                 >
                   {char}
@@ -119,8 +119,8 @@ function Introduction() {
             </div>
           </div>
 
-          <div className="overflow-hidden md:ml-[15vw]" style={{ perspective: "1000px" }}>
-            <div className="flex flex-wrap transform-style-3d">
+          <div className="overflow-hidden" style={{ perspective: "1000px" }}>
+            <div className="flex flex-wrap transform-style-3d justify-start md:ml-12">
               {nameSecondLine.split("").map((char, i) => (
                 <motion.span
                   key={`second-${i}`}
@@ -128,7 +128,7 @@ function Introduction() {
                   variants={charVariants}
                   initial="hidden"
                   animate="visible"
-                  className="text-[16vw] md:text-[12vw] font-['Anton'] uppercase leading-[0.85] tracking-tighter inline-block text-[var(--text-main)] drop-shadow-2xl hover:text-transparent hover:text-stroke transition-colors duration-300"
+                  className="text-[14vw] md:text-[10vw] font-['Anton'] uppercase leading-[0.85] tracking-tighter inline-block text-[var(--text-main)] drop-shadow-2xl hover:text-transparent hover:text-stroke transition-colors duration-300"
                   style={{ transformOrigin: "bottom center" }}
                 >
                   {char}
@@ -140,7 +140,7 @@ function Introduction() {
 
         {/* Rotating badge - Glassmorphism */}
         <motion.div
-          className="absolute top-32 right-8 md:top-40 md:right-20 w-28 h-28 md:w-36 md:h-36 bg-[var(--glass-bg)] border border-[var(--glass-border)] rounded-full backdrop-blur-xl shadow-2xl"
+          className="absolute top-24 right-4 md:top-32 md:right-16 w-24 h-24 md:w-32 md:h-32 bg-[var(--glass-bg)] border border-[var(--glass-border)] rounded-full backdrop-blur-xl shadow-2xl"
           initial={{ opacity: 0, scale: 0, rotate: -180 }}
           animate={{ opacity: 1, scale: 1, rotate: 0 }}
           transition={{ delay: 1.5, duration: 1.2, type: "spring", bounce: 0.4 }}
