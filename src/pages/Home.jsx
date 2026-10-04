@@ -12,53 +12,53 @@ import { CurvedDivider } from "../components/CurvedDivider";
 
 function Home() {
   return (
-    <div className="bg-[var(--bg-base)] text-[var(--text-main)] min-h-screen relative selection:bg-[var(--accent)] selection:text-black">
+    <div className="bg-transparent text-[var(--text-main)] min-h-screen relative selection:bg-[#39ff88] selection:text-[#0A0A0A]">
       <Navbar />
 
-      <main className="relative bg-[var(--bg-base)]">
-        <section id="introduction" className="relative z-10 bg-[var(--bg-base)]">
+      <main className="relative bg-transparent">
+        <section id="introduction" className="relative z-10 bg-transparent">
           <Introduction />
         </section>
 
-        <section id="about" className="relative z-20 bg-[var(--bg-base)] border-t border-[var(--border-subtle)]">
+        <section id="about" className="relative z-20 bg-transparent border-t border-[var(--border-subtle)]">
           <About />
         </section>
 
         {/* Curved wave transition */}
-        <div className="relative z-[25] bg-[var(--bg-base)]">
+        <div className="relative z-[25] bg-transparent">
           <CurvedDivider color="var(--bg-surface)" />
         </div>
 
-        <section id="experience" className="relative z-30 bg-[var(--bg-base)] border-t border-[var(--border-subtle)]">
+        <section id="experience" className="relative z-30 bg-transparent border-t border-[var(--border-subtle)]">
           <Experiences />
         </section>
 
-        <section id="skills" className="relative z-40 bg-[var(--bg-base)] border-t border-[var(--border-subtle)]">
+        <section id="skills" className="relative z-40 bg-transparent border-t border-[var(--border-subtle)]">
           <Skills />
         </section>
 
-        <section id="education" className="relative z-50 bg-[var(--bg-base)] border-t border-[var(--border-subtle)]">
+        <section id="education" className="relative z-50 bg-transparent border-t border-[var(--border-subtle)]">
           <Education />
         </section>
 
         {/* Horizontal Project Ticker */}
-        <div className="relative z-[55] bg-[var(--bg-base)]">
+        <div className="relative z-[55] bg-transparent">
           <ProjectTicker />
         </div>
 
         <div
           id="projects"
-          className="relative z-[60] bg-[var(--bg-base)] border-t border-[var(--border-subtle)]"
+          className="relative z-[60] bg-transparent border-t border-[var(--border-subtle)]"
         >
           <Projects />
         </div>
 
         {/* Curved wave before contact */}
-        <div className="relative z-[65] bg-[var(--bg-base)]">
+        <div className="relative z-[65] bg-transparent">
           <CurvedDivider color="var(--bg-surface)" inverted />
         </div>
 
-        <section id="contact" className="relative z-70 bg-[var(--bg-base)] border-t border-[var(--border-subtle)]">
+        <section id="contact" className="relative z-70 bg-transparent border-t border-[var(--border-subtle)]">
           <Contact />
         </section>
       </main>

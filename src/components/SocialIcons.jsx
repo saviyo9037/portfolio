@@ -59,10 +59,10 @@ function Icon({ children, href, label, external }) {
         rel: "noopener noreferrer",
       })}
       aria-label={label}
-      className="w-12 h-12 border border-[var(--border-subtle)] text-[var(--text-dim)]
+      className="w-12 h-12 border border-white/10 bg-white/5 text-slate-300 shadow-lg
                  flex items-center justify-center text-lg cursor-pointer
-                 hover:bg-[var(--text-main)] hover:text-[var(--bg-base)] hover:border-[var(--text-main)]
-                 transition-all duration-300 rounded-lg relative overflow-hidden group"
+                 hover:bg-white hover:text-black hover:border-white hover:shadow-[0_0_20px_rgba(255,255,255,0.3)]
+                 transition-all duration-300 rounded-xl relative overflow-hidden group"
       variants={itemVariants}
       whileHover={{ y: -4, scale: 1.05 }}
       whileTap={{ scale: 0.95 }}

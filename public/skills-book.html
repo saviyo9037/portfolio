@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Developer Gazette — Interactive Book Skills Section</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts: Anton & Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- React and ReactDOM UMD -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <!-- Babel Standalone for JSX parsing -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <style>
+    :root {
+      --bg-base: #0A0A0A;
+      --paper-base: #EDE8DC;
+      --paper-right: #F4F0E6;
+      --ink: #141414;
+      --accent-green: #39ff88;
+    }
+    body {
+      background-color: var(--bg-base);
+      color: #F0F0F0;
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      overflow-x: hidden;
+    }
+    .font-anton {
+      font-family: 'Anton', sans-serif;
+    }
+    .font-mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .text-stroke {
+      -webkit-text-stroke: 1px #F0F0F0;
+      -webkit-text-fill-color: transparent;
+      color: transparent;
+      transition: -webkit-text-fill-color 0.4s ease;
+    }
+    .text-stroke:hover {
+      -webkit-text-fill-color: #F0F0F0;
+    }
+    .book-perspective {
+      perspective: 1800px;
+    }
+    .preserve-3d {
+      transform-style: preserve-3d;
+    }
+    .writing-mode-vertical {
+      writing-mode: vertical-rl;
+    }
+  </style>
+</head>
+<body class="bg-[#0A0A0A] min-h-screen flex items-center justify-center p-4">
+  <div id="root" class="w-full"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect, useRef, useCallback } = React;
+
+    const CHAPTERS = [
+      {
+        chapterNum: "01",
+        title: "Frontend Wire",
+        tagline: "Client Architecture & Reactive Systems",
+        intro: "Architecting responsive, high-performance web applications, declarative state trees, and accessible user interfaces.",
+        categories: [
+          { label: "Languages", items: ["JavaScript (ES6+)", "TypeScript"] },
+          { label: "Frameworks", items: ["React.js", "Next.js", "Redux", "TanStack React Query"] },
+          { label: "Styling", items: ["Tailwind CSS", "Bootstrap", "HTML5", "CSS3"] },
+          { label: "Design", items: ["Figma", "Canva"] }
+        ],
+        leftPageNum: "02",
+        rightPageNum: "03"
+      },
+      {
+        chapterNum: "02",
+        title: "Backend Desk",
+        tagline: "Server Runtimes & Data Persistence",
+        intro: "Engineering scalable server-side systems, RESTful API contracts, and high-throughput persistent data layers.",
+        categories: [
+          { label: "Runtime", items: ["Node.js", "Express.js"] },
+          { label: "APIs", items: ["RESTful APIs", "Axios", "JWT Authentication"] },
+          { label: "Realtime", items: ["WebSockets / Socket.IO"] },
+          { label: "Databases", items: ["MongoDB", "Mongoose ODM", "MySQL", "SQLite / Drift"] },
+          { label: "Also", items: ["PHP", "Python", "Dart"] }
+        ],
+        leftPageNum: "04",
+        rightPageNum: "05"
+      },
+      {
+        chapterNum: "03",
+        title: "Enterprise & Hardware",
+        tagline: "Industrial POS, Systems & Production Tooling",
+        intro: "Bridging mission-critical retail ERP modules, physical IoT hardware peripherals, and modern deployment tooling.",
+        categories: [
+          {
+            label: "Enterprise",
+            items: [
+              "Enterprise ERP & POS Systems",
+              "ESC/POS Thermal Printing",
+              "Barcode & QR Generation",
+              "PyInstaller Desktop Packaging",
+              "AI Voice Assistant (STT/TTS)"
+            ]
+          },
+          {
+            label: "Tools",
+            items: ["Git", "GitHub", "Postman", "VS Code", "Vite", "npm", "XAMPP"]
+          }
+        ],
+        leftPageNum: "06",
+        rightPageNum: "07"
+      }
+    ];
+
+    function SkillsBookApp() {
+      const [isOpen, setIsOpen] = useState(false);
+      const [currentChapter, setCurrentChapter] = useState(0);
+      const [isFlipping, setIsFlipping] = useState(false);
+      const [isMobile, setIsMobile] = useState(false);
+      const [mobilePage, setMobilePage] = useState(0); // 0 = left, 1 = right
+      const [reducedMotion, setReducedMotion] = useState(false);
+
+      const touchStartX = useRef(0);
+
+      useEffect(() => {
+        const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+        setReducedMotion(mq.matches);
+        const handleMq = (e) => setReducedMotion(e.matches);
+        mq.addEventListener("change", handleMq);
+
+        const checkMobile = () => setIsMobile(window.innerWidth < 1024);
+        checkMobile();
+        window.addEventListener("resize", checkMobile);
+
+        return () => {
+          mq.removeEventListener("change", handleMq);
+          window.removeEventListener("resize", checkMobile);
+        };
+      }, []);
+
+      const handleOpenBook = useCallback((chapIdx = 0) => {
+        setCurrentChapter(chapIdx);
+        setMobilePage(0);
+        setIsOpen(true);
+      }, []);
+
+      const handleCloseBook = useCallback(() => {
+        setIsOpen(false);
+        setMobilePage(0);
+      }, []);
+
+      const handleNext = useCallback(() => {
+        if (isFlipping) return;
+
+        if (isMobile) {
+          if (mobilePage === 0) {
+            setMobilePage(1);
+          } else if (currentChapter < CHAPTERS.length - 1) {
+            setIsFlipping(true);
+            setTimeout(() => {
+              setCurrentChapter((c) => c + 1);
+              setMobilePage(0);
+              setIsFlipping(false);
+            }, reducedMotion ? 30 : 500);
+          }
+          return;
+        }
+
+        if (currentChapter < CHAPTERS.length - 1) {
+          setIsFlipping(true);
+          setTimeout(() => {
+            setCurrentChapter((c) => c + 1);
+            setIsFlipping(false);
+          }, reducedMotion ? 30 : 500);
+        }
+      }, [currentChapter, isFlipping, isMobile, mobilePage, reducedMotion]);
+
+      const handlePrev = useCallback(() => {
+        if (isFlipping) return;
+
+        if (isMobile) {
+          if (mobilePage === 1) {
+            setMobilePage(0);
+          } else if (currentChapter > 0) {
+            setIsFlipping(true);
+            setTimeout(() => {
+              setCurrentChapter((c) => c - 1);
+              setMobilePage(1);
+              setIsFlipping(false);
+            }, reducedMotion ? 30 : 500);
+          } else {
+            handleCloseBook();
+          }
+          return;
+        }
+
+        if (currentChapter > 0) {
+          setIsFlipping(true);
+          setTimeout(() => {
+            setCurrentChapter((c) => c - 1);
+            setIsFlipping(false);
+          }, reducedMotion ? 30 : 500);
+        } else {
+          handleCloseBook();
+        }
+      }, [currentChapter, isFlipping, isMobile, mobilePage, reducedMotion, handleCloseBook]);
+
+      // Keyboard listeners
+      useEffect(() => {
+        if (!isOpen) return;
+        const onKey = (e) => {
+          if (e.key === "ArrowRight") {
+            e.preventDefault();
+            handleNext();
+          } else if (e.key === "ArrowLeft") {
+            e.preventDefault();
+            handlePrev();
+          } else if (e.key === "Escape") {
+            e.preventDefault();
+            handleCloseBook();
+          }
+        };
+        window.addEventListener("keydown", onKey);
+        return () => window.removeEventListener("keydown", onKey);
+      }, [isOpen, handleNext, handlePrev, handleCloseBook]);
+
+      const activeChap = CHAPTERS[currentChapter];
+
+      return (
+        <section className="relative w-full max-w-6xl mx-auto py-12 px-4 select-none" aria-label="Skills Interactive Book">
+          {/* Header */}
+          <div className="flex items-center gap-4 mb-8">
+            <span className="text-xs tracking-[0.3em] uppercase text-[#39ff88] font-mono font-medium bg-[#39ff88]/10 px-3.5 py-1.5 rounded-full border border-[#39ff88]/20">
+              03 // TECHNICAL GAZETTE
+            </span>
+            <div className="flex-1 h-px bg-white/10" />
+            <span className="text-xs tracking-[0.3em] uppercase text-white/40 font-mono hidden sm:inline">
+              ARCHIVAL OPEN BOOK COMPENDIUM
+            </span>
+          </div>
+
+          <div className="text-center mb-10">
+            <h2 className="text-4xl md:text-7xl font-anton uppercase tracking-tight text-white mb-3">
+              THE DEVELOPER <span className="text-stroke hover:text-white transition-colors">GAZETTE</span>
+            </h2>
+            <p className="text-xs md:text-sm text-white/50 font-mono max-w-md mx-auto">
+              Open the hardcover compendium below to browse client, server, and hardware engineering chapters.
+            </p>
+          </div>
+
+          {/* Book Wrapper */}
+          <div
+            className="relative flex flex-col items-center justify-center book-perspective"
+            onTouchStart={(e) => (touchStartX.current = e.touches[0].clientX)}
+            onTouchEnd={(e) => {
+              const diff = touchStartX.current - e.changedTouches[0].clientX;
+              if (Math.abs(diff) > 40) diff > 0 ? handleNext() : handlePrev();
+            }}
+          >
+            {/* CLOSED STATE */}
+            {!isOpen && (
+              <div
+                onClick={() => handleOpenBook(0)}
+                onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && handleOpenBook(0)}
+                tabIndex={0}
+                role="button"
+                aria-label="Open The Developer Gazette Book"
+                className="relative w-full max-w-[420px] aspect-[1/1.38] rounded-xl cursor-pointer transition-transform duration-500 hover:-translate-y-2 focus:outline-none focus:ring-2 focus:ring-[#39ff88] group"
+                style={{
+                  transform: "rotateX(5deg) rotateY(-3deg)",
+                  boxShadow: "0 30px 60px rgba(0,0,0,0.85), -14px 10px 25px rgba(0,0,0,0.5)"
+                }}
+              >
+                {/* Book Edge Thickness */}
+                <div className="absolute top-3 bottom-3 -right-3 w-4 rounded-r-md bg-gradient-to-r from-[#cfc8b8] via-[#e5dfd0] to-[#b8b09f] shadow-md border-y border-r border-[#8f8877]" />
+
+                <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-[#1c1c1f] via-[#121214] to-[#0a0a0c] border border-white/10 p-7 flex flex-col justify-between overflow-hidden shadow-2xl">
+                  {/* Spine edge */}
+                  <div className="absolute top-0 bottom-0 left-0 w-6 bg-gradient-to-r from-black/80 to-transparent pointer-events-none" />
+
+                  {/* Gold Corner Trims */}
+                  <div className="absolute top-3 left-8 w-6 h-6 border-t-2 border-l-2 border-[#d4af37]/60 pointer-events-none" />
+                  <div className="absolute top-3 right-3 w-6 h-6 border-t-2 border-r-2 border-[#d4af37]/60 pointer-events-none" />
+                  <div className="absolute bottom-3 left-8 w-6 h-6 border-b-2 border-l-2 border-[#d4af37]/60 pointer-events-none" />
+                  <div className="absolute bottom-3 right-3 w-6 h-6 border-b-2 border-r-2 border-[#d4af37]/60 pointer-events-none" />
+
+                  <div className="pl-4">
+                    <div className="flex items-center justify-between text-[10px] font-mono tracking-widest text-[#a8a8a8] border-b border-white/10 pb-2">
+                      <span className="text-[#39ff88] font-bold">VOL. XXIV // NO. 08</span>
+                      <span>EST. 2021</span>
+                    </div>
+                    <div className="text-[10px] font-mono tracking-wider text-white/40 mt-1 uppercase">
+                      Malappuram & Kerala Edition
+                    </div>
+                  </div>
+
+                  <div className="pl-4 text-center my-auto py-6">
+                    <div className="w-16 h-16 mx-auto rounded-full border border-[#d4af37]/40 flex items-center justify-center mb-5 bg-white/[0.02] shadow-[0_0_20px_rgba(212,175,55,0.15)] group-hover:scale-105 transition-transform">
+                      <svg className="w-8 h-8 text-[#d4af37]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                      </svg>
+                    </div>
+
+                    <h3 className="text-3xl md:text-5xl font-anton uppercase text-white leading-tight mb-3">
+                      THE DEVELOPER <br />
+                      <span className="text-stroke group-hover:text-white transition-colors">GAZETTE</span>
+                    </h3>
+
+                    <p className="text-xs font-serif italic text-white/60 max-w-xs mx-auto">
+                      “An Archival Compendium of Technical Engineering, Production Architecture & Hardware Integrations.”
+                    </p>
+                  </div>
+
+                  <div className="pl-4 text-center">
+                    <div className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-[#39ff88] text-black font-mono text-xs font-bold uppercase tracking-wider shadow-[0_0_20px_rgba(57,255,136,0.4)] group-hover:scale-105 transition-all">
+                      <span>OPEN BOOK</span>
+                      <span>→</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* OPEN BOOK STATE */}
+            {isOpen && (
+              <div className="w-full flex flex-col items-center">
+                {/* Top Control Bar */}
+                <div className="w-full max-w-4xl flex items-center justify-between mb-4 text-xs font-mono text-white/60">
+                  <button
+                    onClick={handleCloseBook}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-white/5 border border-white/10 hover:border-white/30 text-white hover:text-[#39ff88] transition-colors focus:outline-none focus:ring-2 focus:ring-[#39ff88]"
+                    aria-label="Close book"
+                  >
+                    <span>← CLOSE BOOK</span>
+                  </button>
+
+                  <div className="flex items-center gap-2">
+                    <span className="text-white font-bold tracking-widest">{activeChap.chapterNum} / 03</span>
+                    <span className="text-white/30">•</span>
+                    <span className="text-[#39ff88] uppercase">{activeChap.title}</span>
+                  </div>
+
+                  {/* Tabs */}
+                  <div className="flex items-center gap-1">
+                    {CHAPTERS.map((ch, idx) => (
+                      <button
+                        key={ch.chapterNum}
+                        onClick={() => {
+                          setCurrentChapter(idx);
+                          setMobilePage(0);
+                        }}
+                        className={`px-2 py-1 text-[11px] font-mono rounded transition-all focus:outline-none focus:ring-2 focus:ring-[#39ff88] ${
+                          currentChapter === idx
+                            ? "bg-[#39ff88] text-black font-bold"
+                            : "bg-white/5 text-white/70 hover:bg-white/10"
+                        }`}
+                        aria-label={`Jump to Chapter ${ch.chapterNum}`}
+                      >
+                        CH {ch.chapterNum}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Hardcover Open Book Frame */}
+                <div
+                  className="relative w-full max-w-4xl rounded-2xl p-2 md:p-4 bg-gradient-to-b from-[#18181a] via-[#101012] to-[#0c0c0e] border border-white/10 shadow-[0_30px_70px_rgba(0,0,0,0.9)] preserve-3d"
+                  style={{ transform: "rotateX(4deg)" }}
+                >
+                  {/* Protruding Right Tabs */}
+                  <div className="absolute top-12 -right-8 flex-col gap-2 z-30 hidden lg:flex">
+                    {CHAPTERS.map((ch, idx) => (
+                      <button
+                        key={`tab-${idx}`}
+                        onClick={() => {
+                          setCurrentChapter(idx);
+                          setMobilePage(0);
+                        }}
+                        className={`px-2 py-2 text-[10px] font-mono tracking-widest uppercase writing-mode-vertical rounded-r-md border-y border-r transition-all shadow-md focus:outline-none focus:ring-2 focus:ring-[#39ff88] ${
+                          currentChapter === idx
+                            ? "bg-[#39ff88] text-black font-bold border-[#39ff88] translate-x-1"
+                            : "bg-[#252528] text-white/60 border-white/10 hover:text-white"
+                        }`}
+                        aria-label={`Tab: Chapter ${ch.chapterNum}`}
+                      >
+                        CH {ch.chapterNum}
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Facing Pages */}
+                  <div className="relative w-full bg-[#EDE8DC] text-[#1a1a1a] rounded-lg shadow-inner overflow-hidden grid grid-cols-1 md:grid-cols-2 min-h-[520px]">
+                    {/* Spine Gutter Shadow */}
+                    <div className="absolute top-0 bottom-0 left-1/2 -translate-x-1/2 w-12 pointer-events-none z-20 hidden md:block bg-gradient-to-r from-black/25 via-black/10 to-black/25" />
+
+                    {/* LEFT PAGE */}
+                    {(!isMobile || mobilePage === 0) && (
+                      <div className="relative p-7 md:p-10 flex flex-col justify-between bg-[#EDE8DC] border-b md:border-b-0 md:border-r border-[#d4cdbe]">
+                        {/* Flip Left Edge Area */}
+                        <button
+                          onClick={handlePrev}
+                          className="absolute inset-y-0 left-0 w-12 hover:bg-black/[0.04] transition-colors flex items-center justify-start pl-2 text-black/30 hover:text-black/70 focus:outline-none focus:bg-black/5"
+                          aria-label="Previous Page"
+                        >
+                          ‹
+                        </button>
+
+                        <div className="pl-6 border-b border-[#d8d0bf] pb-3 flex items-center justify-between text-[11px] font-mono text-[#666050] uppercase">
+                          <span>THE DEVELOPER GAZETTE</span>
+                          <span>CHAP. {activeChap.chapterNum}</span>
+                        </div>
+
+                        <div className="pl-6 my-auto py-6">
+                          <div className="text-6xl md:text-8xl font-anton text-[#8c826e]/30 select-none leading-none -mb-3">
+                            {activeChap.chapterNum}
+                          </div>
+                          <h3 className="text-3xl md:text-5xl font-anton text-[#141414] uppercase tracking-tight mb-2">
+                            {activeChap.title}
+                          </h3>
+                          <div className="text-xs font-mono uppercase text-[#7a7260] font-semibold mb-4">
+                            {activeChap.tagline}
+                          </div>
+                          <p className="font-serif italic text-sm md:text-base text-[#38332b] leading-relaxed max-w-sm">
+                            “{activeChap.intro}”
+                          </p>
+                        </div>
+
+                        <div className="pl-6 pt-3 border-t border-[#d8d0bf] flex items-center justify-between text-[11px] font-mono text-[#77705e]">
+                          <span>PAGE {activeChap.leftPageNum}</span>
+                          {isMobile && (
+                            <button onClick={() => setMobilePage(1)} className="font-bold underline">
+                              VIEW SKILLS →
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* RIGHT PAGE */}
+                    {(!isMobile || mobilePage === 1) && (
+                      <div className="relative p-7 md:p-10 flex flex-col justify-between bg-[#F4F0E6]">
+                        {/* Flip Right Edge Area */}
+                        <button
+                          onClick={handleNext}
+                          className="absolute inset-y-0 right-0 w-12 hover:bg-black/[0.04] transition-colors flex items-center justify-end pr-2 text-black/30 hover:text-black/70 focus:outline-none focus:bg-black/5"
+                          aria-label="Next Page"
+                        >
+                          ›
+                        </button>
+
+                        <div className="pr-6 border-b border-[#d8d0bf] pb-3 flex items-center justify-between text-[11px] font-mono text-[#666050] uppercase">
+                          <span>CLASSIFIED INVENTORY</span>
+                          <span>2026 REGISTER</span>
+                        </div>
+
+                        <div className="pr-6 my-auto py-4 space-y-4">
+                          {activeChap.categories.map((cat, idx) => (
+                            <div key={idx} className="border-b border-[#ded7c8] pb-3">
+                              <div className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#7a7260] mb-1.5 flex items-center gap-2">
+                                <span className="text-[#39ff88] bg-black px-1.5 py-0.5 rounded text-[9px]">
+                                  {cat.label}
+                                </span>
+                              </div>
+                              <div className="flex flex-wrap gap-1.5">
+                                {cat.items.map((item, itemIdx) => (
+                                  <span
+                                    key={itemIdx}
+                                    className="inline-block px-2.5 py-1 rounded bg-[#e8e2d4] text-[#1a1a1a] text-xs font-mono font-medium border border-[#d2cab9]"
+                                  >
+                                    {item}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+
+                        <div className="pr-6 pt-3 border-t border-[#d8d0bf] flex items-center justify-between text-[11px] font-mono text-[#77705e]">
+                          {isMobile ? (
+                            <button onClick={() => setMobilePage(0)} className="font-bold underline">
+                              ← CHAPTER INFO
+                            </button>
+                          ) : (
+                            <span className="italic font-serif">Kerala Archival Press</span>
+                          )}
+                          <span>PAGE {activeChap.rightPageNum}</span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Bottom Buttons */}
+                <div className="flex items-center justify-between w-full max-w-4xl mt-5 px-3">
+                  <button
+                    onClick={handlePrev}
+                    className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/5 border border-white/10 text-xs font-mono uppercase tracking-wider text-white hover:bg-white/10 hover:border-[#39ff88] transition-all focus:outline-none focus:ring-2 focus:ring-[#39ff88]"
+                    aria-label="Previous Page"
+                  >
+                    <span>‹ PREV PAGE</span>
+                  </button>
+
+                  <div className="text-xs font-mono text-white/50 tracking-widest hidden sm:block">
+                    USE ARROW KEYS OR CLICK PAGE EDGES TO FLIP
+                  </div>
+
+                  <button
+                    onClick={handleNext}
+                    disabled={currentChapter === CHAPTERS.length - 1 && (!isMobile || mobilePage === 1)}
+                    className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-mono uppercase tracking-wider transition-all focus:outline-none focus:ring-2 focus:ring-[#39ff88] ${
+                      currentChapter === CHAPTERS.length - 1 && (!isMobile || mobilePage === 1)
+                        ? "bg-white/5 text-white/30 border border-white/5 cursor-not-allowed"
+                        : "bg-[#39ff88] text-black font-bold shadow-[0_0_15px_rgba(57,255,136,0.3)] hover:scale-105"
+                    }`}
+                    aria-label="Next Page"
+                  >
+                    <span>NEXT PAGE ›</span>
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </section>
+      );
+    }
+
+    ReactDOM.render(<SkillsBookApp />, document.getElementById("root"));
+  </script>
+</body>
+</html>

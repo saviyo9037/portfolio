@@ -9,14 +9,14 @@ import { FiArrowUpRight, FiX } from "react-icons/fi";
  */
 function ProjectTicker() {
   const [lightboxImage, setLightboxImage] = useState(null);
-  
+
   const featuredProjects = projects.filter((p) => p.featured || p.liveUrl);
   // Duplicate for seamless loop
   const tickerItems = [...featuredProjects, ...featuredProjects];
 
   return (
     <>
-      <section className="relative py-16 md:py-24 overflow-hidden border-t border-b border-[var(--border-subtle)] bg-[var(--bg-base)]">
+      <section className="relative py-16 md:py-24 overflow-hidden border-t border-b border-white/10 bg-transparent">
         {/* Section Label */}
         <div className="container-custom mb-10">
           <motion.div
@@ -26,10 +26,10 @@ function ProjectTicker() {
             transition={{ duration: 0.6 }}
             className="flex items-center gap-4"
           >
-            <span className="text-xs tracking-[0.3em] uppercase text-[var(--text-dim)] font-medium">
+            <span className="text-xs tracking-[0.3em] uppercase text-emerald-400 font-medium">
               ✦
             </span>
-            <h3 className="text-xs tracking-[0.3em] uppercase text-[var(--text-muted)] font-medium">
+            <h3 className="text-xs tracking-[0.3em] uppercase text-slate-400 font-medium">
               Featured Projects
             </h3>
             <div className="divider flex-1" />
@@ -39,11 +39,11 @@ function ProjectTicker() {
         {/* Ticker Track */}
         <div className="flex gap-6 md:gap-8 pl-5 md:pl-10 ticker-container ticker-auto">
           {tickerItems.map((project, i) => (
-            <TickerCard 
-              key={`${project.id}-${i}`} 
-              project={project} 
-              index={i} 
-              onViewImage={setLightboxImage} 
+            <TickerCard
+              key={`${project.id}-${i}`}
+              project={project}
+              index={i}
+              onViewImage={setLightboxImage}
             />
           ))}
         </div>
@@ -59,7 +59,7 @@ function ProjectTicker() {
             className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4 md:p-10"
             onClick={() => setLightboxImage(null)}
           >
-            <button 
+            <button
               className="absolute top-6 right-6 text-white/50 hover:text-white transition-colors"
               onClick={() => setLightboxImage(null)}
             >
@@ -96,10 +96,10 @@ function TickerCard({ project, index, onViewImage }) {
     "from-violet-900/30 to-fuchsia-900/20",
   ];
   const gradient = gradients[index % gradients.length];
-  
+
   // Format image path (add leading slash if needed so it loads from public folder correctly)
-  const imageSrc = project.image 
-    ? (project.image.startsWith("http") || project.image.startsWith("/") ? project.image : `/${project.image}`) 
+  const imageSrc = project.image
+    ? (project.image.startsWith("http") || project.image.startsWith("/") ? project.image : `/${project.image}`)
     : null;
 
   const handleInteraction = () => {
@@ -142,20 +142,20 @@ function CardContent({ project, gradient, isCompany, imageSrc }) {
   return (
     <>
       {/* Image frame */}
-      <div className="relative aspect-[4/3] rounded-lg overflow-hidden mb-4 bg-[var(--bg-elevated)] border border-[var(--border-subtle)] group-hover:border-[var(--border-hover)] transition-colors duration-500">
-        
+      <div className="relative aspect-[4/3] rounded-lg overflow-hidden mb-4 bg-[#121216]/90 border border-white/10 group-hover:border-white/30 transition-colors duration-500">
+
         {/* Project Image or Gradient Placeholder */}
         {imageSrc ? (
-          <img 
-            src={imageSrc} 
-            alt={project.title} 
+          <img
+            src={imageSrc}
+            alt={project.title}
             loading="lazy"
-            className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
+            className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
           />
         ) : (
           <div className={`absolute inset-0 bg-gradient-to-br ${gradient}`} />
         )}
-        
+
         {/* Project title overlay (only show if no image) */}
         {!imageSrc && (
           <div className="absolute inset-0 flex items-center justify-center p-6">
@@ -166,11 +166,11 @@ function CardContent({ project, gradient, isCompany, imageSrc }) {
         )}
 
         {/* Hover overlay */}
-        <div className="absolute inset-0 bg-[var(--bg-base)]/0 group-hover:bg-[var(--bg-base)]/30 transition-colors duration-500" />
+        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-500" />
 
         {/* Arrow icon */}
         {(project.liveUrl || project.githubUrl) && (
-          <div className="absolute top-4 right-4 w-8 h-8 rounded-full bg-[var(--bg-base)]/50 backdrop-blur-sm flex items-center justify-center text-white/60 group-hover:text-white group-hover:bg-[var(--text-main)] group-hover:text-[var(--bg-base)] transition-all duration-500 opacity-0 group-hover:opacity-100 -translate-y-2 group-hover:translate-y-0">
+          <div className="absolute top-4 right-4 w-8 h-8 rounded-full bg-black/60 backdrop-blur-sm flex items-center justify-center text-white/80 group-hover:text-black group-hover:bg-white transition-all duration-500 opacity-0 group-hover:opacity-100 -translate-y-2 group-hover:translate-y-0">
             <FiArrowUpRight className="text-sm" />
           </div>
         )}
@@ -178,11 +178,10 @@ function CardContent({ project, gradient, isCompany, imageSrc }) {
         {/* Category badge */}
         <div className="absolute bottom-4 left-4">
           <span
-            className={`text-[9px] tracking-[0.15em] uppercase font-mono px-2 py-1 rounded-md backdrop-blur-sm ${
-              isCompany
-                ? "bg-amber-500/20 text-amber-200 border border-amber-500/20"
-                : "bg-cyan-500/20 text-cyan-200 border border-cyan-500/20"
-            }`}
+            className={`text-[9px] tracking-[0.15em] uppercase font-mono px-2 py-1 rounded-md backdrop-blur-sm font-semibold shadow-sm ${isCompany
+              ? "bg-amber-500/10 text-amber-300 border border-amber-500/30"
+              : "bg-cyan-500/10 text-cyan-300 border border-cyan-500/30"
+              }`}
           >
             {isCompany ? "Company" : "Personal"}
           </span>
@@ -192,18 +191,18 @@ function CardContent({ project, gradient, isCompany, imageSrc }) {
       {/* Caption */}
       <div className="flex items-start justify-between gap-3">
         <div>
-          <h4 
-            className="text-sm font-sans normal-case font-medium tracking-wide text-[var(--text-main)] group-hover:text-white transition-colors mb-1"
+          <h4
+            className="text-sm font-sans normal-case font-semibold tracking-wide text-white group-hover:text-[#39ff88] transition-colors mb-1"
             style={{ fontFamily: 'Inter, sans-serif' }}
           >
             {project.title}
           </h4>
-          <p className="text-xs text-[var(--text-dim)] tracking-wider">
+          <p className="text-xs text-slate-400 tracking-wider">
             {project.tags?.slice(0, 2).join(" · ")}
           </p>
         </div>
         {(project.liveUrl || project.githubUrl) && (
-          <FiArrowUpRight className="text-[var(--text-dim)] group-hover:text-[var(--text-main)] transition-colors mt-0.5 flex-shrink-0" />
+          <FiArrowUpRight className="text-slate-400 group-hover:text-[#39ff88] transition-colors mt-0.5 flex-shrink-0" />
         )}
       </div>
     </>

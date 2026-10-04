@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Tech Galaxy — 3D Canvas Background</title>
+  <meta name="description" content="3D Tech Galaxy animated canvas background for developer portfolio.">
+
+  <!-- Google Fonts: Anton, Inter, JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #0A0A0A;
+      --text: #F0F0F0;
+      --muted: #9a9a9a;
+      --green: #39ff88;
+    }
+
+    html, body {
+      width: 100%;
+      min-height: 250vh;
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Fixed full-screen 2D canvas at z-index: -2 */
+    #galaxy-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -2;
+      pointer-events: none;
+      display: block;
+    }
+
+    /* Thin placeholder content block on top */
+    .overlay-container {
+      position: relative;
+      z-index: 10;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 80px 24px 160px;
+      pointer-events: none;
+    }
+
+    .interactive-card {
+      pointer-events: auto;
+      background: rgba(18, 18, 22, 0.55);
+      border: 1px solid rgba(240, 240, 240, 0.1);
+      border-radius: 20px;
+      padding: 40px;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+      margin-bottom: 60px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--green);
+      background: rgba(57, 255, 136, 0.08);
+      border: 1px solid rgba(57, 255, 136, 0.25);
+      padding: 6px 14px;
+      border-radius: 999px;
+      margin-bottom: 24px;
+    }
+
+    .badge-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--green);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--green);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+    }
+
+    h1 {
+      font-family: 'Anton', sans-serif;
+      font-size: clamp(3rem, 7vw, 5.5rem);
+      line-height: 0.95;
+      text-transform: uppercase;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      margin-bottom: 20px;
+    }
+
+    p.lead {
+      font-size: 1.05rem;
+      line-height: 1.7;
+      color: var(--muted);
+      max-width: 620px;
+      margin-bottom: 30px;
+    }
+
+    .hud-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      border-top: 1px solid rgba(240, 240, 240, 0.08);
+      padding-top: 24px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .hud-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .hud-label {
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .hud-value {
+      font-size: 14px;
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .scroll-indicator {
+      text-align: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-top: 140px;
+    }
+
+    .scroll-indicator span {
+      display: inline-block;
+      margin-top: 8px;
+      animation: bounce 1.8s infinite;
+      color: var(--green);
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(6px); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Full-screen animated canvas background: position:fixed, inset:0, z-index:-2, aria-hidden, on a #0A0A0A page -->
+  <canvas id="galaxy-canvas" aria-hidden="true"></canvas>
+
+  <!-- Thin placeholder content block on top -->
+  <div class="overlay-container">
+    <div class="interactive-card">
+      <div class="badge">
+        <span class="badge-dot"></span>
+        3D Tech Galaxy · Active Node Engine
+      </div>
+      <h1>Tech Galaxy</h1>
+      <p class="lead">
+        A custom 3D constellation canvas built from a real developer stack. 36 tech nodes and 150 dust particles rendered with manual perspective projection, interactive cursor gravity, dynamic edge packet data routing, and scroll-responsive parallax.
+      </p>
+
+      <div class="hud-grid">
+        <div class="hud-item">
+          <span class="hud-label">Perspective Engine</span>
+          <span class="hud-value">Manual 2D Canvas</span>
+        </div>
+        <div class="hud-item">
+          <span class="hud-label">Labeled Tech Nodes</span>
+          <span class="hud-value">36</span>
+        </div>
+        <div class="hud-item">
+          <span class="hud-label">Proximity Edges (&lt;600)</span>
+          <span class="hud-value" id="hud-edges">--</span>
+        </div>
+        <div class="hud-item">
+          <span class="hud-label">Active Packets</span>
+          <span class="hud-value" id="hud-packets" style="color: var(--green);">0 / 18</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Second card to demonstrate page scroll parallax -->
+    <div class="interactive-card" style="margin-top: 120px; opacity: 0.85;">
+      <h2 style="font-family: 'Anton', sans-serif; font-size: 2.2rem; text-transform: uppercase; margin-bottom: 12px;">
+        Scroll Parallax Test
+      </h2>
+      <p class="lead" style="font-size: 0.95rem; margin-bottom: 0;">
+        Scroll down to observe the galaxy smoothly rotate along the Y-axis via <code style="color: var(--green); font-family: 'JetBrains Mono';">(scrollY / innerHeight) * 0.45</code>. Move the cursor near any node to trigger proximity magnetic lines, label glows, and packet paths.
+      </p>
+    </div>
+
+    <div class="scroll-indicator">
+      Scroll to tilt galaxy
+      <br>
+      <span>↓</span>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      "use strict";
+
+      const canvas = document.getElementById("galaxy-canvas");
+      const ctx = canvas.getContext("2d");
+
+      // Accessibility: Respect prefers-reduced-motion
+      const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      // 36 Labeled Tech Stack Nodes
+      const TECH_NAMES = [
+        "React", "Next.js", "Node.js", "Express", "MongoDB", "MySQL",
+        "TypeScript", "Tailwind", "Redux", "TanStack", "JWT", "REST API",
+        "WebSocket", "Socket.IO", "ESC/POS", "Docker", "Git", "PHP",
+        "Python", "Flutter", "Dart", "Figma", "Vite", "npm",
+        "SQL", "Postman", "SQLite", "Mongoose", "Axios", "RBAC",
+        "GitHub", "JavaScript", "HTML5", "CSS3", "Barcode", "QR"
+      ];
+
+      // Configuration Constants
+      const DUST_COUNT = 150;
+      const MAX_PACKETS = 18;
+      const PACKET_SPAWN_INTERVAL = 26; // frames
+      const EDGE_MAX_DISTANCE = 600;
+      const HOVER_MAX_DIST = 150; // px on screen
+
+      // Dimensions & DPR
+      let W = window.innerWidth;
+      let H = window.innerHeight;
+      let dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+      // Mouse State
+      let mouseX = -9999;
+      let mouseY = -9999;
+      let targetMouseNormX = 0;
+      let targetMouseNormY = 0;
+      let smoothedMouseX = 0;
+      let smoothedMouseY = 0;
+
+      // Resize Canvas with DPR capping at 2
+      function resize() {
+        W = window.innerWidth;
+        H = window.innerHeight;
+        dpr = Math.min(window.devicePixelRatio || 1, 2);
+        canvas.width = Math.floor(W * dpr);
+        canvas.height = Math.floor(H * dpr);
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.scale(dpr, dpr);
+      }
+
+      window.addEventListener("resize", resize);
+      resize();
+
+      // Deterministic pseudo-random helper for consistent aesthetic placement
+      let seed = 42;
+      function randomRange(min, max) {
+        seed = (seed * 9301 + 49297) % 233280;
+        const rnd = seed / 233280;
+        return min + rnd * (max - min);
+      }
+
+      // Initialize 36 Labeled Nodes: x in [-1200, 1200], y in [-700, 700], z in [-800, 800]
+      const nodes = TECH_NAMES.map((name) => ({
+        name,
+        x: randomRange(-1200, 1200),
+        y: randomRange(-700, 700),
+        z: randomRange(-800, 800),
+        projX: 0,
+        projY: 0,
+        scale: 0,
+        depth: 0,
+        visible: false,
+        isHovered: false,
+      }));
+
+      // Initialize 150 Unlabeled Dust Points: x ±1600, y ±900, z ±900
+      const dust = Array.from({ length: DUST_COUNT }, () => ({
+        x: randomRange(-1600, 1600),
+        y: randomRange(-900, 900),
+        z: randomRange(-900, 900),
+        size: randomRange(1, 2),
+      }));
+
+      // Precompute edges between pairs with 3D distance < 600
+      const edges = [];
+      for (let i = 0; i < nodes.length; i++) {
+        for (let j = i + 1; j < nodes.length; j++) {
+          const dx = nodes[i].x - nodes[j].x;
+          const dy = nodes[i].y - nodes[j].y;
+          const dz = nodes[i].z - nodes[j].z;
+          const dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
+          if (dist < EDGE_MAX_DISTANCE) {
+            edges.push({ a: i, b: j, dist });
+          }
+        }
+      }
+
+      // Update HUD count
+      const hudEdgesEl = document.getElementById("hud-edges");
+      if (hudEdgesEl) hudEdgesEl.textContent = edges.length;
+
+      // Active Data Packets traveling along edges
+      const packets = [];
+      let frameCount = 0;
+
+      function spawnPacket() {
+        if (edges.length === 0 || packets.length >= MAX_PACKETS) return;
+        const edgeIdx = Math.floor(Math.random() * edges.length);
+        const forward = Math.random() < 0.5;
+        packets.push({ edgeIdx, forward, t: 0, speed: 0.014 });
+      }
+
+      // Mouse & Scroll Event Listeners
+      function onMouseMove(e) {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+        targetMouseNormX = (mouseX / Math.max(1, W) - 0.5) * 2;
+        targetMouseNormY = (mouseY / Math.max(1, H) - 0.5) * 2;
+      }
+
+      function onMouseLeave() {
+        mouseX = -9999;
+        mouseY = -9999;
+        targetMouseNormX = 0;
+        targetMouseNormY = 0;
+      }
+
+      window.addEventListener("mousemove", onMouseMove, { passive: true });
+      window.addEventListener("mouseleave", onMouseLeave, { passive: true });
+
+      // Core Render Loop
+      let animId = null;
+
+      function render(time) {
+        frameCount++;
+
+        // Smooth mouse with lerp of 0.05
+        smoothedMouseX += (targetMouseNormX - smoothedMouseX) * 0.05;
+        smoothedMouseY += (targetMouseNormY - smoothedMouseY) * 0.05;
+
+        // Rotation Angles
+        const scrollY = window.scrollY || window.pageYOffset || 0;
+        const scrollFraction = scrollY / Math.max(1, H);
+        const ay = time * 0.00006 + smoothedMouseX * 0.9 + scrollFraction * 0.45;
+        const ax = smoothedMouseY * 0.4;
+
+        const cosY = Math.cos(ay), sinY = Math.sin(ay);
+        const cosX = Math.cos(ax), sinX = Math.sin(ax);
+
+        // Clear canvas on #0A0A0A page
+        ctx.fillStyle = "#0A0A0A";
+        ctx.fillRect(0, 0, W, H);
+
+        // AMBIENT GLOW (drawn first, every frame)
+        // Top-right drifting emerald glow
+        const g1X = W * 0.82 + Math.sin(time * 0.0003) * 90;
+        const g1Y = H * 0.22;
+        const grad1 = ctx.createRadialGradient(g1X, g1Y, 0, g1X, g1Y, 520);
+        grad1.addColorStop(0, "rgba(57, 255, 136, 0.075)");
+        grad1.addColorStop(1, "rgba(57, 255, 136, 0)");
+        ctx.fillStyle = grad1;
+        ctx.beginPath();
+        ctx.arc(g1X, g1Y, 520, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Bottom-left subtle ambient glow
+        const g2X = W * 0.12 + Math.cos(time * 0.0002) * 80;
+        const g2Y = H * 0.85;
+        const grad2 = ctx.createRadialGradient(g2X, g2Y, 0, g2X, g2Y, 480);
+        grad2.addColorStop(0, "rgba(240, 240, 240, 0.05)");
+        grad2.addColorStop(1, "rgba(240, 240, 240, 0)");
+        ctx.fillStyle = grad2;
+        ctx.beginPath();
+        ctx.arc(g2X, g2Y, 480, 0, Math.PI * 2);
+        ctx.fill();
+
+        // PROJECT DUST PARTICLES
+        for (let i = 0; i < dust.length; i++) {
+          const pt = dust[i];
+          const x1 = pt.x * cosY + pt.z * sinY;
+          const z1 = -pt.x * sinY + pt.z * cosY;
+          const y1 = pt.y * cosX - z1 * sinX;
+          const z2 = pt.y * sinX + z1 * cosX;
+
+          const zz = z2 + 1500;
+          if (zz < 200) continue;
+
+          const s = 950 / zz;
+          const sx = W / 2 + x1 * s;
+          const sy = H / 2 + y1 * s;
+
+          if (sx >= -10 && sx <= W + 10 && sy >= -10 && sy <= H + 10) {
+            const d = Math.max(0, Math.min(1, (2300 - zz) / 1500));
+            const pSize = Math.max(1, Math.min(2, pt.size * s));
+            ctx.fillStyle = `rgba(240, 240, 240, ${d * 0.28})`;
+            ctx.fillRect(sx, sy, pSize, pSize);
+          }
+        }
+
+        // PROJECT LABELED TECH NODES
+        for (let i = 0; i < nodes.length; i++) {
+          const n = nodes[i];
+          const x1 = n.x * cosY + n.z * sinY;
+          const z1 = -n.x * sinY + n.z * cosY;
+          const y1 = n.y * cosX - z1 * sinX;
+          const z2 = n.y * sinX + z1 * cosX;
+
+          const zz = z2 + 1500;
+          if (zz < 200) {
+            n.visible = false;
+            continue;
+          }
+
+          const s = 950 / zz;
+          n.scale = s;
+          n.projX = W / 2 + x1 * s;
+          n.projY = H / 2 + y1 * s;
+          n.depth = Math.max(0, Math.min(1, (2300 - zz) / 1500));
+          n.visible = true;
+
+          const dist = Math.hypot(n.projX - mouseX, n.projY - mouseY);
+          n.isHovered = dist < HOVER_MAX_DIST;
+        }
+
+        // DRAW EDGES BETWEEN LABELED NODES
+        ctx.lineWidth = 1;
+        for (let i = 0; i < edges.length; i++) {
+          const edge = edges[i];
+          const nA = nodes[edge.a];
+          const nB = nodes[edge.b];
+
+          if (!nA.visible || !nB.visible) continue;
+
+          const minDepth = Math.min(nA.depth, nB.depth);
+          if (nA.isHovered || nB.isHovered) {
+            ctx.strokeStyle = `rgba(57, 255, 136, ${Math.max(0.18, minDepth * 0.45)})`;
+          } else {
+            ctx.strokeStyle = `rgba(240, 240, 240, ${minDepth * 0.17})`;
+          }
+
+          ctx.beginPath();
+          ctx.moveTo(nA.projX, nA.projY);
+          ctx.lineTo(nB.projX, nB.projY);
+          ctx.stroke();
+        }
+
+        // DATA PACKETS
+        if (!prefersReducedMotion && frameCount % PACKET_SPAWN_INTERVAL === 0) {
+          spawnPacket();
+        }
+
+        ctx.shadowBlur = 14;
+        ctx.shadowColor = "#39ff88";
+        ctx.fillStyle = "#39ff88";
+
+        for (let i = packets.length - 1; i >= 0; i--) {
+          const p = packets[i];
+          p.t += p.speed;
+
+          if (p.t >= 1) {
+            packets.splice(i, 1);
+            continue;
+          }
+
+          const edge = edges[p.edgeIdx];
+          const nA = nodes[p.forward ? edge.a : edge.b];
+          const nB = nodes[p.forward ? edge.b : edge.a];
+
+          if (!nA.visible || !nB.visible) {
+            packets.splice(i, 1);
+            continue;
+          }
+
+          const px = nA.projX + (nB.projX - nA.projX) * p.t;
+          const py = nA.projY + (nB.projY - nA.projY) * p.t;
+
+          ctx.beginPath();
+          ctx.arc(px, py, 2.4, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.shadowBlur = 0;
+
+        // Update HUD
+        const hudPacketsEl = document.getElementById("hud-packets");
+        if (hudPacketsEl && frameCount % 10 === 0) {
+          hudPacketsEl.textContent = `${packets.length} / ${MAX_PACKETS}`;
+        }
+
+        // DRAW LABELED NODES & LABELS
+        for (let i = 0; i < nodes.length; i++) {
+          const n = nodes[i];
+          if (!n.visible) continue;
+
+          const baseRadius = 1.8 + 2.2 * n.scale;
+          const radius = n.isHovered ? baseRadius * 1.5 : baseRadius;
+          const fontSize = Math.max(8, 9 + 5 * n.scale);
+
+          // Proximity tether line to cursor & soft halo
+          if (n.isHovered && mouseX > -1000) {
+            ctx.strokeStyle = "rgba(57, 255, 136, 0.45)";
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(n.projX, n.projY);
+            ctx.lineTo(mouseX, mouseY);
+            ctx.stroke();
+
+            const haloGrad = ctx.createRadialGradient(n.projX, n.projY, 0, n.projX, n.projY, radius * 3.5);
+            haloGrad.addColorStop(0, "rgba(57, 255, 136, 0.45)");
+            haloGrad.addColorStop(1, "rgba(57, 255, 136, 0)");
+            ctx.fillStyle = haloGrad;
+            ctx.beginPath();
+            ctx.arc(n.projX, n.projY, radius * 3.5, 0, Math.PI * 2);
+            ctx.fill();
+          }
+
+          // Node Dot
+          ctx.beginPath();
+          ctx.arc(n.projX, n.projY, radius, 0, Math.PI * 2);
+
+          if (n.isHovered) {
+            ctx.shadowBlur = 16;
+            ctx.shadowColor = "#39ff88";
+            ctx.fillStyle = "#39ff88";
+            ctx.fill();
+            ctx.shadowBlur = 0;
+          } else {
+            const alpha = Math.max(0.18, n.depth * 0.9);
+            ctx.fillStyle = `rgba(240, 240, 240, ${alpha})`;
+            ctx.fill();
+          }
+
+          // Node Label ('JetBrains Mono')
+          ctx.font = `${Math.round(fontSize)}px 'JetBrains Mono', monospace`;
+          ctx.textAlign = "left";
+          ctx.textBaseline = "middle";
+
+          const labelX = n.projX + radius + 5;
+          const labelY = n.projY;
+
+          if (n.isHovered) {
+            ctx.fillStyle = "#FFFFFF";
+            ctx.shadowBlur = 8;
+            ctx.shadowColor = "rgba(57, 255, 136, 0.5)";
+            ctx.fillText(n.name, labelX, labelY);
+            ctx.shadowBlur = 0;
+          } else {
+            const textAlpha = Math.max(0.12, Math.min(0.85, n.depth * 0.8));
+            ctx.fillStyle = `rgba(240, 240, 240, ${textAlpha})`;
+            ctx.fillText(n.name, labelX, labelY);
+          }
+        }
+
+        if (!prefersReducedMotion) {
+          animId = requestAnimationFrame(render);
+        }
+      }
+
+      if (prefersReducedMotion) {
+        render(0);
+      } else {
+        animId = requestAnimationFrame(render);
+      }
+
+      window.addEventListener("beforeunload", () => {
+        if (animId) cancelAnimationFrame(animId);
+        window.removeEventListener("resize", resize);
+        window.removeEventListener("mousemove", onMouseMove);
+        window.removeEventListener("mouseleave", onMouseLeave);
+      });
+    })();
+  </script>
+</body>
+</html>

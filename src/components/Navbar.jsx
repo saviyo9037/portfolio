@@ -117,7 +117,7 @@ function Navbar() {
       >
         {/* Background that appears on scroll */}
         <motion.div
-          className="absolute inset-0 bg-[var(--bg-base)]/70 backdrop-blur-xl border-b border-[var(--border-subtle)]"
+          className="absolute inset-0 bg-[#0A0A0A]/85 backdrop-blur-xl border-b border-white/10 shadow-lg"
           initial={{ opacity: 0 }}
           animate={{ opacity: scrolled ? 1 : 0 }}
           transition={{ duration: 0.3 }}
@@ -133,7 +133,7 @@ function Navbar() {
             }}
             className="flex items-center gap-2 cursor-pointer group"
           >
-            <span className="text-lg md:text-xl font-['Anton'] uppercase tracking-widest text-[var(--text-main)] border border-[var(--text-dim)] px-2 py-1 rounded mix-blend-difference relative overflow-hidden bg-black/20">
+            <span className="text-lg md:text-xl font-['Anton'] uppercase tracking-widest text-white border border-white/15 px-2.5 py-1 rounded-md relative overflow-hidden bg-white/5 shadow-sm">
               <motion.span
                 className="inline-block"
                 whileHover={{
@@ -152,7 +152,7 @@ function Navbar() {
                 key={item.href}
                 isActive={activeSection === item.id}
                 onClick={() => handleScroll(item.id)}
-                className="link-underline text-xs tracking-[0.2em] uppercase font-medium hover:opacity-60 transition-opacity text-[var(--text-main)] mix-blend-difference"
+                className="link-underline text-xs tracking-[0.2em] uppercase font-semibold text-slate-300 hover:text-white transition-colors"
               >
                 {item.label}
               </MagneticNavItem>
@@ -162,7 +162,7 @@ function Navbar() {
           {/* Mobile Toggle */}
           <motion.button
             onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden text-xs tracking-[0.2em] uppercase font-medium text-[var(--text-main)] mix-blend-difference relative z-[60]"
+            className="md:hidden text-xs tracking-[0.2em] uppercase font-semibold text-white relative z-[60] bg-[#121216] border border-white/15 px-3 py-1.5 rounded-full shadow-sm"
             whileTap={{ scale: 0.95 }}
           >
             <AnimatePresence mode="wait">
@@ -184,7 +184,7 @@ function Navbar() {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            className="fixed inset-0 z-[55] bg-[var(--bg-base)]/95 backdrop-blur-2xl flex flex-col items-start justify-center px-10"
+            className="fixed inset-0 z-[55] bg-[#0A0A0A]/98 backdrop-blur-2xl flex flex-col items-start justify-center px-10"
             initial={{ clipPath: "circle(0% at calc(100% - 40px) 40px)" }}
             animate={{ clipPath: "circle(150% at calc(100% - 40px) 40px)" }}
             exit={{ clipPath: "circle(0% at calc(100% - 40px) 40px)" }}
@@ -192,7 +192,7 @@ function Navbar() {
           >
             {/* Decorative number */}
             <motion.span
-              className="absolute top-8 right-20 text-[30vw] font-['Anton'] text-white/[0.02] leading-none pointer-events-none"
+              className="absolute top-8 right-20 text-[30vw] font-['Anton'] text-white/[0.03] leading-none pointer-events-none"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3 }}
@@ -209,7 +209,7 @@ function Navbar() {
                     e.preventDefault();
                     handleScroll(item.id);
                   }}
-                  className="text-5xl font-['Anton'] uppercase tracking-tight hover:opacity-50 transition-opacity flex items-center gap-4"
+                  className="text-5xl font-['Anton'] uppercase tracking-tight text-white hover:text-emerald-400 transition-colors flex items-center gap-4"
                   initial={{ y: 60, opacity: 0, filter: "blur(10px)" }}
                   animate={{
                     y: 0,
@@ -219,7 +219,7 @@ function Navbar() {
                   }}
                   exit={{ y: 30, opacity: 0, filter: "blur(5px)" }}
                 >
-                  <span className="text-sm text-[var(--text-dim)] font-['Inter'] font-normal tracking-widest">
+                  <span className="text-sm text-slate-500 font-['Inter'] font-normal tracking-widest">
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   {item.label}
@@ -235,12 +235,12 @@ function Navbar() {
               transition={{ delay: 0.5, duration: 0.5 }}
             >
               <div>
-                <p className="text-xs text-[var(--text-dim)] tracking-widest uppercase">
+                <p className="text-xs text-slate-400 tracking-widest uppercase">
                   © 2026 Saviyo George
                 </p>
               </div>
               <div>
-                <p className="text-xs text-[var(--text-dim)] tracking-widest uppercase">
+                <p className="text-xs text-slate-400 tracking-widest uppercase">
                   Kerala, India
                 </p>
               </div>

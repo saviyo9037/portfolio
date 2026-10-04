@@ -1,298 +1,481 @@
-import React, { useRef, useState, useEffect } from "react";
-import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
-import { projects } from "../data/projects";
-import { FiArrowUpRight, FiGithub, FiExternalLink } from "react-icons/fi";
+import React, { useState, useEffect, useRef, useMemo } from "react";
+import ReactDOM from "react-dom";
+import { projects, PROJECT_CATEGORIES } from "../data/projects";
 
-const CATEGORIES = [
-  { key: "all", label: "All Projects" },
-  { key: "company", label: "Company Work" },
-  { key: "personal", label: "Personal Projects" },
-];
+export default function Projects() {
+  const [selectedCategory, setSelectedCategory] = useState(PROJECT_CATEGORIES.COMPANY);
+  const [hoveredIdx, setHoveredIdx] = useState(null);
+  const [isHoverSupported, setIsHoverSupported] = useState(true);
+  const [expandedTouchIdx, setExpandedTouchIdx] = useState(null);
 
-// Vibrant gradients for project mockups
-const gradients = [
-  "bg-gradient-to-br from-purple-500 to-indigo-600",
-  "bg-gradient-to-tr from-emerald-400 to-cyan-500",
-  "bg-gradient-to-br from-orange-400 to-rose-500",
-  "bg-gradient-to-bl from-blue-500 to-violet-600",
-  "bg-gradient-to-t from-pink-500 to-amber-400",
-];
+  // Filter projects based on selected category tab
+  const filteredProjects = useMemo(() => {
+    if (selectedCategory === PROJECT_CATEGORIES.ALL) {
+      return projects;
+    }
+    return projects.filter((p) => p.category === selectedCategory);
+  }, [selectedCategory]);
 
-function Projects() {
-  const [activeCategory, setActiveCategory] = useState("all");
-  const targetRef = useRef(null);
-  const carouselRef = useRef(null);
-  const widthRef = useRef(0);
-  const [width, setWidth] = useState(0);
-  const [isMobile, setIsMobile] = useState(false);
+  // Keep last hovered project in state so preview card doesn't flicker during fade-out
+  const [lastProject, setLastProject] = useState(projects[0]);
 
-  const filteredProjects = projects.filter((project) => {
-    if (activeCategory === "all") return true;
-    return project.category === activeCategory;
-  });
-
-  useEffect(() => {
-    const updateDimensions = () => {
-      const mobile = window.innerWidth <= 768;
-      setIsMobile(mobile);
-
-      if (carouselRef.current && !mobile) {
-        // Calculate the total scrollable width minus the viewport width plus padding
-        const maxScroll = Math.max(0, carouselRef.current.scrollWidth - window.innerWidth + 120);
-        widthRef.current = maxScroll;
-        setWidth(maxScroll);
-      }
-    };
-
-    updateDimensions();
-    const timer = setTimeout(updateDimensions, 150);
-    window.addEventListener("resize", updateDimensions);
-    return () => {
-      clearTimeout(timer);
-      window.removeEventListener("resize", updateDimensions);
-    };
-  }, [filteredProjects]);
-
-  const { scrollYProgress } = useScroll({
-    target: targetRef,
-    offset: ["start start", "end end"],
-  });
-
-  // Dynamically calculate horizontal translation from scroll progress
-  // Travels from 0px to -width between 0% and 80% of vertical scroll, then holds still before unpinning
-  const x = useTransform(scrollYProgress, (progress) => {
-    if (isMobile) return "0px";
-    const currentWidth = widthRef.current || width;
-    const p = Math.min(progress / 0.8, 1);
-    return `-${p * currentWidth}px`;
-  });
-
-  return (
-    <section 
-      ref={targetRef} 
-      className="relative bg-[var(--bg-base)] md:h-[260vh] py-12 md:py-0"
-    >
-      <div className="md:sticky md:top-0 md:h-screen md:overflow-hidden bg-[var(--bg-base)] flex flex-col justify-between py-6 md:py-8 lg:py-10">
-        <div className="container-custom flex-shrink-0">
-          {/* Section Label */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="flex items-center gap-4 mb-4 md:mb-6"
-          >
-            <span className="text-xs tracking-[0.3em] uppercase text-[var(--accent)] font-medium">
-              (05)
-            </span>
-            <div className="divider flex-1" />
-            <span className="text-xs tracking-[0.3em] uppercase text-[var(--text-muted)] font-medium">
-              Selected Work
-            </span>
-          </motion.div>
-
-          {/* Heading & Tabs */}
-          <div className="mb-4 md:mb-6 flex flex-col md:flex-row justify-between items-start md:items-end gap-4 md:gap-8">
-            <h2 className="text-4xl md:text-6xl lg:text-7xl font-['Anton'] uppercase leading-[0.88] text-transparent text-stroke">
-              Digital<br /> <span className="text-[var(--text-main)] drop-shadow-[0_0_20px_var(--accent-glow)]">Experiences</span>
-            </h2>
-
-            <div className="inline-flex flex-wrap gap-2 p-1.5 rounded-full bg-[var(--bg-elevated)] border border-[var(--border-subtle)] shadow-inner">
-              {CATEGORIES.map((cat) => {
-                const isActive = activeCategory === cat.key;
-                return (
-                  <button
-                    key={cat.key}
-                    onClick={() => setActiveCategory(cat.key)}
-                    className={`relative px-4 md:px-5 py-2 md:py-2.5 rounded-full text-xs font-bold tracking-widest uppercase transition-all duration-300 ${
-                      isActive ? "text-[var(--bg-base)]" : "text-[var(--text-muted)] hover:text-[var(--text-main)]"
-                    }`}
-                  >
-                    {isActive && (
-                      <motion.div
-                        layoutId="activePillProjects"
-                        className="absolute inset-0 bg-[var(--text-main)] rounded-full z-0 shadow-md"
-                        transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                      />
-                    )}
-                    <span className="relative z-10">{cat.label}</span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-
-        {/* Horizontal Scroll-Linked Carousel */}
-        <div className="pl-5 md:pl-10 my-auto overflow-hidden">
-          <motion.div style={isMobile ? {} : { x }} className="py-2 md:py-4 w-full md:w-max will-change-transform">
-            <div ref={carouselRef} className="flex flex-col md:flex-row gap-6 md:gap-8 w-full md:w-max pr-5 md:pr-10">
-              <AnimatePresence mode="popLayout">
-                {filteredProjects.map((project, index) => (
-                  <motion.div
-                    key={project.id || project.title}
-                    initial={{ opacity: 0, scale: 0.95, x: 40 }}
-                    animate={{ opacity: 1, scale: 1, x: 0 }}
-                    exit={{ opacity: 0, scale: 0.9, x: -40 }}
-                    transition={{ duration: 0.4, delay: index * 0.04 }}
-                    className="w-full md:w-[75vw] lg:w-[65vw] max-w-[1050px] flex-shrink-0 perspective-[2000px]"
-                  >
-                    <ProjectCard project={project} index={index} />
-                  </motion.div>
-                ))}
-              </AnimatePresence>
-            </div>
-          </motion.div>
-        </div>
-
-        {/* Scroll Indicator */}
-        <div className="container-custom mt-2 flex-shrink-0 hidden md:block">
-          <div className="flex items-center justify-center gap-4 text-[var(--text-muted)]">
-            <div className="h-px w-12 bg-gradient-to-r from-transparent to-[var(--border-hover)]" />
-            <span className="text-[10px] tracking-[0.3em] uppercase font-medium">Scroll to explore</span>
-            <div className="h-px w-12 bg-gradient-to-l from-transparent to-[var(--border-hover)]" />
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-const ProjectCard = ({ project, index }) => {
+  // Direct DOM ref for cursor-following preview card
   const cardRef = useRef(null);
-  const [tilt, setTilt] = useState({ x: 0, y: 0 });
-  const gradientClass = gradients[index % gradients.length];
+  const mousePos = useRef({ x: -1000, y: -1000 });
+  const cardPos = useRef({ x: -1000, y: -1000 });
+  const rafId = useRef(null);
 
-  const handleMouseMove = (e) => {
-    if (!cardRef.current || window.innerWidth <= 768) return;
-    const rect = cardRef.current.getBoundingClientRect();
-    const x = (e.clientX - rect.left) / rect.width;
-    const y = (e.clientY - rect.top) / rect.height;
-    setTilt({
-      x: (y - 0.5) * -6, // Subtle rotation for carousel
-      y: (x - 0.5) * 6,
-    });
+  // Detect fine hover capability
+  useEffect(() => {
+    const checkHover = () => {
+      const fine = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+      setIsHoverSupported(fine);
+    };
+    checkHover();
+    window.addEventListener("resize", checkHover);
+    return () => window.removeEventListener("resize", checkHover);
+  }, []);
+
+  // Update last project cache when hovering
+  useEffect(() => {
+    if (hoveredIdx !== null && filteredProjects[hoveredIdx]) {
+      setLastProject(filteredProjects[hoveredIdx]);
+    }
+  }, [hoveredIdx, filteredProjects]);
+
+  // Mouse tracking and smooth lerp (0.14) loop for cursor card
+  useEffect(() => {
+    if (!isHoverSupported) return;
+
+    const onMouseMove = (e) => {
+      mousePos.current = { x: e.clientX, y: e.clientY };
+    };
+
+    window.addEventListener("mousemove", onMouseMove, { passive: true });
+
+    const CARD_WIDTH = 340;
+    const CARD_EST_HEIGHT = 410;
+
+    const tick = () => {
+      const { x: mx, y: my } = mousePos.current;
+      if (mx === -1000) {
+        rafId.current = requestAnimationFrame(tick);
+        return;
+      }
+
+      // Target position: offset by +30px X, -150px Y
+      let targetX = mx + 30;
+      if (targetX + CARD_WIDTH > window.innerWidth - 16) {
+        targetX = mx - 380;
+      }
+      if (targetX < 12) {
+        targetX = 12;
+      }
+
+      let targetY = my - 150;
+      // Clamp inside viewport
+      targetY = Math.max(12, Math.min(window.innerHeight - CARD_EST_HEIGHT - 12, targetY));
+
+      // Initial instant snap or 0.14 lerp
+      if (cardPos.current.x === -1000) {
+        cardPos.current.x = targetX;
+        cardPos.current.y = targetY;
+      } else {
+        cardPos.current.x += (targetX - cardPos.current.x) * 0.14;
+        cardPos.current.y += (targetY - cardPos.current.y) * 0.14;
+      }
+
+      if (cardRef.current) {
+        cardRef.current.style.transform = `translate3d(${cardPos.current.x}px, ${cardPos.current.y}px, 0)`;
+      }
+
+      rafId.current = requestAnimationFrame(tick);
+    };
+
+    rafId.current = requestAnimationFrame(tick);
+
+    return () => {
+      window.removeEventListener("mousemove", onMouseMove);
+      if (rafId.current) cancelAnimationFrame(rafId.current);
+    };
+  }, [isHoverSupported]);
+
+  // Touch row toggle
+  const toggleTouchRow = (idx) => {
+    setExpandedTouchIdx((prev) => (prev === idx ? null : idx));
   };
 
-  const handleMouseLeave = () => {
-    setTilt({ x: 0, y: 0 });
-  };
-
-  const imageSrc = project.image
-    ? project.image.startsWith("/")
-      ? project.image
-      : `/${project.image}`
-    : null;
+  const companyCount = projects.filter((p) => p.category === PROJECT_CATEGORIES.COMPANY).length;
+  const personalCount = projects.filter((p) => p.category === PROJECT_CATEGORIES.PERSONAL).length;
 
   return (
-    <motion.div
-      ref={cardRef}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      animate={{ rotateX: tilt.x, rotateY: tilt.y }}
-      transition={{ type: "spring", stiffness: 300, damping: 20 }}
-      className="relative w-full h-auto md:h-[55vh] md:min-h-[400px] md:max-h-[520px] rounded-[1.75rem] bg-[var(--bg-surface)] border border-[var(--border-subtle)] shadow-[0_20px_40px_rgba(0,0,0,0.08)] overflow-hidden group transform-style-3d flex flex-col md:flex-row hover:border-amber-400 hover:shadow-[0_20px_40px_rgba(0,0,0,0.5),0_0_25px_rgba(251,191,36,0.2)] transition-all duration-300"
-    >
-      {/* Content Side */}
-      <div className="flex-1 p-6 md:p-8 lg:p-10 flex flex-col justify-between z-10 bg-[var(--bg-surface)] relative order-2 md:order-1">
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent to-[var(--bg-base)] opacity-5 pointer-events-none" />
-
-        <div className="transform-style-3d translate-z-[30px]">
-          <div className="flex items-center gap-3 mb-3 md:mb-5">
-            <span className="text-2xl md:text-3xl font-['Anton'] text-[var(--border-hover)] select-none">
-              {String(index + 1).padStart(2, "0")}
-            </span>
-            <span className="px-3 py-0.5 text-[10px] tracking-widest uppercase font-mono bg-[var(--bg-elevated)] border border-[var(--border-subtle)] rounded-full text-[var(--text-main)]">
-              {project.company ? project.company : "Independent"}
-            </span>
-          </div>
-
-          <h3 className="text-2xl md:text-4xl font-sans font-bold tracking-tight text-[var(--text-main)] mb-2 md:mb-3 leading-tight">
-            {project.title}
-          </h3>
-
-          <p className="text-xs md:text-sm text-[var(--text-muted)] max-w-md leading-relaxed mb-4 md:mb-6 line-clamp-2 md:line-clamp-3">
-            {project.description}
-          </p>
-
-          <div className="flex flex-wrap items-center gap-2 mb-4 md:mb-6">
-            {project.tags && project.tags.slice(0, 4).map((tag, i) => (
-              <span key={i} className="text-[10px] font-mono uppercase tracking-widest text-[var(--text-dim)] border border-[var(--border-subtle)] px-2.5 py-1 rounded-full bg-[var(--bg-base)]">
-                {tag}
-              </span>
-            ))}
-            {project.tags && project.tags.length > 4 && (
-              <span className="text-[10px] font-mono tracking-widest text-[var(--text-dim)] px-2">
-                +{project.tags.length - 4} more
-              </span>
-            )}
-          </div>
+    <section id="work" className="relative w-full max-w-7xl mx-auto px-4 md:px-6 py-20 md:py-28">
+      {/* Section Header */}
+      <div className="flex flex-col md:flex-row md:items-baseline justify-between gap-4 mb-6 border-b border-white/10 pb-4">
+        <div className="flex items-baseline gap-4">
+          <span className="section-label">[04]</span>
+          <h2 className="font-['Anton'] text-5xl md:text-7xl lg:text-8xl uppercase tracking-tight">
+            <span className="heading-gradient-amber">SELECTED</span>{" "}
+            <span className="text-white">WORKS</span>
+          </h2>
         </div>
 
-        <div className="flex items-center gap-4 transform-style-3d translate-z-[50px] relative z-20 pt-2 border-t border-[var(--border-subtle)]">
-          {project.liveUrl && (
-            <a
-              href={project.liveUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              data-cursor-label="VIEW"
-              className="group/btn flex items-center justify-center w-11 h-11 md:w-13 md:h-13 rounded-full bg-[var(--text-main)] text-[var(--bg-base)] hover:scale-110 hover:bg-amber-400 transition-all duration-300 shadow-xl"
-            >
-              <FiArrowUpRight className="text-xl md:text-2xl group-hover/btn:rotate-45 transition-transform duration-300" />
-            </a>
-          )}
-
-          <button className="btn-minimal px-5 py-2.5 text-xs hover:border-amber-400/60" data-cursor-label="DETAILS">
-            <span>Case Study</span>
+        {/* Category Filter Tabs */}
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            onClick={() => setSelectedCategory(PROJECT_CATEGORIES.COMPANY)}
+            className={`font-mono text-xs uppercase px-3.5 py-1.5 rounded-full transition-all border ${selectedCategory === PROJECT_CATEGORIES.COMPANY
+              ? "bg-white text-black font-bold border-white shadow-lg"
+              : "border-white/10 text-slate-400 hover:text-white hover:border-white/30 bg-white/5"
+              }`}
+          >
+            Company Work [{String(companyCount).padStart(2, "0")}]
+          </button>
+          <button
+            onClick={() => setSelectedCategory(PROJECT_CATEGORIES.PERSONAL)}
+            className={`font-mono text-xs uppercase px-3.5 py-1.5 rounded-full transition-all border ${selectedCategory === PROJECT_CATEGORIES.PERSONAL
+              ? "bg-white text-black font-bold border-white shadow-lg"
+              : "border-white/10 text-slate-400 hover:text-white hover:border-white/30 bg-white/5"
+              }`}
+          >
+            Personal Projects [{String(personalCount).padStart(2, "0")}]
+          </button>
+          <button
+            onClick={() => setSelectedCategory(PROJECT_CATEGORIES.ALL)}
+            className={`font-mono text-xs uppercase px-3.5 py-1.5 rounded-full transition-all border ${selectedCategory === PROJECT_CATEGORIES.ALL
+              ? "bg-white text-black font-bold border-white shadow-lg"
+              : "border-white/10 text-slate-400 hover:text-white hover:border-white/30 bg-white/5"
+              }`}
+          >
+            All [{String(projects.length).padStart(2, "0")}]
           </button>
         </div>
       </div>
 
-      {/* Visual Mockup Side */}
-      <div className="h-52 md:h-auto md:w-5/12 lg:w-1/2 relative overflow-hidden order-1 md:order-2 border-b md:border-b-0 md:border-l border-[var(--border-subtle)]">
-        <div className={`absolute inset-0 ${gradientClass} opacity-80`} />
-
-        {/* Real Screenshot or Abstract Mockup */}
-        <div className="absolute inset-0 flex items-center justify-center transform-style-3d translate-z-[60px] p-4 md:p-6">
-          <div className="w-[90%] h-[95%] md:h-[85%] bg-[var(--bg-base)] rounded-xl shadow-2xl border border-[var(--border-subtle)] overflow-hidden relative group-hover:-translate-y-2 md:group-hover:-translate-y-4 group-hover:scale-[1.02] transition-all duration-700 ease-out flex flex-col">
-            <div className="w-full h-7 bg-[var(--bg-elevated)] border-b border-[var(--border-subtle)] flex items-center px-3 gap-1.5 flex-shrink-0">
-              <div className="w-2 h-2 rounded-full bg-red-400/80" />
-              <div className="w-2 h-2 rounded-full bg-amber-400/80" />
-              <div className="w-2 h-2 rounded-full bg-green-400/80" />
-            </div>
-
-            {imageSrc ? (
-              <div className="flex-1 w-full overflow-hidden relative">
-                <img
-                  src={imageSrc}
-                  alt={project.title}
-                  className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
-                  onError={(e) => {
-                    e.target.style.display = "none";
-                  }}
-                />
-              </div>
-            ) : (
-              /* Abstract mockup content lines */
-              <div className="p-4 md:p-5 space-y-3 opacity-30 flex-1 flex flex-col justify-center">
-                <div className="h-3 w-3/4 bg-[var(--text-dim)] rounded" />
-                <div className="h-2.5 w-1/2 bg-[var(--text-muted)] rounded" />
-                <div className="h-16 md:h-24 w-full bg-[var(--bg-surface)] rounded mt-3 border border-[var(--border-subtle)]" />
-                <div className="h-2.5 w-5/6 bg-[var(--text-muted)] rounded" />
-              </div>
-            )}
-
-            {/* Overlay gradient */}
-            <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-base)] via-transparent to-transparent opacity-60 pointer-events-none" />
-          </div>
-        </div>
-
-        {/* Floating elements */}
-        <div className="absolute top-1/4 -left-8 w-20 h-20 bg-white/10 backdrop-blur-xl rounded-full border border-white/20 blur-[2px] transform-style-3d translate-z-[80px] group-hover:translate-x-6 transition-transform duration-1000 ease-out pointer-events-none" />
-        <div className="absolute bottom-1/4 -right-8 w-24 h-24 bg-black/10 backdrop-blur-xl rounded-full border border-white/10 blur-[3px] transform-style-3d translate-z-[40px] group-hover:-translate-x-6 transition-transform duration-1000 ease-out pointer-events-none" />
+      {/* Helper Subtitle */}
+      <div className="flex items-center justify-between mb-8 text-xs font-mono tracking-widest text-slate-400">
+        <span>
+          {isHoverSupported
+            ? "HOVER A TITLE TO PREVIEW, CLICK TO OPEN"
+            : "TAP A TITLE TO EXPAND"}
+        </span>
+        <span className="hidden sm:inline-block text-violet-400 font-semibold">
+          [ {String(filteredProjects.length).padStart(2, "0")} RELEASES IN VIEW ]
+        </span>
       </div>
 
-    </motion.div>
-  );
-};
+      {/* Typographic List */}
+      <div className="border-t border-white/10">
+        {filteredProjects.map((proj, idx) => {
+          const indexStr = String(idx + 1).padStart(2, "0");
+          const targetUrl = proj.liveUrl || proj.githubUrl;
+          const hasUrl = Boolean(targetUrl);
+          const isTouchExpanded = expandedTouchIdx === idx;
+          const techChips = (proj.tags && proj.tags.length > 0)
+            ? proj.tags
+            : proj.tech.split(",").map((t) => t.trim());
 
-export default Projects;
+          const RowInner = (
+            <div
+              className="relative z-10 flex items-center justify-between gap-4"
+              style={{ padding: "1.3rem 0.5rem" }}
+            >
+              <div className="flex items-baseline gap-4 sm:gap-8 flex-1 min-w-0">
+                {/* Index in display font (Anton) and violet */}
+                <span className="font-['Anton'] text-2xl sm:text-3xl md:text-4xl text-violet-400 select-none shrink-0 w-8 sm:w-10">
+                  {indexStr}
+                </span>
+
+                {/* Title + Underneath Type */}
+                <div className="flex flex-col min-w-0 flex-1">
+                  <h3
+                    className="project-title font-['Anton'] uppercase text-white hover:text-cyan-400 transition-colors tracking-tight leading-[1.05]"
+                    style={{ fontSize: "clamp(1.7rem, 5.2vw, 3.8rem)" }}
+                  >
+                    {proj.title}
+                  </h3>
+                  <div className="flex items-center gap-2 mt-1.5">
+                    <span className="font-mono text-xs text-slate-400 uppercase tracking-wider">
+                      {proj.type || (proj.company ? `Company · ${proj.company}` : "Personal Project")}
+                    </span>
+                    {proj.image && (
+                      <span className="font-mono text-[10px] text-cyan-400 border border-cyan-500/30 bg-cyan-950/40 px-1.5 py-0.2 rounded hidden sm:inline-block font-semibold">
+                        IMG
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Arrow / Public status icon */}
+              <span
+                className="project-arrow font-mono text-2xl sm:text-3xl md:text-4xl text-slate-500 shrink-0 select-none pl-2"
+                aria-hidden="true"
+              >
+                {hasUrl ? "↗" : "○"}
+              </span>
+            </div>
+          );
+
+          return (
+            <div key={proj.id || proj.title} className="relative">
+              {/* DESKTOP HOVER: Entire row is an <a> (or div if no url) */}
+              {isHoverSupported ? (
+                hasUrl ? (
+                  <a
+                    href={targetUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="project-row block focus-visible:outline-2 focus-visible:outline-[#22d3ee] focus-visible:outline-offset-2"
+                    onMouseEnter={() => setHoveredIdx(idx)}
+                    onMouseLeave={() => setHoveredIdx(null)}
+                  >
+                    {RowInner}
+                  </a>
+                ) : (
+                  <div
+                    className="project-row block cursor-default"
+                    onMouseEnter={() => setHoveredIdx(idx)}
+                    onMouseLeave={() => setHoveredIdx(null)}
+                  >
+                    {RowInner}
+                  </div>
+                )
+              ) : (
+                /* TOUCH DEVICE: Expandable Accordion on tap */
+                <div>
+                  <div
+                    role="button"
+                    tabIndex={0}
+                    aria-expanded={isTouchExpanded}
+                    className="project-row block focus-visible:outline-2 focus-visible:outline-[#22d3ee] focus-visible:outline-offset-2"
+                    onClick={() => toggleTouchRow(idx)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        toggleTouchRow(idx);
+                      }
+                    }}
+                  >
+                    {RowInner}
+                  </div>
+
+                  {/* Inline expansion panel for touch */}
+                  <div
+                    style={{
+                      maxHeight: isTouchExpanded ? "520px" : "0px",
+                      transition: "max-height 0.5s cubic-bezier(0.2, 0.8, 0.2, 1)",
+                      overflow: "hidden",
+                    }}
+                  >
+                    <div className="px-4 py-4 bg-[#121216] border-b border-white/10 flex flex-col gap-3 font-sans rounded-b-xl text-slate-200">
+                      {/* Image preview in touch mode */}
+                      {proj.image && (
+                        <div className="w-full h-44 rounded-lg overflow-hidden border border-white/10 relative bg-slate-900">
+                          <img
+                            src={proj.image}
+                            alt={proj.title}
+                            className="w-full h-full object-cover object-top"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
+                        </div>
+                      )}
+
+                      <p className="text-sm text-slate-300 leading-relaxed">
+                        {proj.description}
+                      </p>
+
+                      <div className="flex flex-wrap gap-1.5 my-1">
+                        {techChips.map((techItem) => (
+                          <span
+                            key={techItem}
+                            className="font-mono text-[11px] border border-white/10 bg-white/5 text-slate-300 px-2.5 py-0.5 rounded-full shadow-sm"
+                          >
+                            {techItem}
+                          </span>
+                        ))}
+                      </div>
+
+                      <div className="pt-2 flex items-center gap-3">
+                        {hasUrl ? (
+                          <a
+                            href={targetUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-2 font-mono text-xs font-bold text-black bg-white px-4 py-2 rounded-full hover:bg-violet-400 transition-colors shadow-sm"
+                          >
+                            <span>{proj.cta || "Open Project"}</span>
+                            <span>↗</span>
+                          </a>
+                        ) : (
+                          <span className="font-mono text-xs text-slate-400">
+                            [ no public link ]
+                          </span>
+                        )}
+                        {proj.githubUrl && proj.liveUrl && proj.githubUrl !== proj.liveUrl && (
+                          <a
+                            href={proj.githubUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="font-mono text-xs text-violet-400 hover:underline font-semibold"
+                          >
+                            Source code ↗
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      {/* CURSOR-FOLLOWING PREVIEW CARD (DESKTOP PORTAL) */}
+      {isHoverSupported &&
+        typeof document !== "undefined" &&
+        ReactDOM.createPortal(
+          <div
+            ref={cardRef}
+            className="fixed top-0 left-0 pointer-events-none z-[60] w-[340px] rounded-[20px] bg-[#121216]/95 backdrop-blur-xl border border-white/15 overflow-hidden"
+            style={{
+              opacity: hoveredIdx !== null ? 1 : 0,
+              transition: "opacity 0.25s ease-out",
+              boxShadow:
+                "0 25px 60px -15px rgba(0, 0, 0, 0.8), 0 0 35px rgba(139, 123, 255, 0.2)",
+              willChange: "transform, opacity",
+            }}
+            aria-hidden="true"
+          >
+            {lastProject && (
+              <>
+                {/* Header (140px): Real Project Screenshot OR Gradient Mockup */}
+                <div className="h-36 relative overflow-hidden bg-slate-900 flex flex-col justify-between">
+                  {lastProject.image ? (
+                    <>
+                      {/* Real Image Screenshot with top browser bar */}
+                      <div className="relative w-full h-full">
+                        <img
+                          src={lastProject.image}
+                          alt={lastProject.title}
+                          className="w-full h-full object-cover object-top filter brightness-[0.98]"
+                        />
+                        {/* Gradient shade overlays */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#121216] via-transparent to-black/60" />
+
+                        {/* Mini browser chrome pill on top */}
+                        <div className="absolute top-2.5 left-3 right-3 flex items-center justify-between">
+                          <div className="flex items-center gap-1.5 bg-black/70 backdrop-blur-md px-2.5 py-1 rounded-full border border-white/20">
+                            <span className="w-2 h-2 rounded-full bg-[#ff5f56]" />
+                            <span className="w-2 h-2 rounded-full bg-[#ffbd2e]" />
+                            <span className="w-2 h-2 rounded-full bg-[#27c93f]" />
+                            <span className="font-mono text-[9px] text-white/90 ml-1.5 truncate max-w-[140px]">
+                              {lastProject.title}
+                            </span>
+                          </div>
+                          <span className="font-mono text-[9px] uppercase tracking-wider bg-violet-950/60 text-violet-300 border border-violet-500/30 px-2 py-0.5 rounded-full font-bold shadow-sm">
+                            {lastProject.categoryLabel || "Project"}
+                          </span>
+                        </div>
+                      </div>
+                    </>
+                  ) : (
+                    /* Fallback: gradient background & mock browser chrome */
+                    <div
+                      className={`w-full h-full bg-gradient-to-br ${lastProject.gradient || "from-fuchsia-500 to-indigo-500"
+                        } p-3.5 relative overflow-hidden flex flex-col justify-between`}
+                    >
+                      <div className="bg-black/60 rounded-lg p-2.5 space-y-2 backdrop-blur-sm w-4/5 border border-white/10 shadow-lg">
+                        <div className="flex items-center gap-1.5">
+                          <span className="w-2 h-2 rounded-full bg-[#ff5f56]" />
+                          <span className="w-2 h-2 rounded-full bg-[#ffbd2e]" />
+                          <span className="w-2 h-2 rounded-full bg-[#27c93f]" />
+                          <span className="h-1.5 w-1/3 bg-white/40 rounded ml-2" />
+                        </div>
+                        <div className="h-2 w-4/5 bg-white/20 rounded" />
+                        <div className="grid grid-cols-3 gap-1 pt-1">
+                          <div className="h-3.5 bg-white/35 rounded-sm" />
+                          <div className="h-3.5 bg-white/20 rounded-sm" />
+                          <div className="h-3.5 bg-white/35 rounded-sm" />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Big Ghost Index Watermark at bottom right */}
+                  <span className="font-['Anton'] absolute right-3 bottom-0 text-7xl text-white/10 leading-none select-none pointer-events-none">
+                    {String(
+                      (() => {
+                        const fIdx = filteredProjects.findIndex((p) => p.title === lastProject.title);
+                        return fIdx !== -1
+                          ? fIdx + 1
+                          : projects.findIndex((p) => p.title === lastProject.title) + 1;
+                      })()
+                    ).padStart(2, "0")}
+                  </span>
+                </div>
+
+                {/* Card Body */}
+                <div className="p-4 space-y-3 font-sans bg-[#121216] text-white">
+                  {/* Type in mono cyan */}
+                  <div className="flex items-center justify-between font-mono text-[11px]">
+                    <span className="text-cyan-400 tracking-wider uppercase font-semibold">
+                      {lastProject.type ||
+                        (lastProject.company
+                          ? `Company · ${lastProject.company}`
+                          : "Personal Project")}
+                    </span>
+                    <span className="text-slate-400 text-[10px]">
+                      REF-
+                      {String(
+                        (() => {
+                          const fIdx = filteredProjects.findIndex((p) => p.title === lastProject.title);
+                          return fIdx !== -1
+                            ? fIdx + 1
+                            : projects.findIndex((p) => p.title === lastProject.title) + 1;
+                        })()
+                      ).padStart(2, "0")}
+                    </span>
+                  </div>
+
+                  {/* Description (1-2 lines) */}
+                  <p className="text-xs text-slate-300 leading-relaxed line-clamp-2">
+                    {lastProject.description}
+                  </p>
+
+                  {/* Up to 5 tech chips as small outlined pills */}
+                  <div className="flex flex-wrap gap-1.5 pt-1">
+                    {(lastProject.tags ||
+                      lastProject.tech.split(",").map((t) => t.trim()))
+                      .slice(0, 5)
+                      .map((t) => (
+                        <span
+                          key={t}
+                          className="font-mono text-[10px] border border-white/10 bg-white/5 text-slate-300 px-2 py-0.5 rounded-full"
+                        >
+                          {t}
+                        </span>
+                      ))}
+                  </div>
+
+                  {/* CTA Label in violet */}
+                  <div className="pt-2 border-t border-white/10 flex items-center justify-between font-mono text-xs text-violet-400 font-bold">
+                    <span>
+                      {(lastProject.cta || (lastProject.liveUrl ? "Live Demo" : "Details")).toUpperCase()}
+                    </span>
+                    <span>
+                      {lastProject.liveUrl || lastProject.githubUrl
+                        ? "↗"
+                        : "NO PUBLIC LINK"}
+                    </span>
+                  </div>
+                </div>
+              </>
+            )}
+          </div>,
+          document.body
+        )}
+    </section>
+  );
+}

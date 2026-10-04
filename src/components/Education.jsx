@@ -1,290 +1,542 @@
-import React, { useRef, useState } from "react";
-import { motion } from "framer-motion";
-import { experience } from "../data/experience";
-import { 
-  FiAward, 
-  FiBookOpen, 
-  FiCalendar, 
-  FiMapPin, 
-  FiCheck, 
-  FiCode, 
-  FiLayers, 
-  FiTerminal, 
-  FiShield, 
-  FiExternalLink 
+import React, { useState, useEffect } from "react";
+import ReactDOM from "react-dom";
+import collegeImg from "../assets/college.png";
+import {
+  FiBookOpen,
+  FiCode,
+  FiCpu,
+  FiAward,
+  FiDatabase,
+  FiShield,
+  FiGlobe,
+  FiBarChart2,
+  FiMonitor,
+  FiSettings,
+  FiCalendar,
+  FiMapPin,
+  FiClock,
+  FiCheckCircle,
+  FiMaximize2,
+  FiExternalLink,
+  FiStar,
+  FiTarget,
+  FiLayers,
+  FiX
 } from "react-icons/fi";
+import { FaGraduationCap, FaUniversity, FaQuoteRight } from "react-icons/fa";
 
-function TiltDiploma({ children, className }) {
-  const cardRef = useRef(null);
-  const [tilt, setTilt] = useState({ x: 0, y: 0 });
-  const [glare, setGlare] = useState({ x: 50, y: 50, opacity: 0 });
+export default function Education() {
+  const [selectedPhoto, setSelectedPhoto] = useState(false);
 
-  const handleMouseMove = (e) => {
-    if (!cardRef.current || window.innerWidth < 768) return;
-    const rect = cardRef.current.getBoundingClientRect();
-    const x = (e.clientX - rect.left) / rect.width;
-    const y = (e.clientY - rect.top) / rect.height;
-    setTilt({
-      x: (y - 0.5) * -10,
-      y: (x - 0.5) * 10,
-    });
-    setGlare({ x: x * 100, y: y * 100, opacity: 0.15 });
-  };
+  // Handle ESC key and prevent body scroll when photo modal is open
+  useEffect(() => {
+    if (!selectedPhoto) return;
+    const onKeyDown = (e) => {
+      if (e.key === "Escape") setSelectedPhoto(false);
+    };
+    window.addEventListener("keydown", onKeyDown);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [selectedPhoto]);
 
-  const handleMouseLeave = () => {
-    setTilt({ x: 0, y: 0 });
-    setGlare({ x: 50, y: 50, opacity: 0 });
-  };
+  const timelineSteps = [
+    {
+      year: "2021",
+      title: "Started BCA",
+      desc: "Joined Sree Sabareesa College Murikkumvayal",
+      icon: FiBookOpen,
+      accentText: "#8b7bff",
+      borderGlow: "rgba(139,123,255,0.5)"
+    },
+    {
+      year: "2022",
+      title: "Core Learning",
+      desc: "Data Structures, DBMS, OOP, Computer Networks",
+      icon: FiSettings,
+      accentText: "#22d3ee",
+      borderGlow: "rgba(34,211,238,0.5)"
+    },
+    {
+      year: "2023",
+      title: "Practical Exposure",
+      desc: "Web Technologies, Software Engineering, System Design",
+      icon: FiCode,
+      accentText: "#ff6ad5",
+      borderGlow: "rgba(255,106,213,0.5)"
+    },
+    {
+      year: "2024",
+      title: "Graduated",
+      desc: "Bachelor of Computer Applications",
+      icon: FaGraduationCap,
+      accentText: "#39ff88",
+      borderGlow: "rgba(57,255,136,0.5)"
+    }
+  ];
+
+  const keySubjects = [
+    { title: "Data Structures & Algorithms", icon: FiDatabase },
+    { title: "Computer Networks & Security", icon: FiShield },
+    { title: "Object-Oriented Programming", icon: FiCode },
+    { title: "Operating Systems", icon: FiMonitor },
+    { title: "Database Management Systems", icon: FiLayers },
+    { title: "Software Engineering", icon: FiSettings },
+    { title: "Web Technologies", icon: FiGlobe },
+    { title: "System Analysis & Design", icon: FiBarChart2 }
+  ];
 
   return (
-    <motion.div
-      ref={cardRef}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      animate={{ rotateX: tilt.x, rotateY: tilt.y }}
-      transition={{ type: "spring", stiffness: 300, damping: 22 }}
-      style={{ perspective: "1200px", transformStyle: "preserve-3d" }}
-      className={`relative ${className}`}
-    >
-      {children}
-      {/* Glare gradient overlay */}
-      <div
-        className="absolute inset-0 pointer-events-none rounded-inherit transition-opacity duration-300"
-        style={{
-          opacity: glare.opacity,
-          background: `radial-gradient(circle at ${glare.x}% ${glare.y}%, rgba(251, 191, 36, 0.25) 0%, transparent 60%)`,
-        }}
-      />
-    </motion.div>
-  );
-}
+    <section id="education" className="relative w-full max-w-7xl mx-auto px-4 md:px-6 py-16 md:py-24 text-slate-900">
+      {/* Ambient background glow accents */}
+      <div className="absolute top-10 left-10 w-96 h-96 bg-violet-500/5 rounded-full blur-[130px] pointer-events-none -z-10" />
+      <div className="absolute bottom-10 right-10 w-96 h-96 bg-cyan-500/5 rounded-full blur-[130px] pointer-events-none -z-10" />
 
-function Education() {
-  const edu = experience.find((item) => item.type === "education") || {};
-  const [activeTab, setActiveTab] = useState("coursework");
-
-  return (
-    <section className="relative overflow-hidden bg-[var(--bg-base)] text-[var(--text-main)] py-20 md:py-28 border-t border-[var(--border-subtle)]">
-      <div className="container-custom">
-
-        {/* ================= SECTION HEADER ================= */}
-        <div className="flex items-center gap-4 mb-10 md:mb-16">
-          <span className="text-xs tracking-[0.3em] uppercase text-amber-400 font-mono font-medium bg-amber-400/10 px-3.5 py-1.5 rounded-full border border-amber-400/20">
-            04 / ACADEMIC CREDENTIAL
-          </span>
-          <div className="divider flex-1 h-px bg-gradient-to-r from-[var(--border-subtle)] to-transparent" />
-          <span className="text-xs tracking-[0.3em] uppercase text-[var(--text-muted)] font-mono hidden sm:inline">
-            DEGREE ARCHIVE
-          </span>
-        </div>
-
-        {/* Title Headline */}
-        <div className="mb-12 md:mb-16">
-          <motion.h2
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7 }}
-            className="text-5xl md:text-7xl lg:text-8xl font-['Anton'] uppercase leading-[0.88] text-[var(--text-main)]"
-          >
-            ACADEMIC <span className="text-transparent text-stroke hover:text-amber-400/20 transition-colors">FOUNDATION</span>
-          </motion.h2>
-          <p className="text-xs md:text-sm text-[var(--text-muted)] font-mono uppercase tracking-wider mt-3 max-w-xl">
+      {/* ================= SECTION HEADER ================= */}
+      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-10 pb-6 border-b border-slate-200">
+        <div>
+          <div className="flex items-center gap-2 font-mono text-xs text-cyan-600 tracking-widest uppercase mb-3">
+            <span className="w-4 h-[2px] bg-cyan-600" />
+            <span>03 / EDUCATION</span>
+          </div>
+          <h2 className="font-['Anton'] text-5xl sm:text-6xl md:text-7xl lg:text-8xl uppercase tracking-tight text-slate-900 leading-[0.95]">
+            ACADEMIC{" "}
+            <span
+              className="text-transparent"
+              style={{
+                WebkitTextStroke: "1.5px rgba(15,23,42,0.4)",
+              }}
+            >
+              BACKGROUND
+            </span>
+          </h2>
+          <p className="text-xs md:text-sm text-slate-500 font-sans max-w-2xl mt-4 leading-relaxed">
             Formal undergraduate education in computer applications, systems analysis, algorithmic engineering, and software development methodologies.
           </p>
         </div>
 
-        {/* ================= BENTO GRID DOSSIER ================= */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8 items-stretch">
+        {/* Right Quote Block */}
+        <div className="lg:max-w-xs p-4 rounded-xl bg-cyan-950/30 border-l-2 border-cyan-400 flex gap-3 items-start shrink-0 border border-cyan-500/20 shadow-sm">
+          <FaQuoteRight className="text-cyan-400 text-lg shrink-0 mt-0.5 opacity-80" />
+          <div className="font-mono text-[11px] leading-relaxed text-cyan-200 uppercase tracking-wider font-semibold">
+            A STRONG ACADEMIC FOUNDATION FOR A BETTER TOMORROW
+          </div>
+        </div>
+      </div>
 
-          {/* MAIN DIPLOMA / CREDENTIAL CARD (COL 1-8) */}
-          <div className="lg:col-span-8 flex flex-col">
-            <TiltDiploma className="h-full rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] shadow-[0_20px_50px_rgba(0,0,0,0.3)] p-6 md:p-10 flex flex-col justify-between relative overflow-hidden group hover:border-amber-400/60 transition-colors duration-500">
-              
-              {/* Corner Ornaments (Guilloche Aesthetic) */}
-              <div className="absolute top-3 left-3 w-4 h-4 border-t-2 border-l-2 border-amber-400/40 pointer-events-none" />
-              <div className="absolute top-3 right-3 w-4 h-4 border-t-2 border-r-2 border-amber-400/40 pointer-events-none" />
-              <div className="absolute bottom-3 left-3 w-4 h-4 border-b-2 border-l-2 border-amber-400/40 pointer-events-none" />
-              <div className="absolute bottom-3 right-3 w-4 h-4 border-b-2 border-r-2 border-amber-400/40 pointer-events-none" />
+      {/* ================= ROW 1: ACADEMIC JOURNEY & KEY SUBJECTS ================= */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-6">
 
-              <div>
-                {/* Header Strip with Institutional Metadata */}
-                <div className="flex flex-wrap items-center justify-between gap-3 pb-6 mb-6 border-b border-[var(--border-subtle)] text-xs font-mono">
-                  <div className="flex items-center gap-2 text-amber-400">
-                    <FiShield className="text-sm" />
-                    <span className="tracking-widest uppercase font-bold text-[11px]">
-                      {edu.status || "DEGREE CONFERRED"}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center gap-3 text-[var(--text-dim)]">
-                    <span className="flex items-center gap-1.5">
-                      <FiCalendar className="text-xs" />
-                      {edu.period}
-                    </span>
-                    <span>•</span>
-                    <span className="flex items-center gap-1.5">
-                      <FiMapPin className="text-xs text-amber-400/80" />
-                      {edu.location}
-                    </span>
-                  </div>
+        {/* LEFT (7 COLS): ACADEMIC JOURNEY TIMELINE */}
+        <div className="lg:col-span-7 rounded-2xl bg-[#121216]/90 border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.6)] p-6 md:p-7 backdrop-blur-xl relative overflow-hidden flex flex-col justify-between group hover:border-violet-500/50 transition-all duration-300">
+          <div>
+            <div className="flex items-center justify-between pb-5 mb-8 border-b border-white/10">
+              <div className="flex items-center gap-2.5 font-mono text-xs uppercase tracking-wider text-cyan-400 font-semibold">
+                <div className="w-6 h-6 rounded-lg bg-cyan-950/40 flex items-center justify-center text-cyan-400">
+                  <FiTarget className="text-sm" />
                 </div>
+                <span>ACADEMIC JOURNEY</span>
+              </div>
+              <span className="font-mono text-xs text-slate-400 bg-white/5 px-2.5 py-1 rounded-full border border-white/10">
+                Sep 2021 — Mar 2024
+              </span>
+            </div>
 
-                {/* Degree & College Header */}
-                <div className="mb-8">
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-[var(--bg-elevated)] border border-[var(--border-subtle)] text-[10px] font-mono uppercase text-[var(--text-dim)] mb-3">
-                    <FiAward className="text-amber-400" />
-                    <span>BACHELOR'S PROGRAM · 3 YEARS FULL-TIME</span>
-                  </div>
+            {/* Horizontal Connected Timeline */}
+            <div className="relative pt-2 pb-2">
+              {/* Horizontal Connecting Track Line */}
+              <div className="hidden md:block absolute top-[28px] left-[8%] right-[8%] h-[2px] bg-gradient-to-r from-violet-400 via-cyan-400 to-emerald-400 opacity-40 pointer-events-none" />
 
-                  <h3 className="text-3xl md:text-5xl font-['Anton'] uppercase text-[var(--text-main)] tracking-tight leading-tight mb-2 group-hover:text-amber-400 transition-colors">
-                    {edu.degree}
-                  </h3>
-
-                  <div className="flex flex-wrap items-baseline gap-2 text-base md:text-lg font-sans text-[var(--text-muted)] font-medium">
-                    <span className="text-[var(--text-main)] font-semibold">{edu.institution}</span>
-                    {edu.university && (
-                      <span className="text-xs font-mono text-amber-400/90 bg-amber-400/10 px-2 py-0.5 rounded border border-amber-400/20">
-                        {edu.university}
-                      </span>
-                    )}
-                  </div>
-                </div>
-
-                {/* Degree Description */}
-                <p className="text-sm text-[var(--text-muted)] leading-relaxed mb-8 max-w-2xl font-sans">
-                  {edu.description}
-                </p>
-
-                {/* Curriculum & Key Coursework Interactive Section */}
-                <div className="mb-6">
-                  <div className="flex items-center justify-between mb-4 border-b border-[var(--border-subtle)] pb-2">
-                    <span className="text-[11px] font-mono uppercase tracking-widest text-[var(--text-dim)] flex items-center gap-1.5">
-                      <FiBookOpen className="text-amber-400" />
-                      <span>CORE CURRICULUM & SOFTWARE DISCIPLINES</span>
-                    </span>
-                    <span className="text-[10px] font-mono text-emerald-400 bg-emerald-400/10 px-2 py-0.5 rounded">
-                      {edu.grade || "PASSED"}
-                    </span>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                    {edu.coursework && edu.coursework.map((course, idx) => (
-                      <div
-                        key={idx}
-                        className="flex items-center gap-2.5 p-2.5 rounded-lg bg-[var(--bg-base)] border border-[var(--border-subtle)] hover:border-amber-400/50 hover:bg-[var(--bg-elevated)] transition-all"
-                      >
-                        <div className="w-5 h-5 rounded-full bg-amber-400/10 border border-amber-400/30 flex items-center justify-center flex-shrink-0">
-                          <FiCheck className="text-[10px] text-amber-400" />
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 sm:gap-4 relative z-10">
+                {timelineSteps.map((step) => {
+                  const Icon = step.icon;
+                  return (
+                    <div key={step.year} className="flex flex-col group/item">
+                      {/* Timeline Node Circle with Year */}
+                      <div className="flex items-center gap-2 mb-3.5">
+                        <div
+                          className="w-4 h-4 rounded-full border-2 bg-[#121216] flex items-center justify-center shrink-0"
+                          style={{
+                            borderColor: step.accentText,
+                            boxShadow: `0 0 10px ${step.borderGlow}`,
+                          }}
+                        >
+                          <div
+                            className="w-1.5 h-1.5 rounded-full"
+                            style={{ backgroundColor: step.accentText }}
+                          />
                         </div>
-                        <span className="text-xs font-mono text-[var(--text-main)] truncate">
-                          {course}
+                        <span
+                          className="font-mono text-xs font-bold"
+                          style={{ color: step.accentText }}
+                        >
+                          {step.year}
                         </span>
                       </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
 
-              {/* Card Footer: Seal of Accreditation */}
-              <div className="pt-6 border-t border-[var(--border-subtle)] flex flex-wrap items-center justify-between gap-4 mt-6">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full border border-amber-400/40 bg-amber-400/10 flex items-center justify-center text-amber-400 shadow-[0_0_15px_rgba(251,191,36,0.2)]">
-                    <FiAward className="text-xl" />
-                  </div>
-                  <div>
-                    <div className="text-xs font-mono font-bold text-[var(--text-main)] uppercase">
-                      OFFICIAL DEGREE VERIFICATION
-                    </div>
-                    <div className="text-[10px] font-mono text-[var(--text-dim)]">
-                      SERIAL #BCA-2021-2024-MG-UNIVERSITY
-                    </div>
-                  </div>
-                </div>
+                      {/* Icon Box + Text Container */}
+                      <div className="flex items-start gap-3">
+                        <div
+                          className="w-11 h-11 rounded-xl bg-white/5 border flex items-center justify-center shrink-0 transition-colors group-hover/item:bg-white/10 shadow-sm"
+                          style={{
+                            borderColor: `${step.accentText}40`,
+                            boxShadow: `0 0 10px ${step.borderGlow}`,
+                          }}
+                        >
+                          <Icon className="text-lg" style={{ color: step.accentText }} />
+                        </div>
 
-                <span className="text-[10px] font-mono text-[var(--text-dim)] uppercase tracking-wider bg-[var(--bg-elevated)] px-3 py-1.5 rounded border border-[var(--border-subtle)]">
-                  COMPUTING SCIENCES
-                </span>
+                        {/* Title & Desc */}
+                        <div className="min-w-0 flex-1">
+                          <div
+                            className="text-white font-bold text-[15px] leading-snug group-hover/item:text-cyan-400 transition-colors"
+                            style={{
+                              fontFamily: "'Inter', sans-serif",
+                              textTransform: "none",
+                              letterSpacing: "-0.01em",
+                            }}
+                          >
+                            {step.title}
+                          </div>
+                          <div
+                            className="text-xs text-slate-400 leading-relaxed mt-1"
+                            style={{
+                              fontFamily: "'Inter', sans-serif",
+                              textTransform: "none",
+                              letterSpacing: "normal",
+                            }}
+                          >
+                            {step.desc}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
-            </TiltDiploma>
+            </div>
           </div>
+        </div>
 
-          {/* SIDEBAR BENTO CARDS (COL 9-12) */}
-          <div className="lg:col-span-4 flex flex-col gap-6">
-
-            {/* BENTO 1: ACADEMIC MILESTONES */}
-            <div className="p-6 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] hover:border-amber-400/50 transition-all duration-300">
-              <div className="flex items-center justify-between mb-4 border-b border-[var(--border-subtle)] pb-3">
-                <span className="text-[10px] font-mono uppercase tracking-widest text-amber-400 font-bold flex items-center gap-1.5">
-                  <FiLayers />
-                  <span>3-YEAR PROGRESSION</span>
-                </span>
-                <span className="text-[10px] font-mono text-[var(--text-dim)]">2021–2024</span>
+        {/* RIGHT (5 COLS): KEY SUBJECTS & AREAS OF LEARNING */}
+        <div className="lg:col-span-5 rounded-2xl bg-[#121216]/90 border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.6)] p-6 md:p-7 backdrop-blur-xl flex flex-col justify-between group hover:border-cyan-500/50 transition-all duration-300">
+          <div>
+            <div className="flex items-center gap-2.5 pb-4 mb-5 border-b border-white/10 font-mono text-xs uppercase tracking-wider text-violet-400 font-semibold">
+              <div className="w-6 h-6 rounded-lg bg-violet-950/40 flex items-center justify-center text-violet-400">
+                <FiBookOpen className="text-sm" />
               </div>
+              <span>KEY SUBJECTS &amp; AREAS OF LEARNING</span>
+            </div>
 
-              <div className="space-y-4">
-                {edu.milestones && edu.milestones.map((ms, idx) => (
-                  <div key={idx} className="relative pl-5 border-l border-[var(--border-subtle)]">
-                    <div className="absolute -left-1.5 top-1 w-3 h-3 rounded-full bg-[var(--bg-base)] border-2 border-amber-400" />
-                    <div className="text-xs font-mono font-bold text-[var(--text-main)] uppercase">
-                      {ms.label}
+            {/* 2-Column Subject Grid with Bold Crisp Text */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              {keySubjects.map((sub) => {
+                const Icon = sub.icon;
+                return (
+                  <div
+                    key={sub.title}
+                    className="p-3 rounded-xl bg-white/5 border border-white/10 hover:border-cyan-400/60 hover:bg-white/10 transition-all duration-200 flex items-center gap-3 group/sub shadow-sm"
+                  >
+                    <div className="w-8 h-8 rounded-lg bg-cyan-950/40 text-cyan-400 flex items-center justify-center shrink-0 group-hover/sub:bg-cyan-500 group-hover/sub:text-black transition-all">
+                      <Icon className="text-sm" />
                     </div>
-                    <div className="text-xs text-[var(--text-muted)] mt-0.5 leading-relaxed font-sans">
-                      {ms.desc}
+                    <div className="min-w-0">
+                      <div className="font-sans font-semibold text-xs sm:text-[13px] text-white group-hover/sub:text-cyan-400 transition-colors leading-snug">
+                        {sub.title}
+                      </div>
+                      <div className="font-mono text-[10px] text-slate-400 mt-0.5">
+                        {sub.highlight}
+                      </div>
                     </div>
                   </div>
-                ))}
-              </div>
+                );
+              })}
             </div>
-
-            {/* BENTO 2: THEORY TO PRODUCTION BRIDGE */}
-            <div className="p-6 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] hover:border-cyan-400/50 transition-all duration-300">
-              <div className="flex items-center justify-between mb-3 border-b border-[var(--border-subtle)] pb-3">
-                <span className="text-[10px] font-mono uppercase tracking-widest text-cyan-400 font-bold flex items-center gap-1.5">
-                  <FiCode />
-                  <span>ENGINEERING BRIDGE</span>
-                </span>
-                <span className="text-[10px] font-mono text-emerald-400">APPLIED CS</span>
-              </div>
-
-              <p className="text-xs text-[var(--text-muted)] leading-relaxed font-sans mb-4">
-                Academic coursework directly translates into enterprise code: applying relational normalization to MongoDB schemas, and algorithmic rigor to real-time ERP calculations.
-              </p>
-
-              <div className="grid grid-cols-2 gap-2 text-center text-xs font-mono">
-                <div className="p-2 rounded bg-[var(--bg-base)] border border-[var(--border-subtle)]">
-                  <div className="text-[10px] text-[var(--text-dim)] uppercase">FOUNDATION</div>
-                  <div className="font-bold text-[var(--text-main)] mt-0.5">RDBMS / OOP</div>
-                </div>
-                <div className="p-2 rounded bg-[var(--bg-base)] border border-[var(--border-subtle)]">
-                  <div className="text-[10px] text-[var(--text-dim)] uppercase">PRODUCTION</div>
-                  <div className="font-bold text-amber-400 mt-0.5">MERN / NEXT.JS</div>
-                </div>
-              </div>
-            </div>
-
-            {/* BENTO 3: CERTIFIED COMPETENCE STAMP */}
-            <div className="p-5 rounded-2xl bg-gradient-to-br from-amber-500/10 via-[var(--bg-surface)] to-[var(--bg-surface)] border border-amber-400/30 flex items-center justify-between gap-3">
-              <div>
-                <div className="text-xs font-mono font-bold text-amber-400 uppercase tracking-wider">
-                  VERIFIED DEGREE HOLDER
-                </div>
-                <div className="text-[11px] text-[var(--text-muted)] mt-0.5">
-                  Full Stack Engineer with formal CS credentials
-                </div>
-              </div>
-              <div className="w-9 h-9 rounded-full bg-amber-400 text-black flex items-center justify-center font-bold text-sm shadow-[0_0_15px_rgba(251,191,36,0.4)] flex-shrink-0">
-                ✓
-              </div>
-            </div>
-
           </div>
-
         </div>
 
       </div>
+
+      {/* ================= ROW 2: COLLEGE DETAILS & DEGREE VERIFICATION ================= */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-6">
+
+        {/* LEFT (7 COLS): COLLEGE PHOTO & DEGREE DETAILS */}
+        <div className="lg:col-span-7 rounded-2xl bg-[#121216]/90 border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.6)] p-6 md:p-7 group hover:border-cyan-500/50 transition-all duration-300">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+
+            {/* Campus Photo on the Left (5 Cols) */}
+            <div className="md:col-span-5 relative rounded-xl overflow-hidden border border-white/10 group/img aspect-[4/3] bg-slate-900 shadow-md">
+              <img
+                src={collegeImg}
+                alt="Sree Sabareesa College Campus"
+                className="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-500"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent pointer-events-none" />
+
+              {/* Bottom location pill */}
+              <div className="absolute bottom-2.5 left-2.5 right-2.5 p-2 rounded-lg bg-black/70 backdrop-blur-md border border-white/20 flex items-center justify-between text-left">
+                <div className="flex items-center gap-2 min-w-0">
+                  <FiMapPin className="text-cyan-400 text-xs shrink-0" />
+                  <div className="min-w-0">
+                    <div className="font-sans font-semibold text-[11px] text-white truncate leading-none">
+                      Sree Sabareesa College
+                    </div>
+                    <div className="font-mono text-[9px] text-slate-400 truncate mt-0.5">
+                      Murikkumvayal, Kottayam, Kerala
+                    </div>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setSelectedPhoto(true)}
+                  aria-label="Expand photo"
+                  className="w-6 h-6 rounded-md bg-white/20 hover:bg-cyan-400 hover:text-black flex items-center justify-center text-white transition-colors shrink-0 ml-1.5"
+                >
+                  <FiMaximize2 className="text-[10px]" />
+                </button>
+              </div>
+            </div>
+
+            {/* Details on the Right (7 Cols) */}
+            <div className="md:col-span-7 flex flex-col justify-between space-y-3.5">
+              <div>
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-violet-950/40 border border-violet-500/30 text-[10px] font-mono text-violet-300 uppercase tracking-wider mb-2 font-semibold">
+                  <FaGraduationCap className="text-xs" />
+                  <span>UNDERGRADUATE DEGREE</span>
+                </div>
+
+                <h3 className="font-['Anton'] text-2xl sm:text-3xl text-white tracking-tight leading-tight">
+                  Bachelor of Computer Applications (BCA)
+                </h3>
+
+                <div className="flex items-start gap-2 mt-2 text-xs text-slate-300">
+                  <FaUniversity className="text-cyan-400 text-sm shrink-0 mt-0.5" />
+                  <div>
+                    <span className="font-semibold text-white">Sree Sabareesa College Murikkumvayal</span>
+                    <span className="block font-mono text-[11px] text-slate-400 mt-0.5">
+                      Affiliated with Mahatma Gandhi University, Kerala
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* 3 Meta Pills */}
+              <div className="grid grid-cols-3 gap-2 pt-1 font-mono text-[10px]">
+                <div className="p-2 rounded-lg bg-white/5 border border-white/10">
+                  <div className="text-slate-400 flex items-center gap-1">
+                    <FiCalendar className="text-violet-400" />
+                    <span>Duration</span>
+                  </div>
+                  <div className="text-white font-semibold mt-1">2021 – 2024</div>
+                </div>
+                <div className="p-2 rounded-lg bg-white/5 border border-white/10">
+                  <div className="text-slate-400 flex items-center gap-1">
+                    <FiMapPin className="text-cyan-400" />
+                    <span>Location</span>
+                  </div>
+                  <div className="text-white font-semibold mt-1 truncate">Kottayam</div>
+                </div>
+                <div className="p-2 rounded-lg bg-white/5 border border-white/10">
+                  <div className="text-slate-400 flex items-center gap-1">
+                    <FiClock className="text-emerald-400" />
+                    <span>Type</span>
+                  </div>
+                  <div className="text-white font-semibold mt-1">Full-Time</div>
+                </div>
+              </div>
+
+              <p className="text-xs text-slate-300 leading-relaxed font-sans pt-1">
+                Three-year intensive undergraduate degree in Computer Applications providing strong theoretical foundations in computer science alongside practical application development, algorithm design, and database systems.
+              </p>
+            </div>
+
+          </div>
+        </div>
+
+        {/* RIGHT (5 COLS): DEGREE VERIFICATION */}
+        <div className="lg:col-span-5 rounded-2xl bg-[#121216]/90 border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.6)] p-6 md:p-7 backdrop-blur-xl flex flex-col justify-between group hover:border-emerald-500/50 transition-all duration-300">
+          <div>
+            <div className="flex items-center justify-between pb-4 mb-4 border-b border-white/10">
+              <div className="flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-emerald-400 font-semibold">
+                <FiShield className="text-sm" />
+                <span>DEGREE VERIFICATION</span>
+              </div>
+              <span className="font-mono text-[11px] text-emerald-400 bg-emerald-950/40 border border-emerald-500/30 px-2.5 py-0.5 rounded-full flex items-center gap-1.5 font-bold">
+                <FiCheckCircle className="text-xs" />
+                Verified
+              </span>
+            </div>
+
+            <p className="text-xs text-slate-300 leading-relaxed mb-6 font-sans">
+              Bachelor of Computer Applications (BCA) awarded by Mahatma Gandhi University, Kerala with First Class Distinction.
+            </p>
+
+            {/* University Card Strip */}
+            <div className="p-4 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between gap-3">
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="w-11 h-11 rounded-xl bg-white/10 border border-white/10 flex items-center justify-center shrink-0 text-cyan-400 shadow-sm">
+                  <FaUniversity className="text-xl" />
+                </div>
+                <div className="min-w-0">
+                  <div className="font-sans font-bold text-sm text-white truncate">
+                    Mahatma Gandhi University
+                  </div>
+                  <div className="font-mono text-xs text-slate-400 truncate mt-0.5">
+                    Kottayam, Kerala
+                  </div>
+                </div>
+              </div>
+
+              <a
+                href="https://www.mgu.ac.in/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 font-mono text-xs px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white hover:text-black border border-white/20 transition-all text-white shrink-0 font-medium shadow-sm"
+              >
+                <span>View Details</span>
+                <FiExternalLink className="text-xs" />
+              </a>
+            </div>
+          </div>
+
+          <div className="pt-4 mt-6 border-t border-white/10 flex items-center justify-between font-mono text-[11px] text-slate-400">
+            <span>ACADEMIC CREDENTIAL</span>
+            <span className="text-emerald-400 font-bold">DISTINCTION CONFERRED</span>
+          </div>
+        </div>
+
+      </div>
+
+      {/* ================= ROW 3: BOTTOM 4 STATS BAR ================= */}
+      <div className="rounded-2xl bg-[#121216]/90 border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.6)] p-5 md:p-6 backdrop-blur-xl">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 divide-y md:divide-y-0 md:divide-x divide-white/10">
+
+          {/* Stat 1 */}
+          <div className="flex items-center gap-3.5 pt-2 md:pt-0 md:px-4">
+            <div className="w-10 h-10 rounded-xl bg-violet-950/40 text-violet-400 flex items-center justify-center shrink-0">
+              <FaGraduationCap className="text-lg" />
+            </div>
+            <div>
+              <div className="font-['Anton'] text-xl text-white tracking-wide leading-none">
+                3 Years
+              </div>
+              <div className="font-mono text-[11px] text-slate-400 mt-1">
+                Full-Time Program
+              </div>
+            </div>
+          </div>
+
+          {/* Stat 2 */}
+          <div className="flex items-center gap-3.5 pt-4 md:pt-0 md:px-4">
+            <div className="w-10 h-10 rounded-xl bg-cyan-950/40 text-cyan-400 flex items-center justify-center shrink-0">
+              <FiBookOpen className="text-lg" />
+            </div>
+            <div>
+              <div className="font-['Anton'] text-xl text-white tracking-wide leading-none">
+                8+
+              </div>
+              <div className="font-mono text-[11px] text-slate-400 mt-1">
+                Core Subjects
+              </div>
+            </div>
+          </div>
+
+          {/* Stat 3 */}
+          <div className="flex items-center gap-3.5 pt-4 md:pt-0 md:px-4">
+            <div className="w-10 h-10 rounded-xl bg-pink-950/40 text-pink-400 flex items-center justify-center shrink-0">
+              <FiStar className="text-lg" />
+            </div>
+            <div>
+              <div className="font-['Anton'] text-xl text-white tracking-wide leading-none">
+                Strong
+              </div>
+              <div className="font-mono text-[11px] text-slate-400 mt-1">
+                Theoretical &amp; Practical Foundation
+              </div>
+            </div>
+          </div>
+
+          {/* Stat 4 */}
+          <div className="flex items-center gap-3.5 pt-4 md:pt-0 md:px-4">
+            <div className="w-10 h-10 rounded-xl bg-emerald-950/40 text-emerald-400 flex items-center justify-center shrink-0">
+              <FiTarget className="text-lg" />
+            </div>
+            <div>
+              <div className="font-['Anton'] text-xl text-white tracking-wide leading-none">
+                Career Ready
+              </div>
+              <div className="font-mono text-[11px] text-slate-400 mt-1">
+                For Tech Industry Roles
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      {/* Lightbox Modal for Campus Photo with Dedicated Floating Close Button */}
+      {selectedPhoto &&
+        typeof document !== "undefined" &&
+        ReactDOM.createPortal(
+          <div
+            className="fixed inset-0 z-[99999] bg-black/85 backdrop-blur-md flex items-center justify-center p-4 sm:p-6"
+            onClick={() => setSelectedPhoto(false)}
+          >
+            {/* Dedicated Big Floating Close Button on Top-Right */}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setSelectedPhoto(false);
+              }}
+              className="fixed top-5 right-5 sm:top-8 sm:right-8 z-[100000] w-12 h-12 rounded-full bg-black/70 hover:bg-rose-500 text-white border border-white/20 flex items-center justify-center transition-all shadow-[0_0_25px_rgba(0,0,0,0.8)] cursor-pointer group"
+              aria-label="Close photo"
+            >
+              <FiX className="text-2xl group-hover:scale-110 transition-transform" />
+            </button>
+
+            {/* Modal Dialog Card */}
+            <div
+              className="relative max-w-4xl w-full rounded-2xl overflow-hidden border border-white/20 shadow-2xl bg-[#0e0e14] my-auto"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Top Header Bar */}
+              <div className="p-4 bg-[#12121a] border-b border-white/10 flex items-center justify-between">
+                <div className="flex items-center gap-2 min-w-0 pr-4">
+                  <FiMapPin className="text-[#22d3ee] text-sm shrink-0" />
+                  <span className="font-sans font-bold text-sm text-white truncate">
+                    Sree Sabareesa College Murikkumvayal
+                  </span>
+                </div>
+                <button
+                  onClick={() => setSelectedPhoto(false)}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/10 hover:bg-rose-500 text-white font-mono text-xs transition-colors shrink-0 cursor-pointer"
+                >
+                  <FiX className="text-sm" />
+                  <span>CLOSE [ESC]</span>
+                </button>
+              </div>
+
+              {/* Campus Image */}
+              <div className="relative max-h-[72vh] overflow-hidden flex items-center justify-center bg-black">
+                <img
+                  src={collegeImg}
+                  alt="Sree Sabareesa College Campus"
+                  className="w-full h-auto max-h-[72vh] object-contain"
+                />
+              </div>
+
+              {/* Bottom Footer Info Bar */}
+              <div className="p-3.5 bg-[#0e0e14] border-t border-white/10 flex flex-wrap items-center justify-between gap-2 font-mono text-xs text-[#9a9a9a]">
+                <span>Murikkumvayal, Kottayam, Kerala · Mahatma Gandhi University</span>
+                <span className="text-[#22d3ee]">Bachelor of Computer Applications (BCA)</span>
+              </div>
+            </div>
+          </div>,
+          document.body
+        )}
+
     </section>
   );
 }
-
-export default Education;

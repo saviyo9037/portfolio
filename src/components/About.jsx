@@ -1,97 +1,93 @@
 import React, { useRef, useState, useEffect } from "react";
-import { motion, useInView } from "framer-motion";
-import { FiArrowUpRight, FiLayers, FiZap, FiCpu, FiTerminal, FiMapPin, FiCheckCircle, FiGithub, FiMail } from "react-icons/fi";
 import saviyoImage from "../assets/saviyo.jpeg";
-import NeonBorder from "./NeonBorder";
+import { FiArrowUpRight, FiCheckCircle } from "react-icons/fi";
 
-// Animated counter hook
-function useCounter(target, duration = 1800, isVisible = true) {
-  const [count, setCount] = useState(0);
-  const hasAnimated = useRef(false);
+// Deterministic pseudo-random torn edge polygon generator
+export function tn(seed = 1, n = 36) {
+  const pseudoRand = (s) => {
+    const x = Math.sin(s) * 10000;
+    return x - Math.floor(x);
+  };
 
-  useEffect(() => {
-    if (!isVisible || hasAnimated.current) return;
-    hasAnimated.current = true;
+  const topPoints = [];
+  const bottomPoints = [];
 
-    const numericTarget = parseInt(target, 10);
-    if (isNaN(numericTarget)) return;
+  // Top edge from 0% to 100% with y offset randomly between 0 and 2.2%
+  for (let i = 0; i <= n; i++) {
+    const x = ((i / n) * 100).toFixed(2);
+    const r = pseudoRand(seed * 127 + i * 29);
+    const y = (r * 2.2).toFixed(2);
+    topPoints.push(`${x}% ${y}%`);
+  }
 
-    const startTime = performance.now();
-    const step = (currentTime) => {
-      const elapsed = currentTime - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      setCount(Math.floor(eased * numericTarget));
+  // Bottom edge from 100% to 0% with y offset randomly between 0 and 2.2% from bottom
+  for (let i = n; i >= 0; i--) {
+    const x = ((i / n) * 100).toFixed(2);
+    const r = pseudoRand(seed * 349 + i * 37);
+    const y = (100 - r * 2.2).toFixed(2);
+    bottomPoints.push(`${x}% ${y}%`);
+  }
 
-      if (progress < 1) {
-        requestAnimationFrame(step);
-      }
-    };
-
-    requestAnimationFrame(step);
-  }, [target, duration, isVisible]);
-
-  return count;
+  return { clipPath: `polygon(${[...topPoints, ...bottomPoints].join(", ")})` };
 }
 
-function About() {
-  const statsRef = useRef(null);
-  const statsInView = useInView(statsRef, { once: true, margin: "-80px" });
+// Inline SVG noise data URI for authentic paper grain
+const NOISE_BG = `url("data:image/svg+xml,%3Csvg viewBox='0 0 250 250' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`;
 
-  const imageRef = useRef(null);
-  const [tilt, setTilt] = useState({ x: 0, y: 0 });
-  const [glare, setGlare] = useState({ x: 50, y: 50 });
+// Text Scramble / Decode effect hook
+function useDecodeText(targetText, speed = 25) {
+  const [displayText, setDisplayText] = useState(targetText);
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#%&@$";
+
+  useEffect(() => {
+    let iteration = 0;
+    const interval = setInterval(() => {
+      setDisplayText(
+        targetText
+          .split("")
+          .map((char, index) => {
+            if (char === " " || char === "&") return char;
+            if (index < iteration) {
+              return targetText[index];
+            }
+            return chars[Math.floor(Math.random() * chars.length)];
+          })
+          .join("")
+      );
+
+      if (iteration >= targetText.length) {
+        clearInterval(interval);
+      }
+      iteration += 1 / 2;
+    }, speed);
+
+    return () => clearInterval(interval);
+  }, [targetText, speed]);
+
+  return displayText;
+}
+
+export default function About() {
+  const decodedTitle = useDecodeText("THE ENGINEER & THE CRAFT");
+
+  // Parallax tracking for collage pieces
+  const collageRef = useRef(null);
+  const [parallax, setParallax] = useState({ px: 0, py: 0 });
 
   const handleMouseMove = (e) => {
-    if (!imageRef.current) return;
-    const rect = imageRef.current.getBoundingClientRect();
-    const x = (e.clientX - rect.left) / rect.width;
-    const y = (e.clientY - rect.top) / rect.height;
-    setTilt({
-      x: (y - 0.5) * -16,
-      y: (x - 0.5) * 16,
+    if (!collageRef.current) return;
+    const rect = collageRef.current.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+    const y = ((e.clientY - rect.top) / rect.height) * 2 - 1;
+    setParallax({
+      px: Math.max(-1, Math.min(1, x)),
+      py: Math.max(-1, Math.min(1, y)),
     });
-    setGlare({ x: x * 100, y: y * 100 });
   };
 
   const handleMouseLeave = () => {
-    setTilt({ x: 0, y: 0 });
-    setGlare({ x: 50, y: 50 });
+    setParallax({ px: 0, py: 0 });
   };
-
-  const engineeringPillars = [
-    {
-      icon: FiLayers,
-      tag: "01 // ARCHITECTURE",
-      title: "Enterprise Modularity",
-      desc: "Architecting 40+ reusable, accessible UI components and modular ERP sub-systems that decouple business logic from presentation.",
-    },
-    {
-      icon: FiZap,
-      tag: "02 // PERFORMANCE",
-      title: "Reactive State & Caching",
-      desc: "Deploying TanStack React Query for aggressive multi-tier caching, optimistic mutations, and resilient real-time server synchronization.",
-    },
-    {
-      icon: FiCpu,
-      tag: "03 // IOT & HARDWARE",
-      title: "Peripherals & WebSockets",
-      desc: "Direct WebSocket hardware communication, custom receipt templates, ESC/POS thermal printing, and barcode automation in live retail environments.",
-    },
-    {
-      icon: FiTerminal,
-      tag: "04 // BACKEND CRAFT",
-      title: "Full-Stack Security & APIs",
-      desc: "Engineering scalable MongoDB schemas, JWT authentication, role-based access control (RBAC), and robust Express REST endpoints.",
-    },
-  ];
-
-  const stats = [
-    { number: 1, suffix: "+", label: "Years Enterprise Exp", sub: "Production Systems at D3innovatives" },
-    { number: 10, suffix: "+", label: "Shipped Modules", sub: "ERP, POS, CRM, and Web Platforms" },
-    { number: 40, suffix: "+", label: "Reusable Components", sub: "Accessible React & TypeScript UI" },
-    { number: 100, suffix: "%", label: "Code Integrity", sub: "Strict TypeScript, Git & CI/CD Discipline" },
-  ];
 
   const handleScrollTo = (id) => {
     const el = document.getElementById(id);
@@ -104,316 +100,421 @@ function About() {
     }
   };
 
+  // Precomputed clip paths using deterministic pseudo-random seeds
+  const clipPieceA = useRef(tn(11, 32)).current;
+  const clipPieceB = useRef(tn(24, 32)).current;
+  const clipPieceC = useRef(tn(38, 32)).current;
+  const clipTicker = useRef(tn(49, 44)).current;
+  const clipPillar1 = useRef(tn(71, 26)).current;
+  const clipPillar2 = useRef(tn(83, 26)).current;
+  const clipPillar3 = useRef(tn(97, 26)).current;
+  const clipPillar4 = useRef(tn(112, 26)).current;
+
+  const tickerItems = [
+    "REACT.JS",
+    "TYPESCRIPT",
+    "TANSTACK REACT QUERY",
+    "NEXT.JS",
+    "NODE.JS",
+    "EXPRESS.JS",
+    "MONGODB",
+    "TAILWIND CSS",
+    "ESC/POS THERMAL PRINTING",
+    "WEBSOCKETS",
+    "REST APIS",
+    "PYTHON DAEMONS",
+  ];
+
+  const pillars = [
+    {
+      num: "01 // ARCHITECTURE",
+      title: "ENTERPRISE MODULARITY",
+      desc: "Architecting 10+ core modules (Product, Customer, Billing, Inventory, POS) with 40+ reusable React components that decouple business rules from presentation.",
+      bg: "#ddd6ff",
+      rot: -2,
+      clip: clipPillar1,
+    },
+    {
+      num: "02 // PERFORMANCE",
+      title: "REACTIVE CACHING",
+      desc: "Deploying TanStack React Query for aggressive multi-tier server state synchronization, optimistic mutations, and sub-second retail POS feedback.",
+      bg: "#e6e6e0",
+      rot: 1.5,
+      clip: clipPillar2,
+    },
+    {
+      num: "03 // HARDWARE & IOT",
+      title: "ESC/POS & DAEMONS",
+      desc: "Direct WebSocket hardware communication, custom receipt templates, ESC/POS thermal printing daemons, and barcode automation in live retail environments.",
+      bg: "#b6f1fb",
+      rot: -1,
+      clip: clipPillar3,
+    },
+    {
+      num: "04 // BACKEND CRAFT",
+      title: "MERN & DATA SECURITY",
+      desc: "Engineering scalable MongoDB schemas, robust Express.js validation middleware, role-based access control (RBAC), and bulletproof JWT authentication.",
+      bg: "#ffd3ee",
+      rot: 2,
+      clip: clipPillar4,
+    },
+  ];
+
   return (
-    <section className="relative overflow-hidden bg-[var(--bg-base)]">
-      {/* Ambient background glow */}
-      <div
-        className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[900px] h-[550px] pointer-events-none opacity-20"
-        style={{
-          background: "radial-gradient(ellipse at center, rgba(255,255,255,0.08) 0%, transparent 70%)",
-          filter: "blur(100px)",
-        }}
-      />
+    <section id="about" className="relative w-full max-w-7xl mx-auto px-4 md:px-6 py-20 md:py-28 bg-transparent text-slate-900">
+      <style>{`
+        /* Continuous marquee ticker */
+        @keyframes collageMarquee {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+        .animate-marquee-continuous {
+          display: flex;
+          width: max-content;
+          animation: collageMarquee 34s linear infinite;
+        }
+        .animate-marquee-continuous:hover {
+          animation-play-state: paused;
+        }
 
-      <div className="container-custom section-padding relative z-10">
-        {/* Section Label Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="flex items-center gap-4 mb-10 md:mb-16"
-        >
-          <span className="text-xs tracking-[0.3em] uppercase text-[var(--accent)] font-medium bg-[var(--glass-bg)] px-4 py-2 rounded-full border border-[var(--glass-border)] backdrop-blur-md">
-            (02)
-          </span>
-          <motion.div
-            className="divider flex-1"
-            initial={{ scaleX: 0 }}
-            whileInView={{ scaleX: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-            style={{ transformOrigin: "left" }}
-          />
-          <span className="text-xs tracking-[0.3em] uppercase text-[var(--text-muted)] font-mono font-medium">
-            Architectural Dossier
-          </span>
-        </motion.div>
+        /* Pillars hover transition */
+        .pillar-card-hover {
+          transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.35s ease;
+        }
+        .pillar-card-hover:hover {
+          transform: translateY(-8px) scale(1.02) rotate(0deg) !important;
+          z-index: 20;
+        }
 
-        {/* Section Headline */}
-        <div className="mb-12 md:mb-16">
-          <motion.h2
-            className="text-5xl md:text-7xl lg:text-8xl font-['Anton'] uppercase leading-[0.9] tracking-tight mb-4"
-            initial={{ opacity: 0, y: 25 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          >
-            <span className="text-transparent text-stroke">The Engineer</span>{" "}
-            <span className="text-[var(--text-main)] drop-shadow-[0_0_30px_rgba(255,255,255,0.12)]">& The Craft</span>
-          </motion.h2>
+        @media (prefers-reduced-motion: reduce) {
+          .animate-marquee-continuous {
+            animation: none !important;
+          }
+          .pillar-card-hover,
+          .collage-piece {
+            transition: none !important;
+            transform: none !important;
+          }
+        }
+      `}</style>
 
-          <motion.p
-            initial={{ opacity: 0, y: 15 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.1 }}
-            className="text-sm md:text-base text-[var(--text-muted)] font-mono max-w-2xl"
-          >
-            Bridging high-throughput web system architecture with modern product engineering, strict TypeScript contracts, and physical hardware integrations.
-          </motion.p>
+      {/* ================= 1. SECTION HEADER ================= */}
+      <div className="mb-12 md:mb-16">
+        <div className="flex items-center gap-3 font-mono text-xs uppercase tracking-[0.2em] text-[#8b7bff] mb-3">
+          <span className="w-2.5 h-[2px] bg-[#8b7bff]" />
+          <span>[01] // DOSSIER</span>
         </div>
 
-        {/* TOP ROW: Bento Grid of Hero Bio + 3D Holographic Portrait */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch mb-12 md:mb-16">
-          {/* LEFT: Identity Dossier Card (7 Cols) */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="lg:col-span-7 p-6 md:p-10 rounded-2xl bg-[var(--bg-surface)]/80 border border-[var(--border-subtle)] backdrop-blur-md flex flex-col justify-between hover:border-[var(--accent)]/30 transition-all duration-500 shadow-[0_20px_50px_rgba(0,0,0,0.3)] relative overflow-hidden group"
-          >
-            {/* Top ambient highlight */}
-            <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        <h2 className="font-['Anton'] text-5xl sm:text-7xl lg:text-8xl uppercase tracking-tight leading-[0.92]">
+          <span className="heading-gradient">{decodedTitle}</span>
+        </h2>
 
-            <div>
-              {/* Header Status Row */}
-              <div className="flex flex-wrap items-center justify-between gap-3 mb-6 pb-4 border-b border-[var(--border-subtle)]/70">
-                <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-mono font-bold uppercase tracking-wider bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 shadow-[0_0_15px_rgba(16,185,129,0.15)]">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                  Active In Production @ D3innovatives
-                </span>
-                <span className="text-[11px] font-mono text-[var(--text-dim)] uppercase tracking-widest">
-                  SYS_ID: SG-2026 // KERALA
-                </span>
+        <p className="font-mono text-xs md:text-sm text-slate-500 uppercase tracking-wider mt-4 max-w-3xl leading-relaxed">
+          Bridging high-throughput web system architecture with modern product engineering, strict TypeScript contracts, and physical hardware integrations.
+        </p>
+      </div>
+
+      {/* ================= 2. TWO-COLUMN SPLIT (1.1fr / 1fr) ================= */}
+      <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_1fr] gap-8 lg:gap-10 items-center mb-16 md:mb-20">
+
+        {/* LEFT COLUMN: DARK GLASS CARD */}
+        <div className="rounded-3xl bg-[#121216]/90 border border-white/10 p-6 sm:p-9 backdrop-blur-xl shadow-[0_20px_50px_rgba(0,0,0,0.6)] flex flex-col justify-between space-y-6 text-white">
+
+          <div>
+            {/* Green pulsing status pill */}
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-950/40 border border-emerald-500/30 font-mono text-[11px] font-bold uppercase tracking-wider text-emerald-400 mb-5">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_#10b981]" />
+              <span>ACTIVE IN PRODUCTION @ D3INNOVATIVES</span>
+            </div>
+
+            {/* Profile Avatar + Name Header */}
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5 mb-6">
+              <div className="relative group shrink-0">
+                <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl overflow-hidden border-2 border-white/20 group-hover:border-violet-400 transition-all duration-300 shadow-md bg-slate-900">
+                  <img
+                    src={saviyoImage}
+                    alt="Saviyo George"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    style={{ objectPosition: "50% 20%" }}
+                  />
+                </div>
+                <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-[#121216] flex items-center justify-center border border-white/20 shadow-sm">
+                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
+                </div>
               </div>
 
-              {/* Persona Header */}
-              <div className="mb-6">
-                <h3 className="text-3xl md:text-5xl font-['Anton'] uppercase text-white tracking-wide mb-2">
-                  Saviyo George
+              <div>
+                <h3 className="font-['Anton'] uppercase text-4xl sm:text-5xl md:text-6xl leading-[0.9] tracking-tight mb-2">
+                  <span className="text-white">SAVIYO </span>
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 via-cyan-400 to-pink-400">
+                    GEORGE
+                  </span>
                 </h3>
-                <div className="flex flex-wrap items-center gap-3 text-xs md:text-sm font-mono text-[var(--text-muted)]">
-                  <span className="text-[var(--accent)] font-semibold">Full Stack Developer</span>
-                  <span className="text-[var(--text-dim)]">·</span>
-                  <span className="flex items-center gap-1">
-                    <FiMapPin className="text-[var(--accent)] text-xs" />
-                    Kerala, India (IST • UTC+5:30)
-                  </span>
-                </div>
-              </div>
-
-              {/* Core Manifesto Statement */}
-              <p className="text-base md:text-xl text-[var(--text-main)] font-normal leading-relaxed mb-6 font-sans">
-                I engineer web applications that excel in production environments. From mission-critical ERP & POS architectures to responsive, accessible client interfaces.
-              </p>
-
-              {/* Bio Narrative */}
-              <p className="text-sm md:text-base text-[var(--text-muted)] leading-relaxed mb-8">
-                Holding a Bachelor of Computer Applications (BCA with Distinction) from MG University and actively shipping software at <strong className="text-white">D3innovatives</strong>, I specialize in combining modern React and TypeScript client ecosystems with performant Express/MongoDB backends and physical IoT hardware (ESC/POS thermal printers, barcoding).
-              </p>
-            </div>
-
-            {/* Quick Spec Pills & CTA */}
-            <div>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-6 pt-5 border-t border-[var(--border-subtle)]/70">
-                <div className="p-3 rounded-lg bg-[var(--bg-base)] border border-[var(--border-subtle)]">
-                  <span className="block text-[10px] font-mono uppercase text-[var(--text-dim)]">Specialty</span>
-                  <span className="text-xs font-semibold text-white font-mono">ERP, POS & MERN</span>
-                </div>
-                <div className="p-3 rounded-lg bg-[var(--bg-base)] border border-[var(--border-subtle)]">
-                  <span className="block text-[10px] font-mono uppercase text-[var(--text-dim)]">Education</span>
-                  <span className="text-xs font-semibold text-white font-mono">BCA Distinction</span>
-                </div>
-                <div className="p-3 rounded-lg bg-[var(--bg-base)] border border-[var(--border-subtle)] col-span-2 sm:col-span-1">
-                  <span className="block text-[10px] font-mono uppercase text-[var(--text-dim)]">Status</span>
-                  <span className="text-xs font-semibold text-emerald-400 font-mono">Open For Selective Work</span>
-                </div>
-              </div>
-
-              <div className="flex flex-wrap items-center gap-4">
-                <button
-                  onClick={() => handleScrollTo("contact")}
-                  className="px-6 py-3 rounded-full bg-[var(--text-main)] text-[var(--bg-base)] text-xs font-bold font-mono uppercase tracking-widest hover:scale-105 hover:bg-white transition-all shadow-lg flex items-center gap-2"
-                >
-                  <span>Initiate Collaboration</span>
-                  <FiArrowUpRight className="text-sm" />
-                </button>
-
-                <button
-                  onClick={() => handleScrollTo("experience")}
-                  className="px-6 py-3 rounded-full bg-white/5 border border-[var(--border-subtle)] text-[var(--text-main)] text-xs font-bold font-mono uppercase tracking-widest hover:border-[var(--accent)] hover:bg-white/10 transition-all flex items-center gap-2"
-                >
-                  <span>Explore Track Record</span>
-                </button>
+                <p className="font-mono text-xs text-slate-400 tracking-wider uppercase">
+                  Full Stack Developer | Kerala, India (IST • UTC+5:30)
+                </p>
               </div>
             </div>
-          </motion.div>
 
-          {/* RIGHT: 3D Holographic Portrait Dossier Card (5 Cols) */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
-            className="lg:col-span-5 flex flex-col items-center justify-center"
+            {/* Lead paragraph */}
+            <p className="font-sans font-semibold text-lg sm:text-xl text-slate-200 leading-snug mb-4">
+              I engineer web applications that excel in production environments, combining enterprise ERP/POS architectures with responsive, accessible client interfaces.
+            </p>
+
+            {/* Body paragraph */}
+            <p className="font-sans text-sm sm:text-base text-slate-300 leading-relaxed mb-6">
+              Holding a Bachelor of Computer Applications with Distinction from <strong className="text-white font-semibold">Mahatma Gandhi University</strong> and actively shipping software at <strong className="text-white font-semibold">D3innovatives</strong>, I specialize in combining modern React and TypeScript client ecosystems with performant Express/MongoDB backends and physical IoT hardware (ESC/POS thermal printers, barcoding).
+            </p>
+
+            {/* Three small fact boxes */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 font-mono text-xs">
+              <div className="p-3 rounded-xl bg-white/5 border border-white/10">
+                <span className="block text-[10px] text-slate-400 uppercase tracking-wider mb-1">
+                  PRODUCTS
+                </span>
+                <span className="font-sans font-semibold text-xs text-white">
+                  ERP, POS &amp; MERN Platforms
+                </span>
+              </div>
+
+              <div className="p-3 rounded-xl bg-white/5 border border-white/10">
+                <span className="block text-[10px] text-slate-400 uppercase tracking-wider mb-1">
+                  EDUCATION
+                </span>
+                <span className="font-sans font-semibold text-xs text-white">
+                  BCA with Distinction
+                </span>
+              </div>
+
+              <div className="p-3 rounded-xl bg-white/5 border border-white/10">
+                <span className="block text-[10px] text-slate-400 uppercase tracking-wider mb-1">
+                  STATUS
+                </span>
+                <span className="font-sans font-semibold text-xs text-emerald-400 font-bold">
+                  Active in Production
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Action buttons */}
+          <div className="flex flex-wrap items-center gap-3 pt-2">
+            <button
+              onClick={() => handleScrollTo("contact")}
+              className="px-6 py-3 rounded-full bg-gradient-to-r from-violet-600 to-cyan-600 text-white font-mono text-xs font-bold uppercase tracking-wider hover:opacity-95 transition-opacity shadow-md shadow-violet-500/20 flex items-center gap-2 cursor-pointer"
+            >
+              <span>Initiate Collaboration</span>
+              <FiArrowUpRight className="text-sm font-bold" />
+            </button>
+
+            <button
+              onClick={() => handleScrollTo("experience")}
+              className="px-6 py-3 rounded-full bg-white/5 border border-white/20 text-white font-mono text-xs font-bold uppercase tracking-wider hover:border-white hover:bg-white/10 transition-colors flex items-center gap-2 cursor-pointer shadow-sm"
+            >
+              <span>Explore Track Record</span>
+            </button>
+          </div>
+
+        </div>
+
+        {/* RIGHT COLUMN: MODERN TORN-PAPER COLLAGE AREA WITH MOUSE PARALLAX */}
+        <div
+          ref={collageRef}
+          onMouseMove={handleMouseMove}
+          onMouseLeave={handleMouseLeave}
+          className="relative w-full h-[470px] sm:h-[500px] flex items-center justify-center select-none"
+        >
+          {/* PIECE A: VIOLET (#8b7bff) TORN PIECE (Top Right, +5deg, 80% wide, k=16) */}
+          <div
+            className="collage-piece absolute top-4 right-2 sm:right-4 w-[82%] sm:w-[80%] z-10"
+            style={{
+              filter: "drop-shadow(0 16px 22px rgba(0,0,0,0.65))",
+              transform: `translate(calc(${parallax.px} * 16px), calc(${parallax.py} * 16px)) rotate(5deg)`,
+              transition: "transform 0.25s ease-out",
+            }}
           >
-            <div className="w-full h-full perspective-[1600px] flex items-center justify-center">
-              <motion.div
-                ref={imageRef}
-                onMouseMove={handleMouseMove}
-                onMouseLeave={handleMouseLeave}
-                animate={{ rotateX: tilt.x, rotateY: tilt.y }}
-                transition={{ type: "spring", stiffness: 350, damping: 25 }}
-                className="relative w-full max-w-md aspect-[4/5] rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] hover:border-[var(--accent)]/50 transition-colors duration-500 overflow-hidden shadow-2xl group transform-style-3d"
-              >
-                {/* Viewfinder Corner Brackets */}
-                <span className="absolute top-4 left-4 font-mono text-[10px] text-white/40 select-none z-30">┌</span>
-                <span className="absolute top-4 right-4 font-mono text-[10px] text-white/40 select-none z-30">┐</span>
-                <span className="absolute bottom-4 left-4 font-mono text-[10px] text-white/40 select-none z-30">└</span>
-                <span className="absolute bottom-4 right-4 font-mono text-[10px] text-white/40 select-none z-30">┘</span>
-
-                {/* Top Telemetry Header */}
-                <div className="absolute top-4 left-0 right-0 px-7 flex items-center justify-between z-30 pointer-events-none">
-                  <span className="text-[10px] font-mono tracking-widest text-white/70 bg-black/60 px-2 py-0.5 rounded border border-white/10 backdrop-blur-md">
-                    SG.ARCH // 02
-                  </span>
-                  <span className="text-[10px] font-mono tracking-widest text-emerald-400 bg-black/60 px-2 py-0.5 rounded border border-emerald-500/20 backdrop-blur-md flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
-                    LIVE
-                  </span>
-                </div>
-
-                {/* Portrait Photo with Smooth Parallax & Grayscale Hover */}
-                <div className="w-full h-full relative overflow-hidden rounded-2xl">
-                  <NeonBorder color="#4ade80" rounded={16} thickness={2} borderSize={40} speed={12}>
-                    <img
-                      src={saviyoImage}
-                      alt="Saviyo George"
-                      className="w-full h-full object-cover object-center grayscale contrast-110 group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 ease-out absolute inset-0"
-                    />
-                    {/* Subtle dark vignette */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-base)] via-transparent to-black/30 pointer-events-none z-10" />
-                  </NeonBorder>
-                </div>
-
-                {/* Glare Sheen Reflection */}
-                <div
-                  className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-30 mix-blend-overlay"
-                  style={{
-                    background: `radial-gradient(circle at ${glare.x}% ${glare.y}%, rgba(255,255,255,0.45) 0%, transparent 60%)`,
-                  }}
-                />
-
-                {/* Bottom HUD Telemetry Strip */}
-                <div className="absolute bottom-4 left-4 right-4 z-30 bg-[var(--bg-surface)]/85 border border-[var(--border-subtle)] backdrop-blur-md rounded-xl p-3.5 transform-style-3d translate-z-[40px] shadow-xl">
-                  <div className="flex items-center justify-between text-[11px] font-mono text-white mb-1">
-                    <span className="font-semibold tracking-wider">SAVIYO GEORGE</span>
-                    <span className="text-[var(--text-dim)]">MERN / TS</span>
-                  </div>
-                  <div className="text-[10px] font-mono text-[var(--text-muted)] flex items-center justify-between">
-                    <span>D3INNOVATIVES // MALAPPURAM</span>
-                    <span>9.98° N, 76.29° E</span>
-                  </div>
-                </div>
-              </motion.div>
+            <div
+              className="p-5 sm:p-6 text-[#0A0A0A]"
+              style={{
+                backgroundColor: "#8b7bff",
+                ...clipPieceA,
+              }}
+            >
+              <div className="font-['Anton'] text-2xl sm:text-3xl lg:text-4xl uppercase tracking-tight text-[#0A0A0A] leading-tight">
+                ERP · POS · MERN
+              </div>
+              <div className="font-mono text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.14em] text-[#0A0A0A]/75 mt-1">
+                ENTERPRISE SYSTEM ARCHITECTURE // HARDWARE BRIDGES
+              </div>
             </div>
-          </motion.div>
-        </div>
-
-        {/* MIDDLE ROW: 4 Core Engineering Pillars (Bento Grid) */}
-        <div className="mb-14 md:mb-20">
-          <div className="mb-6 flex items-center gap-3">
-            <span className="text-xs font-mono uppercase tracking-[0.2em] text-[var(--text-dim)] font-semibold flex items-center gap-2">
-              <span className="text-[var(--accent)]">◆</span>
-              Core Engineering Pillars & Working Philosophy
-            </span>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
-            {engineeringPillars.map((pillar, idx) => {
-              const Icon = pillar.icon;
-              return (
-                <motion.div
-                  key={idx}
-                  initial={{ opacity: 0, y: 25 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6, delay: idx * 0.1, ease: [0.16, 1, 0.3, 1] }}
-                  className="p-6 rounded-2xl bg-[var(--bg-surface)]/60 border border-[var(--border-subtle)] hover:border-[var(--accent)]/40 hover:bg-[var(--bg-elevated)] transition-all duration-300 backdrop-blur-sm group flex flex-col justify-between"
-                >
-                  <div>
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="w-10 h-10 rounded-xl bg-[var(--bg-base)] border border-[var(--border-subtle)] flex items-center justify-center text-[var(--accent)] group-hover:scale-110 group-hover:border-[var(--accent)] transition-all duration-300">
-                        <Icon className="text-lg" />
-                      </div>
-                      <span className="text-[10px] font-mono tracking-widest text-[var(--text-dim)]">
-                        {pillar.tag}
-                      </span>
-                    </div>
+          {/* PIECE B: NEWSPRINT PIECE (#e6e6e0) - SPECIMEN CARD WITH SG MONOGRAM (Middle Left, -4deg, 66% wide, k=-10) */}
+          <div
+            className="collage-piece absolute top-20 left-2 sm:left-4 w-[74%] sm:w-[66%] z-20"
+            style={{
+              filter: "drop-shadow(0 18px 26px rgba(0,0,0,0.75))",
+              transform: `translate(calc(${parallax.px} * -10px), calc(${parallax.py} * -10px)) rotate(-4deg)`,
+              transition: "transform 0.25s ease-out",
+            }}
+          >
+            <div
+              className="p-4 sm:p-5 text-[#0A0A0A]"
+              style={{
+                backgroundColor: "#e6e6e0",
+                backgroundImage: NOISE_BG,
+                ...clipPieceB,
+              }}
+            >
+              {/* Graphic Display: Dark radial gradient card with SG Monogram & telemetry */}
+              <div className="relative w-full h-[190px] overflow-hidden rounded-lg bg-gradient-to-br from-[#121218] via-[#1a1926] to-[#0A0A0A] border border-black/30 mb-3 shadow-inner flex flex-col justify-between p-4 text-white">
+                <div className="flex items-center justify-between font-mono text-[10px] text-[#8b7bff] tracking-widest uppercase">
+                  <span>// SPECIMEN 01</span>
+                  <span className="px-2 py-0.5 rounded bg-[#8b7bff]/20 text-[#8b7bff] font-bold">KERALA, IN</span>
+                </div>
 
-                    <h4 className="text-lg font-['Anton'] uppercase tracking-wide text-white mb-2 group-hover:text-[var(--accent)] transition-colors">
-                      {pillar.title}
-                    </h4>
+                {/* Big initials monogram with neon glow */}
+                <div className="flex items-center justify-center my-auto">
+                  <span className="font-['Anton'] text-7xl sm:text-8xl tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-white via-[#8b7bff] to-[#22d3ee] drop-shadow-[0_0_25px_rgba(139,123,255,0.4)]">
+                    SG
+                  </span>
+                </div>
 
-                    <p className="text-xs text-[var(--text-muted)] leading-relaxed font-sans group-hover:text-[var(--text-main)]/90 transition-colors">
-                      {pillar.desc}
-                    </p>
+                {/* Equalizer audio / telemetry bars */}
+                <div className="flex items-center justify-between pt-1 border-t border-white/10 font-mono text-[9px] text-white/50 tracking-wider">
+                  <div className="flex items-end gap-1 h-3">
+                    <span className="w-1 h-2 bg-[#22d3ee] animate-pulse" />
+                    <span className="w-1 h-3 bg-[#8b7bff] animate-pulse" style={{ animationDelay: "150ms" }} />
+                    <span className="w-1 h-1.5 bg-[#ff6ad5] animate-pulse" style={{ animationDelay: "300ms" }} />
+                    <span className="w-1 h-2.5 bg-[#39ff88] animate-pulse" style={{ animationDelay: "450ms" }} />
                   </div>
+                  <span>FULL STACK // ARCHITECT</span>
+                </div>
+              </div>
 
-                  <div className="mt-5 pt-3 border-t border-[var(--border-subtle)]/50 flex items-center justify-between text-[10px] font-mono text-[var(--text-dim)]">
-                    <span className="group-hover:text-[var(--accent)] transition-colors">STANDARD PROTOCOL</span>
-                    <FiCheckCircle className="text-xs opacity-60 group-hover:opacity-100 group-hover:text-emerald-400 transition-all" />
-                  </div>
-                </motion.div>
-              );
-            })}
+              {/* Photo Caption Text in Anton & Mono */}
+              <div className="font-['Anton'] text-xl sm:text-2xl uppercase tracking-tight text-[#0A0A0A] leading-tight">
+                SAVIYO GEORGE
+              </div>
+              <div className="font-mono text-[10px] uppercase tracking-wider text-[#0A0A0A]/70 mt-0.5">
+                Full Stack Developer · Kerala, IN
+              </div>
+            </div>
           </div>
+
+          {/* PIECE C: CYAN (#22d3ee) TORN PIECE (Bottom Right, -6deg, 74% wide, k=24) */}
+          <div
+            className="collage-piece absolute bottom-4 right-1 sm:right-3 w-[78%] sm:w-[74%] z-30"
+            style={{
+              filter: "drop-shadow(0 16px 22px rgba(0,0,0,0.7))",
+              transform: `translate(calc(${parallax.px} * 24px), calc(${parallax.py} * 24px)) rotate(-6deg)`,
+              transition: "transform 0.25s ease-out",
+            }}
+          >
+            <div
+              className="p-4 sm:p-5 text-[#0A0A0A] flex items-center justify-between gap-3"
+              style={{
+                backgroundColor: "#22d3ee",
+                ...clipPieceC,
+              }}
+            >
+              <div className="font-mono text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.14em] text-[#0A0A0A] truncate">
+                PRODUCTION READY // 10+ CORE SHIPPED MODULES
+              </div>
+              <span className="w-2.5 h-2.5 rounded-full bg-[#0A0A0A] shrink-0" />
+            </div>
+          </div>
+
         </div>
 
-        {/* BOTTOM ROW: Production Metrics Counters Strip */}
-        <div ref={statsRef} className="grid grid-cols-2 lg:grid-cols-4 gap-4 pt-10 border-t border-[var(--border-subtle)]">
-          {stats.map((stat, i) => (
-            <StatCounterItem
-              key={i}
-              number={stat.number}
-              suffix={stat.suffix}
-              label={stat.label}
-              sub={stat.sub}
-              inView={statsInView}
-              delay={i * 0.1}
-            />
+      </div>
+
+      {/* ================= 3. TICKER STRIP ================= */}
+      <div className="mb-20 overflow-hidden py-3">
+        <div
+          className="relative w-[104%] -ml-[2%] py-3 sm:py-3.5 text-[#0A0A0A]"
+          style={{
+            filter: "drop-shadow(0 14px 20px rgba(0,0,0,0.6))",
+            transform: "rotate(-1.4deg)",
+          }}
+        >
+          <div
+            className="w-full py-2 overflow-hidden"
+            style={{
+              backgroundColor: "#e6e6e0",
+              backgroundImage: NOISE_BG,
+              ...clipTicker,
+            }}
+          >
+            <div className="animate-marquee-continuous font-['Anton'] text-xl sm:text-2xl uppercase tracking-wide flex items-center">
+              {/* Loop duplicated twice for seamless infinite scroll */}
+              {[...tickerItems, ...tickerItems].map((item, idx) => (
+                <span key={idx} className="flex items-center whitespace-nowrap px-4 text-[#0A0A0A]">
+                  <span>{item}</span>
+                  <span className="text-[#8b7bff] ml-8 text-sm">◆</span>
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ================= 4. PILLARS ================= */}
+      <div>
+        {/* Centered mono section label */}
+        <div className="text-center mb-10">
+          <span className="font-mono text-xs sm:text-sm uppercase tracking-[0.2em] font-bold text-[#8b7bff]">
+            // CORE ENGINEERING PILLARS &amp; WORKING PHILOSOPHY
+          </span>
+        </div>
+
+        {/* 4-Column Grid of Colorful Torn Paper Pieces */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-7 lg:gap-6 items-stretch pt-2">
+          {pillars.map((pillar) => (
+            <div
+              key={pillar.num}
+              className="pillar-card-hover relative flex flex-col justify-between"
+              style={{
+                filter: "drop-shadow(0 16px 22px rgba(0,0,0,0.6))",
+                transform: `rotate(${pillar.rot}deg)`,
+              }}
+            >
+              <div
+                className="p-6 sm:p-7 flex flex-col justify-between h-full text-[#0A0A0A]"
+                style={{
+                  backgroundColor: pillar.bg,
+                  backgroundImage: NOISE_BG,
+                  ...pillar.clip,
+                }}
+              >
+                <div>
+                  {/* Mono small caps label */}
+                  <span className="block font-mono text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.14em] text-[#0A0A0A]/70 mb-2">
+                    {pillar.num}
+                  </span>
+
+                  {/* Anton Uppercase Title */}
+                  <h4 className="font-['Anton'] text-2xl uppercase tracking-tight text-[#0A0A0A] leading-tight mb-3">
+                    {pillar.title}
+                  </h4>
+
+                  {/* Body text in 13.5px Inter */}
+                  <p className="font-sans text-[13.5px] text-[#0A0A0A]/85 leading-relaxed">
+                    {pillar.desc}
+                  </p>
+                </div>
+
+                {/* Bottom rule mark */}
+                <div className="mt-6 pt-3 border-t border-[#0A0A0A]/20 flex items-center justify-between font-mono text-[10px] text-[#0A0A0A]/70 uppercase tracking-wider font-bold">
+                  <span>STANDARD PROTOCOL</span>
+                  <FiCheckCircle className="text-xs text-[#0A0A0A]" />
+                </div>
+              </div>
+            </div>
           ))}
         </div>
       </div>
+
     </section>
   );
 }
-
-const StatCounterItem = ({ number, suffix, label, sub, inView, delay }) => {
-  const count = useCounter(number, 1800, inView);
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.6, delay }}
-      className="p-5 md:p-6 rounded-xl bg-[var(--bg-surface)]/40 border border-[var(--border-subtle)] hover:border-[var(--accent)]/30 transition-all"
-    >
-      <div className="text-4xl md:text-6xl font-['Anton'] text-white tracking-tight mb-1 flex items-baseline">
-        <span>{count}</span>
-        <span className="text-[var(--accent)] text-3xl md:text-4xl ml-0.5">{suffix}</span>
-      </div>
-      <div className="text-xs font-mono font-bold uppercase tracking-wider text-[var(--text-main)] mb-1">
-        {label}
-      </div>
-      <div className="text-[11px] font-sans text-[var(--text-dim)] leading-tight">
-        {sub}
-      </div>
-    </motion.div>
-  );
-};
-
-export default About;
-

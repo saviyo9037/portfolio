@@ -1,418 +1,417 @@
-import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { skills } from "../data/skills";
-import { 
-  FiTerminal, 
-  FiLayout, 
-  FiServer, 
-  FiDatabase, 
-  FiCpu, 
-  FiTool, 
-  FiCheckCircle, 
-  FiArrowUpRight,
-  FiFileText
-} from "react-icons/fi";
+import React, { useRef, useState, useEffect } from "react";
 
-const EDITIONS = [
-  { key: "all", label: "Full Gazette" },
-  { key: "frontend", label: "Frontend Wire" },
-  { key: "backend", label: "Backend Desk" },
-  { key: "enterprise", label: "Enterprise & Niche" },
-  { key: "tools", label: "Toolbox Classifieds" },
+const SKILLS_DATA = [
+  [
+    "Frontend Wire",
+    [
+      ["Languages", "JavaScript (ES6+), TypeScript"],
+      ["Frameworks", "React.js, Next.js, Redux, TanStack React Query"],
+      ["Styling", "Tailwind CSS, Bootstrap, HTML5, CSS3"],
+      ["Design", "Figma, Canva"],
+    ],
+  ],
+  [
+    "Backend Desk",
+    [
+      ["Runtime", "Node.js, Express.js"],
+      ["APIs", "RESTful APIs, Axios, JWT Authentication"],
+      ["Realtime", "WebSockets / Socket.IO"],
+      ["Databases", "MongoDB, Mongoose ODM, MySQL, SQLite / Drift"],
+      ["Also", "PHP, Python, Dart"],
+    ],
+  ],
+  [
+    "Enterprise & Hardware",
+    [
+      ["Niche", "Enterprise ERP & POS Systems"],
+      ["Hardware", "ESC/POS Thermal Printing"],
+      ["Codes", "Barcode & QR Generation"],
+      ["Packaging", "PyInstaller Desktop Packaging"],
+      ["AI", "Voice Assistant (STT/TTS)"],
+      ["Tools", "Git, GitHub, Postman, VS Code, Vite, npm, XAMPP"],
+    ],
+  ],
 ];
 
-function Skills() {
-  const [activeEdition, setActiveEdition] = useState("all");
-  const [hoveredSkill, setHoveredSkill] = useState(null);
+const CH = [
+  [
+    "01",
+    "Frontend Wire",
+    "Client architecture & reactive systems",
+    "Responsive, high-performance interfaces built on typed components and cached server state.",
+  ],
+  [
+    "02",
+    "Backend Desk",
+    "Services, data & realtime",
+    "REST APIs with JWT & RBAC, validated middleware, and schemas that hold up in production.",
+  ],
+  [
+    "03",
+    "Enterprise & Hardware",
+    "ERP, POS & physical bridges",
+    "ERP/POS platforms that connect the browser to thermal printers, scanners and desktop daemons.",
+  ],
+];
 
-  // Grouped skills for the newspaper columns
-  const frontendSkills = skills.find((s) => s.category === "Frontend")?.items || [];
-  const backendSkills = skills.find((s) => s.category === "Backend")?.items || [];
-  const dbSkills = skills.find((s) => s.category === "Databases")?.items || [];
-  const languageSkills = skills.find((s) => s.category === "Languages")?.items || [];
-  const toolSkills = skills.find((s) => s.category === "Tools")?.items || [];
-  const nicheSkills = skills.find((s) => s.category.includes("Other") || s.category.includes("Niche"))?.items || [];
+const Rows = ({ i }) => (
+  <div className="flex-1 flex flex-col justify-center gap-3">
+    {SKILLS_DATA[i][1].map(([k, v]) => (
+      <div key={k} className="border-b border-[#161616]/15 pb-2">
+        <div className="font-mono text-[10px] font-bold tracking-widest mb-1.5 flex items-center">
+          <span className="inline-block w-2 h-2 bg-[#161616] mr-2" />
+          {k.toUpperCase()}
+        </div>
+        <div className="flex flex-wrap gap-1.5 font-mono">
+          {v.split(", ").map((c) => (
+            <span
+              key={c}
+              className="text-[12px] border border-[#161616]/30 bg-white/40 px-2 py-0.5 rounded-sm"
+            >
+              {c}
+            </span>
+          ))}
+        </div>
+      </div>
+    ))}
+  </div>
+);
+
+const Hd = ({ a, b }) => (
+  <div className="font-mono text-[10px] tracking-widest flex justify-between border-b border-[#161616]/20 pb-2">
+    <span>{a}</span>
+    <span>{b}</span>
+  </div>
+);
+
+const Left = ({ i }) => {
+  const c = CH[i];
+  return (
+    <>
+      <Hd a="THE DEVELOPER GAZETTE" b={"CHAP. " + c[0]} />
+      <div className="flex-1 flex flex-col justify-center">
+        <div
+          className="font-['Anton']"
+          style={{ fontSize: "clamp(5rem,10vw,9rem)", opacity: 0.12 }}
+        >
+          {c[0]}
+        </div>
+        <h4 className="font-['Anton'] text-4xl lg:text-5xl -mt-4 lg:-mt-8">
+          {c[1]}
+        </h4>
+        <p className="font-mono text-[11px] tracking-widest mt-2 text-[#4a4a4a]">
+          {c[2].toUpperCase()}
+        </p>
+        <p className="italic text-lg leading-snug mt-6">“{c[3]}”</p>
+        <span className="font-mono text-[10px] mt-6 flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-[#1a9c52] animate-pulse" />
+          PRODUCTION VERIFIED @ D3INNOVATIVES
+        </span>
+      </div>
+      <div className="font-mono text-[10px] border-t border-[#161616]/20 pt-2">
+        PAGE {String(2 * i + 2).padStart(2, "0")}
+      </div>
+    </>
+  );
+};
+
+const Right = ({ i }) => (
+  <>
+    <Hd a="CLASSIFIED INVENTORY" b="2026 REGISTER" />
+    <Rows i={i} />
+    <div className="font-mono text-[10px] border-t border-[#161616]/20 pt-2 text-right">
+      PAGE {String(2 * i + 3).padStart(2, "0")}
+    </div>
+    <span className="cr" />
+  </>
+);
+
+const Cover = () => (
+  <div className="flex-1 flex flex-col justify-between p-5 border border-[#39ff88]/40 h-full">
+    <span className="font-mono text-[10px] tracking-widest text-[#39ff88]">
+      VOL. XXIV · NO. 08
+    </span>
+    <div>
+      <h4 className="font-['Anton'] text-5xl lg:text-6xl text-white">
+        The Developer
+        <br />
+        <span className="text-stroke text-transparent">Gazette</span>
+      </h4>
+      <p className="font-mono text-[11px] tracking-widest mt-4 text-[#9a9a9a]">
+        TECHNICAL LEDGER // SAVIYO GEORGE
+      </p>
+    </div>
+    <div>
+      <p className="font-mono text-[10px] tracking-widest text-[#9a9a9a]">
+        MALAPPURAM &amp; KERALA EDITION · EST. 2021
+      </p>
+      <p className="font-mono text-[11px] mt-3 text-[#39ff88] animate-pulse font-bold">
+        CLICK TO OPEN ▸
+      </p>
+    </div>
+  </div>
+);
+
+const Back = () => {
+  const scrollToContact = (e) => {
+    e.stopPropagation();
+    const el = document.getElementById("contact");
+    if (el) {
+      if (window.__lenis) {
+        window.__lenis.scrollTo(el, { duration: 1.2 });
+      } else {
+        el.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+  };
 
   return (
-    <section className="relative overflow-hidden bg-[var(--bg-base)] text-[var(--text-main)] py-20 md:py-28 border-t border-[var(--border-subtle)]">
-      <div className="container-custom">
+    <div className="flex-1 flex flex-col items-center justify-center gap-5 text-center border border-[#39ff88]/40 p-5 h-full">
+      <span className="font-mono text-[10px] tracking-widest text-[#39ff88]">
+        END OF LEDGER
+      </span>
+      <h4 className="font-['Anton'] text-4xl text-white">
+        Need this stack
+        <br />
+        on your team?
+      </h4>
+      <button
+        onClick={scrollToContact}
+        className="btn-minimal px-6 py-2.5 text-xs font-mono font-bold tracking-widest uppercase hover:border-[#39ff88] hover:text-[#39ff88] transition-colors"
+      >
+        [ INITIATE_COMMS ]
+      </button>
+    </div>
+  );
+};
 
-        {/* ================= NEWSPAPER TOP HEADER / FOLIO BAR ================= */}
-        <div className="border-b border-t border-[var(--border-subtle)] py-2 mb-6">
-          <div className="flex flex-wrap items-center justify-between gap-3 text-[10px] md:text-xs font-mono uppercase tracking-widest text-[var(--text-dim)]">
-            <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
-              <span>VOL. XXIV · NO. 04</span>
-            </div>
-            <div className="hidden sm:block text-center text-[var(--text-muted)] font-serif italic">
-              "All the code, frameworks, and architecture fit to ship"
-            </div>
-            <div className="flex items-center gap-3">
-              <span>SPECIAL DISPATCH</span>
-              <span>•</span>
-              <span className="text-[var(--text-main)] font-semibold">EST. 2021</span>
-            </div>
-          </div>
-        </div>
+export default function Skills() {
+  const box = useRef(null);
+  const [pr, setPr] = useState(0);
+  const tr = useRef(1);
 
-        {/* ================= NEWSPAPER MASTHEAD ================= */}
-        <div className="text-center mb-8 relative">
-          <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-amber-400/30 bg-amber-400/5 text-amber-400 text-[10px] tracking-[0.25em] uppercase font-mono mb-4"
-          >
-            <FiFileText className="text-xs" />
-            <span>THE DEVELOPER GAZETTE · SPECIAL EDITION</span>
-          </motion.div>
+  useEffect(() => {
+    const f = () => {
+      if (!box.current) return;
+      const r = box.current.getBoundingClientRect();
+      tr.current = Math.max(1, r.height - (window.innerHeight - 80));
+      setPr(Math.max(0, Math.min(1, (80 - r.top) / tr.current)));
+    };
+    f();
+    window.addEventListener("scroll", f, { passive: true });
+    window.addEventListener("resize", f);
+    return () => {
+      window.removeEventListener("scroll", f);
+      window.removeEventListener("resize", f);
+    };
+  }, []);
 
-          <motion.h2
-            initial={{ opacity: 0, scale: 0.96 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7 }}
-            className="text-5xl md:text-8xl lg:text-9xl font-['Anton'] uppercase tracking-tight leading-[0.85] text-[var(--text-main)] mb-3 select-none"
-          >
-            TECHNICAL <span className="text-transparent text-stroke hover:text-amber-400/20 transition-colors">STACK</span>
-          </motion.h2>
+  const t = pr * 4;
+  const f = (i) => {
+    const x = Math.max(0, Math.min(1, (t - i - 0.15) / 0.7));
+    return x * x * (3 - 2 * x);
+  };
 
-          <p className="max-w-2xl mx-auto text-xs md:text-sm text-[var(--text-muted)] font-serif italic leading-relaxed">
-            A comprehensive editorial index of core languages, modern client-side engines, server-side infrastructure, and specialized enterprise tooling.
-          </p>
+  const cur = Math.max(0, Math.min(4, Math.round(t)));
+  const sh = -25 * (1 - f(0)) + 25 * f(3);
+  const op = Math.min(1, f(0) * 3, (1 - f(3)) * 3);
 
-          {/* Newspaper Double Hairline Separator */}
-          <div className="mt-8 border-t-2 border-b border-[var(--text-dim)]/40 h-1.5" />
-        </div>
+  const go = (n) => {
+    n = Math.max(0, Math.min(4, n));
+    if (!box.current) return;
+    const r = box.current.getBoundingClientRect();
+    const target = window.scrollY + r.top - 80 + (n / 4) * tr.current;
+    if (window.__lenis) {
+      window.__lenis.scrollTo(target, { duration: 1.2 });
+    } else {
+      window.scrollTo({ top: target, behavior: "smooth" });
+    }
+  };
 
-        {/* ================= EDITION FILTER TABS ================= */}
-        <div className="flex flex-wrap items-center justify-between gap-4 mb-10 pb-4 border-b border-[var(--border-subtle)]">
-          <div className="flex items-center gap-2 overflow-x-auto py-1">
-            <span className="text-[10px] uppercase font-mono text-[var(--text-dim)] mr-2 hidden md:inline">
-              SELECT SECTION:
-            </span>
-            {EDITIONS.map((ed) => {
-              const isActive = activeEdition === ed.key;
-              return (
+  const tabs = ["COVER", "01 FRONTEND", "02 BACKEND", "03 ENTERPRISE"];
+
+  const F = (i, face, cls, child, fn) => (
+    <div
+      className={"pg " + cls}
+      aria-hidden={face === "f" ? f(i) > 0.5 : f(i) <= 0.5}
+      onClick={fn}
+    >
+      {child}
+    </div>
+  );
+
+  return (
+    <section id="skills" className="relative max-w-7xl mx-auto px-4 md:px-6 py-12 md:py-20 text-white">
+      <div className="flex items-baseline gap-4 mb-6 border-b border-white/10 pb-4">
+        <span className="section-label">[03]</span>
+        <h2 className="font-['Anton'] text-5xl md:text-7xl uppercase tracking-tight">
+          <span className="heading-gradient-cyan">THE DEVELOPER</span>{" "}
+          <span className="text-white">GAZETTE</span>
+        </h2>
+      </div>
+
+      {/* Desktop 3D Scrollable Book Chamber */}
+      <div ref={box} className="hidden md:block" style={{ height: "440vh" }}>
+        <div
+          tabIndex={0}
+          aria-label="Skills book. It turns as you scroll. Arrow keys also turn pages."
+          onKeyDown={(e) => {
+            if (e.key === "ArrowRight") {
+              e.preventDefault();
+              go(cur + 1);
+            }
+            if (e.key === "ArrowLeft") {
+              e.preventDefault();
+              go(cur - 1);
+            }
+          }}
+          style={{
+            position: "sticky",
+            top: 80,
+            height: "calc(100vh - 80px)",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+          }}
+        >
+          {/* Top Controls Header */}
+          <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
+            <div className="flex flex-wrap gap-2">
+              {tabs.map((x, i) => (
                 <button
-                  key={ed.key}
-                  onClick={() => setActiveEdition(ed.key)}
-                  className={`px-3.5 py-1.5 rounded-sm text-xs font-mono tracking-wider uppercase transition-all duration-200 cursor-pointer ${
-                    isActive
-                      ? "bg-[var(--text-main)] text-[var(--bg-base)] font-bold shadow-md"
-                      : "bg-[var(--bg-elevated)] text-[var(--text-muted)] hover:text-[var(--text-main)] border border-[var(--border-subtle)]"
-                  }`}
+                  key={x}
+                  onClick={() => go(i)}
+                  aria-label={"Go to " + x}
+                  className="font-mono text-xs px-3 py-1.5 border transition-all cursor-pointer shadow-sm"
+                  style={{
+                    borderRadius: 999,
+                    borderColor: cur === i ? "#39ff88" : "rgba(255, 255, 255, 0.12)",
+                    background: cur === i ? "rgba(57, 255, 136, 0.15)" : "rgba(255, 255, 255, 0.05)",
+                    color: cur === i ? "#39ff88" : "#94a3b8",
+                    fontWeight: cur === i ? 700 : 500,
+                  }}
                 >
-                  {ed.label}
+                  {x}
                 </button>
-              );
-            })}
-          </div>
-
-          <div className="hidden lg:flex items-center gap-3 text-xs font-mono text-[var(--text-dim)]">
-            <FiCheckCircle className="text-amber-400" />
-            <span>MERN & NEXT.JS ECOSYSTEM CERTIFIED</span>
-          </div>
-        </div>
-
-        {/* ================= NEWSPAPER BROADSHEET COLUMNS ================= */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0 border border-[var(--border-subtle)] bg-[var(--bg-surface)] divide-y md:divide-y-0 md:divide-x divide-[var(--border-subtle)]">
-
-          {/* COLUMN 1: FRONTEND & LANGUAGES (LEAD STORY) */}
-          {(activeEdition === "all" || activeEdition === "frontend") && (
-            <div className="p-6 md:p-8 flex flex-col justify-between group hover:bg-[var(--bg-elevated)]/40 transition-colors duration-300">
-              <div>
-                {/* Column Headline Badge */}
-                <div className="flex items-center justify-between mb-4 border-b border-[var(--border-subtle)] pb-2">
-                  <span className="text-[10px] font-mono uppercase tracking-widest text-amber-400 font-bold flex items-center gap-1.5">
-                    <FiLayout />
-                    <span>FRONT PAGE · LEAD DISPATCH</span>
-                  </span>
-                  <span className="text-[10px] font-mono text-[var(--text-dim)]">COL. 01</span>
-                </div>
-
-                <h3 className="text-2xl md:text-3xl font-['Anton'] uppercase text-[var(--text-main)] mb-2 leading-tight group-hover:text-amber-400 transition-colors">
-                  MODERN CLIENT ENGINES & REACT ECOSYSTEM
-                </h3>
-
-                <p className="text-xs text-[var(--text-muted)] font-serif italic mb-6 leading-normal border-b border-[var(--border-subtle)] pb-4">
-                  “Architecting lightning-fast user experiences with server-side rendering, declarative state machines, and micro-animations.”
-                </p>
-
-                {/* Core Languages Stamp */}
-                <div className="mb-6 p-3 rounded bg-[var(--bg-base)] border border-[var(--border-subtle)]">
-                  <div className="text-[9px] font-mono uppercase text-[var(--text-dim)] tracking-wider mb-2">
-                    PRIMARY SYNTAX & RUNTIMES:
-                  </div>
-                  <div className="flex flex-wrap gap-1.5">
-                    {languageSkills.map((lang, i) => (
-                      <span
-                        key={i}
-                        className="text-[11px] font-mono px-2 py-0.5 rounded bg-[var(--bg-elevated)] text-[var(--text-main)] border border-[var(--border-subtle)]"
-                      >
-                        {lang}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Frontend Skills Table List */}
-                <div className="space-y-2">
-                  <div className="text-[10px] font-mono uppercase text-[var(--text-dim)] tracking-widest mb-3">
-                    CLIENT-SIDE ARSENAL:
-                  </div>
-                  {frontendSkills.map((item, i) => (
-                    <motion.div
-                      key={i}
-                      whileHover={{ x: 4 }}
-                      className="flex items-center justify-between py-1.5 px-2 rounded border-b border-[var(--border-subtle)]/50 hover:bg-[var(--bg-base)] transition-all cursor-default"
-                      onMouseEnter={() => setHoveredSkill(item)}
-                      onMouseLeave={() => setHoveredSkill(null)}
-                    >
-                      <span className="text-xs font-sans font-medium text-[var(--text-main)] flex items-center gap-2">
-                        <span className="text-[10px] font-mono text-[var(--text-dim)]">{String(i + 1).padStart(2, "0")}.</span>
-                        {item}
-                      </span>
-                      <span className="text-[9px] font-mono uppercase text-emerald-400/80 bg-emerald-400/10 px-1.5 py-0.5 rounded">
-                        PROD
-                      </span>
-                    </motion.div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Column Footer Stamp */}
-              <div className="mt-8 pt-4 border-t border-[var(--border-subtle)] flex items-center justify-between text-[10px] font-mono text-[var(--text-dim)]">
-                <span>SECTION: CLIENT DEV</span>
-                <span className="text-amber-400 font-bold">100% RESPONSIVE</span>
-              </div>
-            </div>
-          )}
-
-          {/* COLUMN 2: BACKEND & DATA ARCHITECTURE (THE SERVER WIRE) */}
-          {(activeEdition === "all" || activeEdition === "backend") && (
-            <div className="p-6 md:p-8 flex flex-col justify-between group hover:bg-[var(--bg-elevated)]/40 transition-colors duration-300">
-              <div>
-                {/* Column Headline Badge */}
-                <div className="flex items-center justify-between mb-4 border-b border-[var(--border-subtle)] pb-2">
-                  <span className="text-[10px] font-mono uppercase tracking-widest text-cyan-400 font-bold flex items-center gap-1.5">
-                    <FiServer />
-                    <span>SYSTEMS WIRE · ARCHITECTURE</span>
-                  </span>
-                  <span className="text-[10px] font-mono text-[var(--text-dim)]">COL. 02</span>
-                </div>
-
-                <h3 className="text-2xl md:text-3xl font-['Anton'] uppercase text-[var(--text-main)] mb-2 leading-tight group-hover:text-cyan-400 transition-colors">
-                  SCALABLE SERVER RUNTIMES & DATABASE PIPELINES
-                </h3>
-
-                <p className="text-xs text-[var(--text-muted)] font-serif italic mb-6 leading-normal border-b border-[var(--border-subtle)] pb-4">
-                  “RESTful APIs, session/JWT authentication layers, transaction schemas, and high-concurrency microservices.”
-                </p>
-
-                {/* Databases Box */}
-                <div className="mb-6 p-3 rounded bg-[var(--bg-base)] border border-[var(--border-subtle)]">
-                  <div className="text-[9px] font-mono uppercase text-[var(--text-dim)] tracking-wider mb-2 flex items-center gap-1.5">
-                    <FiDatabase className="text-xs text-cyan-400" />
-                    <span>DATABASE PERSISTENCE:</span>
-                  </div>
-                  <div className="flex flex-wrap gap-1.5">
-                    {dbSkills.map((db, i) => (
-                      <span
-                        key={i}
-                        className="text-[11px] font-mono px-2 py-0.5 rounded bg-[var(--bg-elevated)] text-[var(--text-main)] border border-[var(--border-subtle)]"
-                      >
-                        {db}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Backend Skills List */}
-                <div className="space-y-2">
-                  <div className="text-[10px] font-mono uppercase text-[var(--text-dim)] tracking-widest mb-3">
-                    SERVER CAPABILITIES:
-                  </div>
-                  {backendSkills.map((item, i) => (
-                    <motion.div
-                      key={i}
-                      whileHover={{ x: 4 }}
-                      className="flex items-center justify-between py-1.5 px-2 rounded border-b border-[var(--border-subtle)]/50 hover:bg-[var(--bg-base)] transition-all cursor-default"
-                      onMouseEnter={() => setHoveredSkill(item)}
-                      onMouseLeave={() => setHoveredSkill(null)}
-                    >
-                      <span className="text-xs font-sans font-medium text-[var(--text-main)] flex items-center gap-2">
-                        <span className="text-[10px] font-mono text-[var(--text-dim)]">{String(i + 1).padStart(2, "0")}.</span>
-                        {item}
-                      </span>
-                      <span className="text-[9px] font-mono uppercase text-cyan-400/80 bg-cyan-400/10 px-1.5 py-0.5 rounded">
-                        ACTIVE
-                      </span>
-                    </motion.div>
-                  ))}
-                </div>
-
-                {/* Architecture Highlights */}
-                <div className="mt-6 p-3 rounded border border-dashed border-[var(--border-subtle)] bg-[var(--bg-elevated)]/30">
-                  <span className="text-[10px] font-mono uppercase text-[var(--text-dim)] block mb-1">
-                    BULLETPROOF PROTOCOLS:
-                  </span>
-                  <div className="text-xs text-[var(--text-muted)] space-y-1">
-                    <div>✦ MVC Pattern & Clean Code Separation</div>
-                    <div>✦ JWT Tokens & Cookie-Based Sessions</div>
-                    <div>✦ Real-time WebSockets & Event Emitters</div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Column Footer */}
-              <div className="mt-8 pt-4 border-t border-[var(--border-subtle)] flex items-center justify-between text-[10px] font-mono text-[var(--text-dim)]">
-                <span>SECTION: BACKEND</span>
-                <span className="text-cyan-400 font-bold">REST API & DB</span>
-              </div>
-            </div>
-          )}
-
-          {/* COLUMN 3: ENTERPRISE & SPECIALIZED NICHE (SPECIAL INVESTIGATION) */}
-          {(activeEdition === "all" || activeEdition === "enterprise") && (
-            <div className="p-6 md:p-8 flex flex-col justify-between group hover:bg-[var(--bg-elevated)]/40 transition-colors duration-300">
-              <div>
-                {/* Column Headline Badge */}
-                <div className="flex items-center justify-between mb-4 border-b border-[var(--border-subtle)] pb-2">
-                  <span className="text-[10px] font-mono uppercase tracking-widest text-purple-400 font-bold flex items-center gap-1.5">
-                    <FiCpu />
-                    <span>SPECIAL REPORT · NICHE ENGINEERING</span>
-                  </span>
-                  <span className="text-[10px] font-mono text-[var(--text-dim)]">COL. 03</span>
-                </div>
-
-                <h3 className="text-2xl md:text-3xl font-['Anton'] uppercase text-[var(--text-main)] mb-2 leading-tight group-hover:text-purple-400 transition-colors">
-                  ERP, POS, HARDWARE & VOICE AI ORCHESTRATION
-                </h3>
-
-                <p className="text-xs text-[var(--text-muted)] font-serif italic mb-6 leading-normal border-b border-[var(--border-subtle)] pb-4">
-                  “Production enterprise modules, barcode pipelines, physical receipt printing, and modular speech agents.”
-                </p>
-
-                {/* Editorial Bulletin Feature Cards */}
-                <div className="space-y-3 mb-6">
-                  <div className="p-3 rounded bg-[var(--bg-base)] border border-[var(--border-subtle)]">
-                    <div className="text-[11px] font-bold text-amber-400 uppercase font-mono flex items-center justify-between">
-                      <span>ERP & POS EXPERTISE</span>
-                      <span className="text-[9px] bg-amber-400/10 px-1.5 py-0.5 rounded">COMMERCIAL</span>
-                    </div>
-                    <p className="text-[11px] text-[var(--text-muted)] mt-1">
-                      Inventory, Billing, Thermal Printing, Product Catalogs & Barcode scanning integration.
-                    </p>
-                  </div>
-
-                  <div className="p-3 rounded bg-[var(--bg-base)] border border-[var(--border-subtle)]">
-                    <div className="text-[11px] font-bold text-cyan-400 uppercase font-mono flex items-center justify-between">
-                      <span>VOICE AI & NLP PIPELINES</span>
-                      <span className="text-[9px] bg-cyan-400/10 px-1.5 py-0.5 rounded">NEXT-GEN</span>
-                    </div>
-                    <p className="text-[11px] text-[var(--text-muted)] mt-1">
-                      Sarvam AI, OpenAI LLM routing, multilingual TTS/STT, and offline voice plugin architecture.
-                    </p>
-                  </div>
-
-                  <div className="p-3 rounded bg-[var(--bg-base)] border border-[var(--border-subtle)]">
-                    <div className="text-[11px] font-bold text-purple-400 uppercase font-mono flex items-center justify-between">
-                      <span>DESKTOP UTILITY PACKAGING</span>
-                      <span className="text-[9px] bg-purple-400/10 px-1.5 py-0.5 rounded">WINDOWS</span>
-                    </div>
-                    <p className="text-[11px] text-[var(--text-muted)] mt-1">
-                      Standalone Windows .exe desktop bridges packaged with PyInstaller and WebSockets.
-                    </p>
-                  </div>
-                </div>
-
-                {/* Additional Niche Tag Cloud */}
-                <div className="flex flex-wrap gap-1.5 pt-2">
-                  {nicheSkills.slice(0, 10).map((skill, i) => (
-                    <span
-                      key={i}
-                      className="text-[10px] font-mono px-2 py-0.5 rounded bg-[var(--bg-base)] text-[var(--text-dim)] hover:text-[var(--text-main)] hover:border-amber-400/50 border border-[var(--border-subtle)] transition-colors"
-                    >
-                      {skill}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              {/* Column Footer */}
-              <div className="mt-8 pt-4 border-t border-[var(--border-subtle)] flex items-center justify-between text-[10px] font-mono text-[var(--text-dim)]">
-                <span>SECTION: ENTERPRISE</span>
-                <span className="text-purple-400 font-bold">FULL-STACK SOLUTIONS</span>
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* ================= NEWSPAPER CLASSIFIEDS SECTION (DEV TOOLS & WORKFLOW) ================= */}
-        {(activeEdition === "all" || activeEdition === "tools") && (
-          <div className="mt-8 border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-6 md:p-8">
-            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-6 border-b border-[var(--border-subtle)] pb-4">
-              <div>
-                <span className="text-[10px] font-mono uppercase tracking-widest text-amber-400 font-bold flex items-center gap-1.5">
-                  <FiTool />
-                  <span>THE CLASSIFIEDS · DAILY DEV TOOLS & WORKFLOW DIRECTORY</span>
-                </span>
-                <h4 className="text-xl md:text-2xl font-['Anton'] uppercase text-[var(--text-main)] mt-1">
-                  DEV TOOLBOX & PRODUCTION UTILITIES
-                </h4>
-              </div>
-
-              {/* Authentic Newspaper Barcode Graphic */}
-              <div className="flex items-center gap-2 bg-[var(--bg-base)] px-3 py-1.5 rounded border border-[var(--border-subtle)]">
-                <div className="font-mono text-[9px] tracking-tighter text-[var(--text-dim)] flex gap-0.5">
-                  <span className="w-0.5 h-6 bg-[var(--text-main)]" />
-                  <span className="w-1 h-6 bg-[var(--text-main)]" />
-                  <span className="w-0.5 h-6 bg-[var(--text-main)]" />
-                  <span className="w-1.5 h-6 bg-[var(--text-main)]" />
-                  <span className="w-0.5 h-6 bg-[var(--text-main)]" />
-                  <span className="w-1 h-6 bg-[var(--text-main)]" />
-                  <span className="w-0.5 h-6 bg-[var(--text-main)]" />
-                  <span className="w-1.5 h-6 bg-[var(--text-main)]" />
-                </div>
-                <span className="text-[9px] font-mono text-[var(--text-muted)]">SAVIYO-DEV-2026</span>
-              </div>
-            </div>
-
-            {/* Classified Cards Grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-9 gap-3">
-              {toolSkills.map((tool, idx) => (
-                <motion.div
-                  key={idx}
-                  whileHover={{ y: -3, borderColor: "#f59e0b" }}
-                  className="p-3 rounded bg-[var(--bg-base)] border border-[var(--border-subtle)] text-center flex flex-col items-center justify-center gap-1.5 transition-colors cursor-default"
-                >
-                  <span className="text-[9px] font-mono text-[var(--text-dim)]">#0{idx + 1}</span>
-                  <span className="text-xs font-mono font-bold text-[var(--text-main)] uppercase tracking-tight">
-                    {tool}
-                  </span>
-                  <span className="text-[8px] font-mono text-emerald-400">READY</span>
-                </motion.div>
               ))}
             </div>
 
-            {/* Editorial Bottom Quote & Weather Box */}
-            <div className="mt-8 pt-4 border-t border-dashed border-[var(--border-subtle)] flex flex-col md:flex-row items-center justify-between gap-4 text-xs font-serif italic text-[var(--text-muted)]">
-              <div>
-                “Premature optimization is the root of all evil — but solid architecture makes shipping feel effortless.”
-              </div>
-              <div className="font-mono text-[10px] text-[var(--text-dim)] not-italic uppercase flex items-center gap-2">
-                <span>WEATHER: HIGH VELOCITY DEPLOYMENTS</span>
-                <span>•</span>
-                <span className="text-amber-400 font-bold">100% TESTS PASSING</span>
-              </div>
+            <div className="flex items-center gap-3 font-mono text-xs">
+              <button
+                className="px-3 py-1.5 rounded-full border border-white/10 bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white transition-all cursor-pointer shadow-sm"
+                aria-label="Previous page"
+                disabled={cur === 0}
+                style={{ opacity: cur === 0 ? 0.35 : 1 }}
+                onClick={() => go(cur - 1)}
+              >
+                ◂ PREV
+              </button>
+              <span className="text-[11px] font-semibold text-slate-400">
+                0{cur + 1} / 05
+              </span>
+              <button
+                className="px-3 py-1.5 rounded-full border border-white/10 bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white transition-all cursor-pointer shadow-sm"
+                aria-label="Next page"
+                disabled={cur === 4}
+                style={{ opacity: cur === 4 ? 0.35 : 1 }}
+                onClick={() => go(cur + 1)}
+              >
+                NEXT ▸
+              </button>
             </div>
           </div>
-        )}
 
+          {/* 3D Perspective Stage */}
+          <div style={{ perspective: "2400px", padding: "16px 0 12px" }}>
+            <div
+              style={{
+                width: "min(100%, 1000px, calc((100vh - 250px) * 1.5625))",
+                aspectRatio: "1000 / 640",
+                margin: "0 auto",
+                position: "relative",
+                transformStyle: "preserve-3d",
+                transform: "translateX(" + sh + "%) rotateX(3deg)",
+                transition: "transform 0.2s ease-out",
+              }}
+            >
+              {/* Hardcover Inner Board Background */}
+              <div
+                style={{
+                  position: "absolute",
+                  inset: "-10px",
+                  background: "#121212",
+                  border: "1px solid var(--border-subtle)",
+                  borderRadius: 8,
+                  boxShadow:
+                    "0 50px 90px rgba(0,0,0,.85), 0 0 70px rgba(57,255,136,.12)",
+                  opacity: op,
+                  transition: "opacity 0.3s ease",
+                }}
+              />
+
+              {/* 4 Multi-Leaf Flip Pages */}
+              {[0, 1, 2, 3].map((i) => {
+                const x = f(i);
+                return (
+                  <div
+                    key={i}
+                    className="lf"
+                    style={{
+                      transition: "none",
+                      transform: "rotateY(" + -180 * x + "deg)",
+                      zIndex: x > 0 && x < 1 ? 30 : x >= 1 ? i + 1 : 10 - i,
+                    }}
+                  >
+                    {F(
+                      i,
+                      "f",
+                      i === 0 ? "f cv" : "f R",
+                      i === 0 ? <Cover /> : <Right i={i - 1} />,
+                      () => go(cur + 1)
+                    )}
+                    {F(
+                      i,
+                      "b",
+                      i === 3 ? "b cv" : "b",
+                      i === 3 ? <Back /> : <Left i={i} />,
+                      () => go(cur - 1)
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          <p className="font-mono text-[11px] text-[var(--text-dim)] text-center mt-2">
+            SCROLL TO TURN THE PAGES · CLICK A PAGE · ← → KEYS · OR USE THE TABS
+          </p>
+        </div>
+      </div>
+
+      {/* Mobile Stacked View */}
+      <div className="md:hidden space-y-4 pt-4">
+        {CH.map((c, i) => (
+          <div
+            key={c[0]}
+            style={{
+              background: "linear-gradient(135deg, #efe9db, #e2dccb)",
+              color: "#161616",
+              fontFamily: "Georgia, serif",
+              padding: 20,
+              borderRadius: 8,
+            }}
+          >
+            <div className="font-mono text-[10px] tracking-widest">
+              CHAP. {c[0]}
+            </div>
+            <h4 className="font-['Anton'] text-4xl mt-1">{c[1]}</h4>
+            <p className="font-mono text-[10px] tracking-widest mt-1 mb-4 text-[#4a4a4a]">
+              {c[2].toUpperCase()}
+            </p>
+            <Rows i={i} />
+          </div>
+        ))}
       </div>
     </section>
   );
 }
-
-export default Skills;
