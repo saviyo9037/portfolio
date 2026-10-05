@@ -150,7 +150,7 @@ function BackgroundAnimation() {
     const render = (time) => {
       frameCount++;
 
-      const isDark = true;
+      const isDark = document.documentElement.getAttribute("data-theme") !== "light";
 
       // Smooth mouse lerp
       smoothedMouseX += (targetMouseNormX - smoothedMouseX) * 0.05;
@@ -165,7 +165,7 @@ function BackgroundAnimation() {
       const cosY = Math.cos(ay), sinY = Math.sin(ay);
       const cosX = Math.cos(ax), sinX = Math.sin(ax);
 
-      ctx.fillStyle = "#0A0A0A";
+      ctx.fillStyle = isDark ? "#000000" : "#FFFFFF";
       ctx.fillRect(0, 0, W, H);
 
       // ================= AMBIENT GLOWS =================
@@ -211,7 +211,9 @@ function BackgroundAnimation() {
         if (sx >= -10 && sx <= W + 10 && sy >= -10 && sy <= H + 10) {
           const d = Math.max(0, Math.min(1, (2300 - zz) / 1500));
           const pSize = Math.max(1, Math.min(2, pt.size * s));
-          ctx.fillStyle = `rgba(240, 240, 240, ${d * 0.32})`;
+          ctx.fillStyle = isDark
+            ? `rgba(240, 240, 240, ${d * 0.32})`
+            : `rgba(71, 85, 105, ${d * 0.22})`;
           ctx.fillRect(sx, sy, pSize, pSize);
         }
       }

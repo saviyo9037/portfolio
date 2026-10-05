@@ -1,30 +1,87 @@
-@import url('https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=UnifrakturCook:wght@700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Caveat:wght@600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=UnifrakturCook:wght@700&display=swap');
 
 @import "tailwindcss";
 
-:root {
-  --bg-base: #0A0A0A;
-  --bg-surface: #111116;
-  --bg-elevated: #181820;
-  --text-main: #F0F0F0;
-  --text-muted: #94a3b8;
-  --text-dim: #64748b;
-  --border-subtle: rgba(255, 255, 255, 0.08);
-  --border-hover: rgba(99, 102, 241, 0.5);
-  --accent: #6366f1;
-  --accent-alt: #10b981;
+:root, [data-theme="dark"], .dark {
+  --bg-base: #000000;
+  --bg-surface: #0a0a0c;
+  --bg-elevated: #121216;
+  --text-main: #FFFFFF;
+  --text-muted: #cbd5e1;
+  --text-dim: #94a3b8;
+  --border-subtle: rgba(255, 255, 255, 0.1);
+  --border-hover: rgba(16, 185, 129, 0.5);
+  --accent: #10b981;
+  --accent-alt: #0ea5e9;
   --accent-warm: #f59e0b;
   --accent-pink: #ec4899;
-  --accent-glow: rgba(99, 102, 241, 0.25);
-  --glass-bg: rgba(18, 18, 24, 0.75);
-  --glass-border: rgba(255, 255, 255, 0.08);
+  --accent-glow: rgba(16, 185, 129, 0.25);
+  --glass-bg: rgba(18, 18, 22, 0.85);
+  --glass-border: rgba(255, 255, 255, 0.12);
+  --card-bg: rgba(18, 18, 22, 0.92);
+  --card-border: rgba(255, 255, 255, 0.12);
+  --hero-title-solid: #FFFFFF;
+  --hero-title-stroke: rgba(255, 255, 255, 0.45);
+  --hero-ticker-bg: rgba(0, 0, 0, 0.9);
+  --hero-card-bg: rgba(12, 12, 16, 0.95);
+  --nav-bg: rgba(0, 0, 0, 0.88);
+  --nav-text: #FFFFFF;
+  --nav-muted: #94a3b8;
+  --nav-pill-bg: rgba(255, 255, 255, 0.1);
+  --nav-pill-border: rgba(255, 255, 255, 0.2);
+  --btn-cta-bg: #FFFFFF;
+  --btn-cta-text: #000000;
+  --btn-sec-bg: rgba(255, 255, 255, 0.1);
+  --btn-sec-text: #FFFFFF;
+  --btn-sec-border: rgba(255, 255, 255, 0.25);
   /* Gradient palette */
   --grad-violet: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
   --grad-emerald: linear-gradient(135deg, #10b981 0%, #34d399 100%);
   --grad-amber: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
   --grad-rose: linear-gradient(135deg, #f43f5e 0%, #ec4899 100%);
   --grad-cyan: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
-  --grad-main: linear-gradient(135deg, #6366f1 0%, #ec4899 50%, #f59e0b 100%);
+  --grad-main: linear-gradient(135deg, #10b981 0%, #0ea5e9 50%, #3b82f6 100%);
+}
+
+[data-theme="light"], .light {
+  --bg-base: #FFFFFF;
+  --bg-surface: #F8FAFC;
+  --bg-elevated: #F1F5F9;
+  --text-main: #0A0A0A;
+  --text-muted: #475569;
+  --text-dim: #64748b;
+  --border-subtle: rgba(0, 0, 0, 0.1);
+  --border-hover: rgba(16, 185, 129, 0.6);
+  --accent: #059669;
+  --accent-alt: #0284c7;
+  --accent-warm: #d97706;
+  --accent-pink: #db2777;
+  --accent-glow: rgba(5, 150, 105, 0.2);
+  --glass-bg: rgba(255, 255, 255, 0.92);
+  --glass-border: rgba(0, 0, 0, 0.08);
+  --card-bg: rgba(255, 255, 255, 0.95);
+  --card-border: rgba(0, 0, 0, 0.08);
+  --hero-title-solid: #0A0A0A;
+  --hero-title-stroke: rgba(0, 0, 0, 0.4);
+  --hero-ticker-bg: rgba(248, 250, 252, 0.95);
+  --hero-card-bg: rgba(255, 255, 255, 0.95);
+  --nav-bg: rgba(255, 255, 255, 0.9);
+  --nav-text: #0A0A0A;
+  --nav-muted: #64748b;
+  --nav-pill-bg: rgba(0, 0, 0, 0.05);
+  --nav-pill-border: rgba(0, 0, 0, 0.12);
+  --btn-cta-bg: #0A0A0A;
+  --btn-cta-text: #FFFFFF;
+  --btn-sec-bg: rgba(0, 0, 0, 0.05);
+  --btn-sec-text: #0A0A0A;
+  --btn-sec-border: rgba(0, 0, 0, 0.15);
+  /* Gradient palette */
+  --grad-violet: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+  --grad-emerald: linear-gradient(135deg, #059669 0%, #10b981 100%);
+  --grad-amber: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
+  --grad-rose: linear-gradient(135deg, #e11d48 0%, #db2777 100%);
+  --grad-cyan: linear-gradient(135deg, #0891b2 0%, #2563eb 100%);
+  --grad-main: linear-gradient(135deg, #059669 0%, #0284c7 50%, #2563eb 100%);
 }
 
 @keyframes fadeIn {
@@ -60,12 +117,13 @@
 /* ===== BASE ===== */
 html,
 body {
-  background-color: #0A0A0A;
+  background-color: var(--bg-base);
   color: var(--text-main);
   font-family: 'Inter', sans-serif;
   overflow-x: clip;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 #root {
@@ -956,4 +1014,81 @@ html.lenis body {
     transition: none !important;
     transform: none !important;
   }
+}
+
+/* ==============================================================
+   GLOBAL LIGHT THEME OVERRIDES FOR HARDCODED DARK TAILWIND CLASSES
+   ============================================================== */
+
+/* Overriding hardcoded dark backgrounds to light alternatives */
+.bg-\[\#0A0A0A\],
+.bg-\[\#121216\],
+.bg-\[\#111116\],
+.bg-\[\#181820\],
+.bg-\[\#050508\],
+.bg-\[\#0f0f13\],
+.bg-\[\#0b0b14\],
+.bg-\[\#0a0a0c\],
+.bg-black {
+  background-color: #FFFFFF !important;
+}
+
+/* Overriding hardcoded text colors */
+.text-white {
+  color: #0F172A !important;
+}
+
+.text-[#F0F0F0],
+.text-\[\#F0F0F0\] {
+  color: #1E293B !important;
+}
+
+.text-slate-400 {
+  color: #475569 !important;
+}
+
+.text-slate-300 {
+  color: #334155 !important;
+}
+
+.text-white\/50,
+.text-white\/60,
+.text-white\/80 {
+  color: #64748B !important;
+}
+
+.text-white\/10,
+.text-white\/20,
+.text-white\/5 {
+  color: rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Overriding borders */
+.border-white\/10,
+.border-white\/15,
+.border-white\/20,
+.border-white\/30 {
+  border-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Overriding semi-transparent backgrounds */
+.bg-white\/5,
+.bg-white\/10,
+.bg-white\/15,
+.bg-white\/20 {
+  background-color: rgba(0, 0, 0, 0.03) !important;
+}
+
+/* Adjusting the gradient mesh (BackgroundAnimation) to be subtle in light mode */
+canvas {
+  filter: invert(1) hue-rotate(180deg) opacity(0.2) contrast(1.5) !important;
+}
+
+/* Exception for terminal modal so it stays authentic/dark */
+.bg-\[\#121216\]\/95 {
+  background-color: rgba(18, 18, 22, 0.95) !important;
+}
+
+.text-white.font-medium {
+  color: #FFFFFF !important;
 }

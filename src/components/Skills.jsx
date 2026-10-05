@@ -241,12 +241,12 @@ export default function Skills() {
   );
 
   return (
-    <section id="skills" className="relative max-w-7xl mx-auto px-4 md:px-6 py-12 md:py-20 text-white">
-      <div className="flex items-baseline gap-4 mb-6 border-b border-white/10 pb-4">
+    <section id="skills" className="relative max-w-7xl mx-auto px-4 md:px-6 py-12 md:py-20 text-[var(--text-main)] transition-colors duration-300">
+      <div className="flex items-baseline gap-4 mb-6 border-b border-[var(--border-subtle)] pb-4">
         <span className="section-label">[03]</span>
         <h2 className="font-['Anton'] text-5xl md:text-7xl uppercase tracking-tight">
           <span className="heading-gradient-cyan">THE DEVELOPER</span>{" "}
-          <span className="text-white">GAZETTE</span>
+          <span className="text-[var(--text-main)]">GAZETTE</span>
         </h2>
       </div>
 
@@ -298,7 +298,7 @@ export default function Skills() {
 
             <div className="flex items-center gap-3 font-mono text-xs">
               <button
-                className="px-3 py-1.5 rounded-full border border-white/10 bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white transition-all cursor-pointer shadow-sm"
+                className="px-3 py-1.5 rounded-full border border-[var(--badge-border)] bg-[var(--badge-bg)] text-[var(--text-main)] hover:opacity-80 transition-all cursor-pointer shadow-sm"
                 aria-label="Previous page"
                 disabled={cur === 0}
                 style={{ opacity: cur === 0 ? 0.35 : 1 }}
@@ -306,11 +306,11 @@ export default function Skills() {
               >
                 ◂ PREV
               </button>
-              <span className="text-[11px] font-semibold text-slate-400">
+              <span className="text-[11px] font-semibold text-[var(--text-dim)]">
                 0{cur + 1} / 05
               </span>
               <button
-                className="px-3 py-1.5 rounded-full border border-white/10 bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white transition-all cursor-pointer shadow-sm"
+                className="px-3 py-1.5 rounded-full border border-[var(--badge-border)] bg-[var(--badge-bg)] text-[var(--text-main)] hover:opacity-80 transition-all cursor-pointer shadow-sm"
                 aria-label="Next page"
                 disabled={cur === 4}
                 style={{ opacity: cur === 4 ? 0.35 : 1 }}

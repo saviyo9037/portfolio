@@ -192,17 +192,17 @@ function CardContent({ project, gradient, isCompany, imageSrc }) {
       <div className="flex items-start justify-between gap-3">
         <div>
           <h4
-            className="text-sm font-sans normal-case font-semibold tracking-wide text-white group-hover:text-[#39ff88] transition-colors mb-1"
+            className="text-sm font-sans normal-case font-semibold tracking-wide text-[var(--text-main)] group-hover:text-[#39ff88] transition-colors mb-1"
             style={{ fontFamily: 'Inter, sans-serif' }}
           >
             {project.title}
           </h4>
-          <p className="text-xs text-slate-400 tracking-wider">
+          <p className="text-xs text-[var(--text-muted)] tracking-wider">
             {project.tags?.slice(0, 2).join(" · ")}
           </p>
         </div>
         {(project.liveUrl || project.githubUrl) && (
-          <FiArrowUpRight className="text-slate-400 group-hover:text-[#39ff88] transition-colors mt-0.5 flex-shrink-0" />
+          <FiArrowUpRight className="text-[var(--text-muted)] group-hover:text-[#39ff88] transition-colors mt-0.5 flex-shrink-0" />
         )}
       </div>
     </>

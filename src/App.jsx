@@ -5,6 +5,7 @@ import './App.css'
 import Home from './pages/Home'
 import CustomCursor from './components/CustomCursor'
 import Chatbot from './components/Chatbot'
+import ThemeSwitcher from './components/ThemeSwitcher'
 import Preloader from './components/Preloader'
 import BackgroundAnimation from './components/BackgroundAnimation'
 
@@ -65,6 +66,7 @@ function App() {
           <BackgroundAnimation />
           <Home />
           <Chatbot />
+          <ThemeSwitcher />
         </motion.div>
       )}
     </div>

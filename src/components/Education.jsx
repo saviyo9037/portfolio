@@ -90,30 +90,30 @@ export default function Education() {
   ];
 
   return (
-    <section id="education" className="relative w-full max-w-7xl mx-auto px-4 md:px-6 py-16 md:py-24 text-slate-900">
+    <section id="education" className="relative w-full max-w-7xl mx-auto px-4 md:px-6 py-16 md:py-24 text-[var(--text-main)] transition-colors duration-300">
       {/* Ambient background glow accents */}
       <div className="absolute top-10 left-10 w-96 h-96 bg-violet-500/5 rounded-full blur-[130px] pointer-events-none -z-10" />
       <div className="absolute bottom-10 right-10 w-96 h-96 bg-cyan-500/5 rounded-full blur-[130px] pointer-events-none -z-10" />
 
       {/* ================= SECTION HEADER ================= */}
-      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-10 pb-6 border-b border-slate-200">
+      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-10 pb-6 border-b border-[var(--border-subtle)]">
         <div>
-          <div className="flex items-center gap-2 font-mono text-xs text-cyan-600 tracking-widest uppercase mb-3">
-            <span className="w-4 h-[2px] bg-cyan-600" />
+          <div className="flex items-center gap-2 font-mono text-xs text-cyan-400 tracking-widest uppercase mb-3">
+            <span className="w-4 h-[2px] bg-cyan-400" />
             <span>03 / EDUCATION</span>
           </div>
-          <h2 className="font-['Anton'] text-5xl sm:text-6xl md:text-7xl lg:text-8xl uppercase tracking-tight text-slate-900 leading-[0.95]">
+          <h2 className="font-['Anton'] text-5xl sm:text-6xl md:text-7xl lg:text-8xl uppercase tracking-tight text-[var(--text-main)] leading-[0.95]">
             ACADEMIC{" "}
             <span
               className="text-transparent"
               style={{
-                WebkitTextStroke: "1.5px rgba(15,23,42,0.4)",
+                WebkitTextStroke: "1.5px var(--hero-title-stroke)",
               }}
             >
               BACKGROUND
             </span>
           </h2>
-          <p className="text-xs md:text-sm text-slate-500 font-sans max-w-2xl mt-4 leading-relaxed">
+          <p className="text-xs md:text-sm text-[var(--text-muted)] font-sans max-w-2xl mt-4 leading-relaxed">
             Formal undergraduate education in computer applications, systems analysis, algorithmic engineering, and software development methodologies.
           </p>
         </div>
@@ -131,7 +131,7 @@ export default function Education() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-6">
 
         {/* LEFT (7 COLS): ACADEMIC JOURNEY TIMELINE */}
-        <div className="lg:col-span-7 rounded-2xl bg-[#121216]/90 border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.6)] p-6 md:p-7 backdrop-blur-xl relative overflow-hidden flex flex-col justify-between group hover:border-violet-500/50 transition-all duration-300">
+        <div className="lg:col-span-7 rounded-2xl bg-[var(--card-bg)] border border-[var(--card-border)] shadow-xl p-6 md:p-7 backdrop-blur-xl relative overflow-hidden flex flex-col justify-between group hover:border-violet-500/50 transition-all duration-300">
           <div>
             <div className="flex items-center justify-between pb-5 mb-8 border-b border-white/10">
               <div className="flex items-center gap-2.5 font-mono text-xs uppercase tracking-wider text-cyan-400 font-semibold">
@@ -222,9 +222,9 @@ export default function Education() {
         </div>
 
         {/* RIGHT (5 COLS): KEY SUBJECTS & AREAS OF LEARNING */}
-        <div className="lg:col-span-5 rounded-2xl bg-[#121216]/90 border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.6)] p-6 md:p-7 backdrop-blur-xl flex flex-col justify-between group hover:border-cyan-500/50 transition-all duration-300">
+        <div className="lg:col-span-5 rounded-2xl bg-[var(--card-bg)] border border-[var(--card-border)] shadow-xl p-6 md:p-7 backdrop-blur-xl flex flex-col justify-between group hover:border-cyan-500/50 transition-all duration-300">
           <div>
-            <div className="flex items-center gap-2.5 pb-4 mb-5 border-b border-white/10 font-mono text-xs uppercase tracking-wider text-violet-400 font-semibold">
+            <div className="flex items-center gap-2.5 pb-4 mb-5 border-b border-[var(--border-subtle)] font-mono text-xs uppercase tracking-wider text-violet-400 font-semibold">
               <div className="w-6 h-6 rounded-lg bg-violet-950/40 flex items-center justify-center text-violet-400">
                 <FiBookOpen className="text-sm" />
               </div>
@@ -238,16 +238,16 @@ export default function Education() {
                 return (
                   <div
                     key={sub.title}
-                    className="p-3 rounded-xl bg-white/5 border border-white/10 hover:border-cyan-400/60 hover:bg-white/10 transition-all duration-200 flex items-center gap-3 group/sub shadow-sm"
+                    className="p-3 rounded-xl bg-[var(--badge-bg)] border border-[var(--badge-border)] hover:border-cyan-400/60 hover:opacity-90 transition-all duration-200 flex items-center gap-3 group/sub shadow-sm"
                   >
                     <div className="w-8 h-8 rounded-lg bg-cyan-950/40 text-cyan-400 flex items-center justify-center shrink-0 group-hover/sub:bg-cyan-500 group-hover/sub:text-black transition-all">
                       <Icon className="text-sm" />
                     </div>
                     <div className="min-w-0">
-                      <div className="font-sans font-semibold text-xs sm:text-[13px] text-white group-hover/sub:text-cyan-400 transition-colors leading-snug">
+                      <div className="font-sans font-semibold text-xs sm:text-[13px] text-[var(--text-main)] group-hover/sub:text-cyan-400 transition-colors leading-snug">
                         {sub.title}
                       </div>
-                      <div className="font-mono text-[10px] text-slate-400 mt-0.5">
+                      <div className="font-mono text-[10px] text-[var(--text-muted)] mt-0.5">
                         {sub.highlight}
                       </div>
                     </div>
@@ -264,7 +264,7 @@ export default function Education() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-6">
 
         {/* LEFT (7 COLS): COLLEGE PHOTO & DEGREE DETAILS */}
-        <div className="lg:col-span-7 rounded-2xl bg-[#121216]/90 border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.6)] p-6 md:p-7 group hover:border-cyan-500/50 transition-all duration-300">
+        <div className="lg:col-span-7 rounded-2xl bg-[var(--card-bg)] border border-[var(--card-border)] shadow-xl p-6 md:p-7 group hover:border-cyan-500/50 transition-all duration-300">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
 
             {/* Campus Photo on the Left (5 Cols) */}
@@ -356,9 +356,9 @@ export default function Education() {
         </div>
 
         {/* RIGHT (5 COLS): DEGREE VERIFICATION */}
-        <div className="lg:col-span-5 rounded-2xl bg-[#121216]/90 border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.6)] p-6 md:p-7 backdrop-blur-xl flex flex-col justify-between group hover:border-emerald-500/50 transition-all duration-300">
+        <div className="lg:col-span-5 rounded-2xl bg-[var(--card-bg)] border border-[var(--card-border)] shadow-xl p-6 md:p-7 backdrop-blur-xl flex flex-col justify-between group hover:border-emerald-500/50 transition-all duration-300">
           <div>
-            <div className="flex items-center justify-between pb-4 mb-4 border-b border-white/10">
+            <div className="flex items-center justify-between pb-4 mb-4 border-b border-[var(--border-subtle)]">
               <div className="flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-emerald-400 font-semibold">
                 <FiShield className="text-sm" />
                 <span>DEGREE VERIFICATION</span>
@@ -369,21 +369,21 @@ export default function Education() {
               </span>
             </div>
 
-            <p className="text-xs text-slate-300 leading-relaxed mb-6 font-sans">
+            <p className="text-xs text-[var(--text-muted)] leading-relaxed mb-6 font-sans">
               Bachelor of Computer Applications (BCA) awarded by Mahatma Gandhi University, Kerala with First Class Distinction.
             </p>
 
             {/* University Card Strip */}
-            <div className="p-4 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between gap-3">
+            <div className="p-4 rounded-xl bg-[var(--badge-bg)] border border-[var(--badge-border)] flex items-center justify-between gap-3">
               <div className="flex items-center gap-3 min-w-0">
-                <div className="w-11 h-11 rounded-xl bg-white/10 border border-white/10 flex items-center justify-center shrink-0 text-cyan-400 shadow-sm">
+                <div className="w-11 h-11 rounded-xl bg-cyan-950/40 border border-cyan-500/30 flex items-center justify-center shrink-0 text-cyan-400 shadow-sm">
                   <FaUniversity className="text-xl" />
                 </div>
                 <div className="min-w-0">
-                  <div className="font-sans font-bold text-sm text-white truncate">
+                  <div className="font-sans font-bold text-sm text-[var(--text-main)] truncate">
                     Mahatma Gandhi University
                   </div>
-                  <div className="font-mono text-xs text-slate-400 truncate mt-0.5">
+                  <div className="font-mono text-xs text-[var(--text-muted)] truncate mt-0.5">
                     Kottayam, Kerala
                   </div>
                 </div>
@@ -393,7 +393,7 @@ export default function Education() {
                 href="https://www.mgu.ac.in/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 font-mono text-xs px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white hover:text-black border border-white/20 transition-all text-white shrink-0 font-medium shadow-sm"
+                className="inline-flex items-center gap-1.5 font-mono text-xs px-3 py-1.5 rounded-lg bg-[var(--btn-cta-bg)] text-[var(--btn-cta-text)] border border-[var(--border-subtle)] hover:opacity-85 transition-all shrink-0 font-medium shadow-sm"
               >
                 <span>View Details</span>
                 <FiExternalLink className="text-xs" />
@@ -401,7 +401,7 @@ export default function Education() {
             </div>
           </div>
 
-          <div className="pt-4 mt-6 border-t border-white/10 flex items-center justify-between font-mono text-[11px] text-slate-400">
+          <div className="pt-4 mt-6 border-t border-[var(--border-subtle)] flex items-center justify-between font-mono text-[11px] text-[var(--text-muted)]">
             <span>ACADEMIC CREDENTIAL</span>
             <span className="text-emerald-400 font-bold">DISTINCTION CONFERRED</span>
           </div>
@@ -410,8 +410,8 @@ export default function Education() {
       </div>
 
       {/* ================= ROW 3: BOTTOM 4 STATS BAR ================= */}
-      <div className="rounded-2xl bg-[#121216]/90 border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.6)] p-5 md:p-6 backdrop-blur-xl">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 divide-y md:divide-y-0 md:divide-x divide-white/10">
+      <div className="rounded-2xl bg-[var(--card-bg)] border border-[var(--card-border)] shadow-xl p-5 md:p-6 backdrop-blur-xl">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 divide-y md:divide-y-0 md:divide-x divide-[var(--border-subtle)]">
 
           {/* Stat 1 */}
           <div className="flex items-center gap-3.5 pt-2 md:pt-0 md:px-4">
@@ -419,10 +419,10 @@ export default function Education() {
               <FaGraduationCap className="text-lg" />
             </div>
             <div>
-              <div className="font-['Anton'] text-xl text-white tracking-wide leading-none">
+              <div className="font-['Anton'] text-xl text-[var(--text-main)] tracking-wide leading-none">
                 3 Years
               </div>
-              <div className="font-mono text-[11px] text-slate-400 mt-1">
+              <div className="font-mono text-[11px] text-[var(--text-muted)] mt-1">
                 Full-Time Program
               </div>
             </div>
@@ -434,10 +434,10 @@ export default function Education() {
               <FiBookOpen className="text-lg" />
             </div>
             <div>
-              <div className="font-['Anton'] text-xl text-white tracking-wide leading-none">
+              <div className="font-['Anton'] text-xl text-[var(--text-main)] tracking-wide leading-none">
                 8+
               </div>
-              <div className="font-mono text-[11px] text-slate-400 mt-1">
+              <div className="font-mono text-[11px] text-[var(--text-muted)] mt-1">
                 Core Subjects
               </div>
             </div>

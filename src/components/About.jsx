@@ -209,7 +209,7 @@ export default function About() {
           <span className="heading-gradient">{decodedTitle}</span>
         </h2>
 
-        <p className="font-mono text-xs md:text-sm text-slate-500 uppercase tracking-wider mt-4 max-w-3xl leading-relaxed">
+        <p className="font-mono text-xs md:text-sm text-[var(--text-muted)] uppercase tracking-wider mt-4 max-w-3xl leading-relaxed">
           Bridging high-throughput web system architecture with modern product engineering, strict TypeScript contracts, and physical hardware integrations.
         </p>
       </div>
@@ -217,12 +217,12 @@ export default function About() {
       {/* ================= 2. TWO-COLUMN SPLIT (1.1fr / 1fr) ================= */}
       <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_1fr] gap-8 lg:gap-10 items-center mb-16 md:mb-20">
 
-        {/* LEFT COLUMN: DARK GLASS CARD */}
-        <div className="rounded-3xl bg-[#121216]/90 border border-white/10 p-6 sm:p-9 backdrop-blur-xl shadow-[0_20px_50px_rgba(0,0,0,0.6)] flex flex-col justify-between space-y-6 text-white">
+        {/* LEFT COLUMN: THEMED GLASS CARD */}
+        <div className="rounded-3xl bg-[var(--card-bg)] border border-[var(--card-border)] p-6 sm:p-9 backdrop-blur-xl shadow-xl flex flex-col justify-between space-y-6 text-[var(--text-main)] transition-colors duration-300">
 
           <div>
             {/* Green pulsing status pill */}
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-950/40 border border-emerald-500/30 font-mono text-[11px] font-bold uppercase tracking-wider text-emerald-400 mb-5">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-950/30 border border-emerald-500/30 font-mono text-[11px] font-bold uppercase tracking-wider text-emerald-400 mb-5">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_#10b981]" />
               <span>ACTIVE IN PRODUCTION @ D3INNOVATIVES</span>
             </div>
@@ -230,7 +230,7 @@ export default function About() {
             {/* Profile Avatar + Name Header */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5 mb-6">
               <div className="relative group shrink-0">
-                <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl overflow-hidden border-2 border-white/20 group-hover:border-violet-400 transition-all duration-300 shadow-md bg-slate-900">
+                <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl overflow-hidden border-2 border-[var(--border-subtle)] group-hover:border-violet-400 transition-all duration-300 shadow-md bg-slate-900">
                   <img
                     src={saviyoImage}
                     alt="Saviyo George"
@@ -238,56 +238,56 @@ export default function About() {
                     style={{ objectPosition: "50% 20%" }}
                   />
                 </div>
-                <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-[#121216] flex items-center justify-center border border-white/20 shadow-sm">
+                <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-[var(--card-bg)] flex items-center justify-center border border-[var(--card-border)] shadow-sm">
                   <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
                 </div>
               </div>
 
               <div>
                 <h3 className="font-['Anton'] uppercase text-4xl sm:text-5xl md:text-6xl leading-[0.9] tracking-tight mb-2">
-                  <span className="text-white">SAVIYO </span>
+                  <span className="text-[var(--text-main)]">SAVIYO </span>
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 via-cyan-400 to-pink-400">
                     GEORGE
                   </span>
                 </h3>
-                <p className="font-mono text-xs text-slate-400 tracking-wider uppercase">
+                <p className="font-mono text-xs text-[var(--text-muted)] tracking-wider uppercase">
                   Full Stack Developer | Kerala, India (IST • UTC+5:30)
                 </p>
               </div>
             </div>
 
             {/* Lead paragraph */}
-            <p className="font-sans font-semibold text-lg sm:text-xl text-slate-200 leading-snug mb-4">
+            <p className="font-sans font-semibold text-lg sm:text-xl text-[var(--text-main)] leading-snug mb-4">
               I engineer web applications that excel in production environments, combining enterprise ERP/POS architectures with responsive, accessible client interfaces.
             </p>
 
             {/* Body paragraph */}
-            <p className="font-sans text-sm sm:text-base text-slate-300 leading-relaxed mb-6">
-              Holding a Bachelor of Computer Applications with Distinction from <strong className="text-white font-semibold">Mahatma Gandhi University</strong> and actively shipping software at <strong className="text-white font-semibold">D3innovatives</strong>, I specialize in combining modern React and TypeScript client ecosystems with performant Express/MongoDB backends and physical IoT hardware (ESC/POS thermal printers, barcoding).
+            <p className="font-sans text-sm sm:text-base text-[var(--text-muted)] leading-relaxed mb-6">
+              Holding a Bachelor of Computer Applications with Distinction from <strong className="text-[var(--text-main)] font-semibold">Mahatma Gandhi University</strong> and actively shipping software at <strong className="text-[var(--text-main)] font-semibold">D3innovatives</strong>, I specialize in combining modern React and TypeScript client ecosystems with performant Express/MongoDB backends and physical IoT hardware (ESC/POS thermal printers, barcoding).
             </p>
 
             {/* Three small fact boxes */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 font-mono text-xs">
-              <div className="p-3 rounded-xl bg-white/5 border border-white/10">
-                <span className="block text-[10px] text-slate-400 uppercase tracking-wider mb-1">
+              <div className="p-3 rounded-xl bg-[var(--badge-bg)] border border-[var(--badge-border)]">
+                <span className="block text-[10px] text-[var(--text-dim)] uppercase tracking-wider mb-1">
                   PRODUCTS
                 </span>
-                <span className="font-sans font-semibold text-xs text-white">
+                <span className="font-sans font-semibold text-xs text-[var(--text-main)]">
                   ERP, POS &amp; MERN Platforms
                 </span>
               </div>
 
-              <div className="p-3 rounded-xl bg-white/5 border border-white/10">
-                <span className="block text-[10px] text-slate-400 uppercase tracking-wider mb-1">
+              <div className="p-3 rounded-xl bg-[var(--badge-bg)] border border-[var(--badge-border)]">
+                <span className="block text-[10px] text-[var(--text-dim)] uppercase tracking-wider mb-1">
                   EDUCATION
                 </span>
-                <span className="font-sans font-semibold text-xs text-white">
+                <span className="font-sans font-semibold text-xs text-[var(--text-main)]">
                   BCA with Distinction
                 </span>
               </div>
 
-              <div className="p-3 rounded-xl bg-white/5 border border-white/10">
-                <span className="block text-[10px] text-slate-400 uppercase tracking-wider mb-1">
+              <div className="p-3 rounded-xl bg-[var(--badge-bg)] border border-[var(--badge-border)]">
+                <span className="block text-[10px] text-[var(--text-dim)] uppercase tracking-wider mb-1">
                   STATUS
                 </span>
                 <span className="font-sans font-semibold text-xs text-emerald-400 font-bold">
@@ -309,7 +309,7 @@ export default function About() {
 
             <button
               onClick={() => handleScrollTo("experience")}
-              className="px-6 py-3 rounded-full bg-white/5 border border-white/20 text-white font-mono text-xs font-bold uppercase tracking-wider hover:border-white hover:bg-white/10 transition-colors flex items-center gap-2 cursor-pointer shadow-sm"
+              className="px-6 py-3 rounded-full bg-[var(--btn-sec-bg)] border border-[var(--btn-sec-border)] text-[var(--btn-sec-text)] font-mono text-xs font-bold uppercase tracking-wider hover:opacity-85 transition-colors flex items-center gap-2 cursor-pointer shadow-sm"
             >
               <span>Explore Track Record</span>
             </button>

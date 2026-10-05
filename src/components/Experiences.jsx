@@ -25,7 +25,7 @@ function Experiences() {
           <span className="section-label">[02]</span>
           <h2 className="font-['Anton'] text-5xl md:text-7xl lg:text-8xl uppercase tracking-tight">
             <span className="heading-gradient-violet">CHRONOLOGICAL</span>{" "}
-            <span className="text-slate-800">DISPATCH</span>
+            <span className="text-[var(--text-main)]">DISPATCH</span>
           </h2>
         </div>
 
@@ -42,7 +42,7 @@ function Experiences() {
                   onClick={() => setActiveIdx(idx)}
                   className={`text-left p-5 md:p-6 rounded-2xl border transition-all duration-300 relative overflow-hidden group cursor-pointer backdrop-blur-md ${selected
                     ? "bg-white/10 border-emerald-500 shadow-[0_10px_30px_-5px_rgba(16,185,129,0.3),0_0_0_1px_rgba(16,185,129,0.4)]"
-                    : "bg-white/[0.03] border-white/10 hover:border-white/20 hover:bg-white/[0.06]"
+                    : "bg-[var(--badge-bg)] border-[var(--card-border)] hover:border-[var(--text-main)]/30"
                     }`}
                 >
                   {/* Active Indicator Line on the bottom edge */}
@@ -56,7 +56,7 @@ function Experiences() {
 
                   <div className="flex items-center justify-between gap-3 mb-2">
                     <span
-                      className={`font-['Anton'] text-3xl md:text-4xl transition-colors ${selected ? "text-emerald-400" : "text-slate-500 group-hover:text-white"
+                      className={`font-['Anton'] text-3xl md:text-4xl transition-colors ${selected ? "text-emerald-400" : "text-[var(--text-dim)] group-hover:text-[var(--text-main)]"
                         }`}
                     >
                       0{idx + 1}
@@ -69,11 +69,11 @@ function Experiences() {
                     )}
                   </div>
 
-                  <h3 className="font-['Anton'] text-xl md:text-2xl text-white uppercase tracking-wide group-hover:text-emerald-400 transition-colors">
+                  <h3 className="font-['Anton'] text-xl md:text-2xl text-[var(--text-main)] uppercase tracking-wide group-hover:text-emerald-400 transition-colors">
                     {exp.company}
                   </h3>
 
-                  <p className="font-mono text-xs text-slate-400 mt-1 tracking-wider">
+                  <p className="font-mono text-xs text-[var(--text-muted)] mt-1 tracking-wider">
                     {exp.period}
                   </p>
                 </button>
@@ -81,7 +81,7 @@ function Experiences() {
             })}
 
             {/* Quick Summary Pill at bottom of tabs */}
-            <div className="hidden lg:flex items-center justify-between p-4 rounded-xl border border-white/10 bg-white/5 font-mono text-xs text-slate-400 shadow-sm">
+            <div className="hidden lg:flex items-center justify-between p-4 rounded-xl border border-[var(--card-border)] bg-[var(--card-bg)] font-mono text-xs text-[var(--text-muted)] shadow-sm">
               <span>LEDGER REFS: 03 LOGS</span>
               <span className="text-emerald-400 font-bold">ALL VERIFIED</span>
             </div>
@@ -96,11 +96,11 @@ function Experiences() {
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: -15, scale: 0.98 }}
                 transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-                className="relative rounded-3xl border border-white/10 bg-[#121216]/90 backdrop-blur-xl p-6 md:p-10 shadow-[0_20px_50px_rgba(0,0,0,0.6)] overflow-hidden"
+                className="relative rounded-3xl border border-[var(--card-border)] bg-[var(--card-bg)] backdrop-blur-xl p-6 md:p-10 shadow-xl overflow-hidden text-[var(--text-main)] transition-colors duration-300"
               >
                 {/* Background Giant Ghost Watermark Number */}
                 <div
-                  className="font-['Anton'] absolute top-4 right-6 text-[140px] md:text-[200px] leading-none select-none pointer-events-none text-white opacity-[0.03]"
+                  className="font-['Anton'] absolute top-4 right-6 text-[140px] md:text-[200px] leading-none select-none pointer-events-none text-[var(--text-main)] opacity-[0.03]"
                   aria-hidden="true"
                 >
                   0{activeIdx + 1}
@@ -116,11 +116,11 @@ function Experiences() {
                 <div className="font-mono text-xs md:text-sm text-emerald-400 font-semibold tracking-widest mb-2 flex flex-wrap items-center gap-2">
                   <span>{activeExp.period}</span>
                   <span className="opacity-40">|</span>
-                  <span className="text-slate-400">{activeExp.location}</span>
+                  <span className="text-[var(--text-muted)]">{activeExp.location}</span>
                 </div>
 
                 {/* Main Company Title */}
-                <h3 className="font-['Anton'] text-4xl sm:text-5xl md:text-6xl uppercase tracking-tight text-white mb-2">
+                <h3 className="font-['Anton'] text-4xl sm:text-5xl md:text-6xl uppercase tracking-tight text-[var(--text-main)] mb-2">
                   {activeExp.company}
                 </h3>
 
@@ -131,7 +131,7 @@ function Experiences() {
 
                 {/* Description Quote */}
                 {activeExp.description && (
-                  <p className="text-sm md:text-base text-slate-300 leading-relaxed mb-6 border-l-2 border-emerald-400 pl-4 py-1 italic bg-white/[0.03] rounded-r-lg">
+                  <p className="text-sm md:text-base text-[var(--text-muted)] leading-relaxed mb-6 border-l-2 border-emerald-400 pl-4 py-1 italic bg-[var(--badge-bg)] rounded-r-lg">
                     "{activeExp.description}"
                   </p>
                 )}
@@ -140,7 +140,7 @@ function Experiences() {
                 {activeExp.highlights && activeExp.highlights.length > 0 && (
                   <div className="mb-8 space-y-3">
                     {activeExp.highlights.map((item, hIdx) => (
-                      <div key={hIdx} className="flex items-start gap-3 text-sm md:text-base text-slate-200 leading-relaxed">
+                      <div key={hIdx} className="flex items-start gap-3 text-sm md:text-base text-[var(--text-main)] leading-relaxed">
                         <span className="w-2 h-2 rounded-full bg-emerald-400 mt-2 shrink-0 shadow-[0_0_8px_rgba(57,255,136,0.8)]" />
                         <span>{item}</span>
                       </div>
@@ -150,11 +150,11 @@ function Experiences() {
 
                 {/* Tech Chips */}
                 {activeExp.skills && activeExp.skills.length > 0 && (
-                  <div className="pt-6 border-t border-white/10 flex flex-wrap gap-2 items-center">
+                  <div className="pt-6 border-t border-[var(--border-subtle)] flex flex-wrap gap-2 items-center">
                     {activeExp.skills.map((skill) => (
                       <span
                         key={skill}
-                        className="font-mono text-xs px-3 py-1 rounded-full bg-white/5 border border-white/10 text-slate-300 hover:border-emerald-400 hover:text-emerald-300 transition-colors shadow-sm"
+                        className="font-mono text-xs px-3 py-1 rounded-full bg-[var(--badge-bg)] border border-[var(--badge-border)] text-[var(--text-main)] hover:border-emerald-400 hover:text-emerald-300 transition-colors shadow-sm"
                       >
                         {skill}
                       </span>

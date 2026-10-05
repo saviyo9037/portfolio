@@ -111,12 +111,12 @@ export default function Projects() {
   return (
     <section id="work" className="relative w-full max-w-7xl mx-auto px-4 md:px-6 py-20 md:py-28">
       {/* Section Header */}
-      <div className="flex flex-col md:flex-row md:items-baseline justify-between gap-4 mb-6 border-b border-white/10 pb-4">
+      <div className="flex flex-col md:flex-row md:items-baseline justify-between gap-4 mb-6 border-b border-[var(--border-subtle)] pb-4">
         <div className="flex items-baseline gap-4">
           <span className="section-label">[04]</span>
           <h2 className="font-['Anton'] text-5xl md:text-7xl lg:text-8xl uppercase tracking-tight">
             <span className="heading-gradient-amber">SELECTED</span>{" "}
-            <span className="text-white">WORKS</span>
+            <span className="text-[var(--text-main)]">WORKS</span>
           </h2>
         </div>
 
@@ -124,27 +124,27 @@ export default function Projects() {
         <div className="flex flex-wrap items-center gap-2">
           <button
             onClick={() => setSelectedCategory(PROJECT_CATEGORIES.COMPANY)}
-            className={`font-mono text-xs uppercase px-3.5 py-1.5 rounded-full transition-all border ${selectedCategory === PROJECT_CATEGORIES.COMPANY
-              ? "bg-white text-black font-bold border-white shadow-lg"
-              : "border-white/10 text-slate-400 hover:text-white hover:border-white/30 bg-white/5"
+            className={`font-mono text-xs uppercase px-3.5 py-1.5 rounded-full transition-all border cursor-pointer ${selectedCategory === PROJECT_CATEGORIES.COMPANY
+              ? "bg-[var(--btn-cta-bg)] text-[var(--btn-cta-text)] font-bold border-[var(--border-subtle)] shadow-md"
+              : "border-[var(--border-subtle)] text-[var(--text-muted)] hover:text-[var(--text-main)] hover:border-[var(--text-main)]/30 bg-[var(--badge-bg)]"
               }`}
           >
             Company Work [{String(companyCount).padStart(2, "0")}]
           </button>
           <button
             onClick={() => setSelectedCategory(PROJECT_CATEGORIES.PERSONAL)}
-            className={`font-mono text-xs uppercase px-3.5 py-1.5 rounded-full transition-all border ${selectedCategory === PROJECT_CATEGORIES.PERSONAL
-              ? "bg-white text-black font-bold border-white shadow-lg"
-              : "border-white/10 text-slate-400 hover:text-white hover:border-white/30 bg-white/5"
+            className={`font-mono text-xs uppercase px-3.5 py-1.5 rounded-full transition-all border cursor-pointer ${selectedCategory === PROJECT_CATEGORIES.PERSONAL
+              ? "bg-[var(--btn-cta-bg)] text-[var(--btn-cta-text)] font-bold border-[var(--border-subtle)] shadow-md"
+              : "border-[var(--border-subtle)] text-[var(--text-muted)] hover:text-[var(--text-main)] hover:border-[var(--text-main)]/30 bg-[var(--badge-bg)]"
               }`}
           >
             Personal Projects [{String(personalCount).padStart(2, "0")}]
           </button>
           <button
             onClick={() => setSelectedCategory(PROJECT_CATEGORIES.ALL)}
-            className={`font-mono text-xs uppercase px-3.5 py-1.5 rounded-full transition-all border ${selectedCategory === PROJECT_CATEGORIES.ALL
-              ? "bg-white text-black font-bold border-white shadow-lg"
-              : "border-white/10 text-slate-400 hover:text-white hover:border-white/30 bg-white/5"
+            className={`font-mono text-xs uppercase px-3.5 py-1.5 rounded-full transition-all border cursor-pointer ${selectedCategory === PROJECT_CATEGORIES.ALL
+              ? "bg-[var(--btn-cta-bg)] text-[var(--btn-cta-text)] font-bold border-[var(--border-subtle)] shadow-md"
+              : "border-[var(--border-subtle)] text-[var(--text-muted)] hover:text-[var(--text-main)] hover:border-[var(--text-main)]/30 bg-[var(--badge-bg)]"
               }`}
           >
             All [{String(projects.length).padStart(2, "0")}]
@@ -153,7 +153,7 @@ export default function Projects() {
       </div>
 
       {/* Helper Subtitle */}
-      <div className="flex items-center justify-between mb-8 text-xs font-mono tracking-widest text-slate-400">
+      <div className="flex items-center justify-between mb-8 text-xs font-mono tracking-widest text-[var(--text-muted)]">
         <span>
           {isHoverSupported
             ? "HOVER A TITLE TO PREVIEW, CLICK TO OPEN"
@@ -165,7 +165,7 @@ export default function Projects() {
       </div>
 
       {/* Typographic List */}
-      <div className="border-t border-white/10">
+      <div className="border-t border-[var(--border-subtle)]">
         {filteredProjects.map((proj, idx) => {
           const indexStr = String(idx + 1).padStart(2, "0");
           const targetUrl = proj.liveUrl || proj.githubUrl;
@@ -189,13 +189,13 @@ export default function Projects() {
                 {/* Title + Underneath Type */}
                 <div className="flex flex-col min-w-0 flex-1">
                   <h3
-                    className="project-title font-['Anton'] uppercase text-white hover:text-cyan-400 transition-colors tracking-tight leading-[1.05]"
+                    className="project-title font-['Anton'] uppercase text-[var(--text-main)] hover:text-cyan-400 transition-colors tracking-tight leading-[1.05]"
                     style={{ fontSize: "clamp(1.7rem, 5.2vw, 3.8rem)" }}
                   >
                     {proj.title}
                   </h3>
                   <div className="flex items-center gap-2 mt-1.5">
-                    <span className="font-mono text-xs text-slate-400 uppercase tracking-wider">
+                    <span className="font-mono text-xs text-[var(--text-muted)] uppercase tracking-wider">
                       {proj.type || (proj.company ? `Company · ${proj.company}` : "Personal Project")}
                     </span>
                     {proj.image && (
@@ -209,7 +209,7 @@ export default function Projects() {
 
               {/* Right Arrow / Public status icon */}
               <span
-                className="project-arrow font-mono text-2xl sm:text-3xl md:text-4xl text-slate-500 shrink-0 select-none pl-2"
+                className="project-arrow font-mono text-2xl sm:text-3xl md:text-4xl text-[var(--text-muted)] shrink-0 select-none pl-2"
                 aria-hidden="true"
               >
                 {hasUrl ? "↗" : "○"}
@@ -268,10 +268,10 @@ export default function Projects() {
                       overflow: "hidden",
                     }}
                   >
-                    <div className="px-4 py-4 bg-[#121216] border-b border-white/10 flex flex-col gap-3 font-sans rounded-b-xl text-slate-200">
+                    <div className="px-4 py-4 bg-[var(--card-bg)] border-b border-[var(--border-subtle)] flex flex-col gap-3 font-sans rounded-b-xl text-[var(--text-main)]">
                       {/* Image preview in touch mode */}
                       {proj.image && (
-                        <div className="w-full h-44 rounded-lg overflow-hidden border border-white/10 relative bg-slate-900">
+                        <div className="w-full h-44 rounded-lg overflow-hidden border border-[var(--border-subtle)] relative bg-slate-900">
                           <img
                             src={proj.image}
                             alt={proj.title}
@@ -281,7 +281,7 @@ export default function Projects() {
                         </div>
                       )}
 
-                      <p className="text-sm text-slate-300 leading-relaxed">
+                      <p className="text-sm text-[var(--text-muted)] leading-relaxed">
                         {proj.description}
                       </p>
 
@@ -289,7 +289,7 @@ export default function Projects() {
                         {techChips.map((techItem) => (
                           <span
                             key={techItem}
-                            className="font-mono text-[11px] border border-white/10 bg-white/5 text-slate-300 px-2.5 py-0.5 rounded-full shadow-sm"
+                            className="font-mono text-[11px] border border-[var(--badge-border)] bg-[var(--badge-bg)] text-[var(--text-main)] px-2.5 py-0.5 rounded-full shadow-sm"
                           >
                             {techItem}
                           </span>
@@ -302,13 +302,13 @@ export default function Projects() {
                             href={targetUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center gap-2 font-mono text-xs font-bold text-black bg-white px-4 py-2 rounded-full hover:bg-violet-400 transition-colors shadow-sm"
+                            className="inline-flex items-center gap-2 font-mono text-xs font-bold text-[var(--btn-cta-text)] bg-[var(--btn-cta-bg)] px-4 py-2 rounded-full hover:opacity-85 transition-opacity shadow-sm"
                           >
                             <span>{proj.cta || "Open Project"}</span>
                             <span>↗</span>
                           </a>
                         ) : (
-                          <span className="font-mono text-xs text-slate-400">
+                          <span className="font-mono text-xs text-[var(--text-dim)]">
                             [ no public link ]
                           </span>
                         )}
@@ -338,12 +338,10 @@ export default function Projects() {
         ReactDOM.createPortal(
           <div
             ref={cardRef}
-            className="fixed top-0 left-0 pointer-events-none z-[60] w-[340px] rounded-[20px] bg-[#121216]/95 backdrop-blur-xl border border-white/15 overflow-hidden"
+            className="fixed top-0 left-0 pointer-events-none z-[60] w-[340px] rounded-[20px] bg-[var(--card-bg)] backdrop-blur-xl border border-[var(--card-border)] overflow-hidden shadow-2xl transition-colors duration-300"
             style={{
               opacity: hoveredIdx !== null ? 1 : 0,
               transition: "opacity 0.25s ease-out",
-              boxShadow:
-                "0 25px 60px -15px rgba(0, 0, 0, 0.8), 0 0 35px rgba(139, 123, 255, 0.2)",
               willChange: "transform, opacity",
             }}
             aria-hidden="true"
@@ -362,7 +360,7 @@ export default function Projects() {
                           className="w-full h-full object-cover object-top filter brightness-[0.98]"
                         />
                         {/* Gradient shade overlays */}
-                        <div className="absolute inset-0 bg-gradient-to-t from-[#121216] via-transparent to-black/60" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/60" />
 
                         {/* Mini browser chrome pill on top */}
                         <div className="absolute top-2.5 left-3 right-3 flex items-center justify-between">
@@ -404,7 +402,7 @@ export default function Projects() {
                   )}
 
                   {/* Big Ghost Index Watermark at bottom right */}
-                  <span className="font-['Anton'] absolute right-3 bottom-0 text-7xl text-white/10 leading-none select-none pointer-events-none">
+                  <span className="font-['Anton'] absolute right-3 bottom-0 text-7xl text-[var(--text-main)]/10 leading-none select-none pointer-events-none">
                     {String(
                       (() => {
                         const fIdx = filteredProjects.findIndex((p) => p.title === lastProject.title);
@@ -417,7 +415,7 @@ export default function Projects() {
                 </div>
 
                 {/* Card Body */}
-                <div className="p-4 space-y-3 font-sans bg-[#121216] text-white">
+                <div className="p-4 space-y-3 font-sans bg-[var(--card-bg)] text-[var(--text-main)]">
                   {/* Type in mono cyan */}
                   <div className="flex items-center justify-between font-mono text-[11px]">
                     <span className="text-cyan-400 tracking-wider uppercase font-semibold">
@@ -426,7 +424,7 @@ export default function Projects() {
                           ? `Company · ${lastProject.company}`
                           : "Personal Project")}
                     </span>
-                    <span className="text-slate-400 text-[10px]">
+                    <span className="text-[var(--text-dim)] text-[10px]">
                       REF-
                       {String(
                         (() => {
@@ -440,7 +438,7 @@ export default function Projects() {
                   </div>
 
                   {/* Description (1-2 lines) */}
-                  <p className="text-xs text-slate-300 leading-relaxed line-clamp-2">
+                  <p className="text-xs text-[var(--text-muted)] leading-relaxed line-clamp-2">
                     {lastProject.description}
                   </p>
 
@@ -452,7 +450,7 @@ export default function Projects() {
                       .map((t) => (
                         <span
                           key={t}
-                          className="font-mono text-[10px] border border-white/10 bg-white/5 text-slate-300 px-2 py-0.5 rounded-full"
+                          className="font-mono text-[10px] border border-[var(--badge-border)] bg-[var(--badge-bg)] text-[var(--text-main)] px-2 py-0.5 rounded-full"
                         >
                           {t}
                         </span>
@@ -460,7 +458,7 @@ export default function Projects() {
                   </div>
 
                   {/* CTA Label in violet */}
-                  <div className="pt-2 border-t border-white/10 flex items-center justify-between font-mono text-xs text-violet-400 font-bold">
+                  <div className="pt-2 border-t border-[var(--border-subtle)] flex items-center justify-between font-mono text-xs text-violet-400 font-bold">
                     <span>
                       {(lastProject.cta || (lastProject.liveUrl ? "Live Demo" : "Details")).toUpperCase()}
                     </span>

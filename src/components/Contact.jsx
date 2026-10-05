@@ -170,27 +170,27 @@ function Contact() {
         >
           {/* Email — Glass Card */}
           <motion.div
-            className="relative p-8 md:p-10 group rounded-2xl overflow-hidden bg-[#121216]/90 backdrop-blur-xl border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.6)] hover:border-white/20 transition-all"
+            className="relative p-8 md:p-10 group rounded-2xl overflow-hidden bg-[var(--card-bg)] backdrop-blur-xl border border-[var(--card-border)] shadow-xl transition-all duration-300"
             whileHover={{ y: -6, scale: 1.01 }}
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
           >
             <div className="relative z-10">
               <div className="flex items-center justify-between mb-6">
-                <span className="text-xs tracking-[0.2em] uppercase text-slate-400 bg-white/5 px-3 py-1.5 rounded-full border border-white/10">
+                <span className="text-xs tracking-[0.2em] uppercase text-[var(--text-dim)] bg-[var(--badge-bg)] px-3 py-1.5 rounded-full border border-[var(--badge-border)]">
                   Email
                 </span>
-                <FiMail className="text-xl text-slate-400 group-hover:text-white group-hover:scale-110 transition-all duration-300" />
+                <FiMail className="text-xl text-[var(--text-dim)] group-hover:text-[var(--text-main)] group-hover:scale-110 transition-all duration-300" />
               </div>
               <a
                 href="mailto:saviyogeorge903734@gmail.com"
-                className="text-xl md:text-3xl font-light text-white hover:text-emerald-400 hover:italic transition-all duration-300 link-underline block mb-6 break-all"
+                className="text-xl md:text-3xl font-light text-[var(--text-main)] hover:text-emerald-400 hover:italic transition-all duration-300 link-underline block mb-6 break-all"
                 data-cursor-label="HIRE ME"
               >
                 saviyogeorge903734@gmail.com
               </a>
               <MagneticButton
                 onClick={() => copyToClipboard("saviyogeorge903734@gmail.com", "email")}
-                className="text-xs tracking-[0.15em] uppercase text-slate-300 hover:text-white transition-colors flex items-center gap-2 bg-white/5 hover:bg-white/10 px-4 py-2 rounded-full border border-white/10 shadow-sm"
+                className="text-xs tracking-[0.15em] uppercase text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors flex items-center gap-2 bg-[var(--badge-bg)] hover:opacity-90 px-4 py-2 rounded-full border border-[var(--badge-border)] shadow-sm cursor-pointer"
               >
                 {copiedEmail ? (
                   <>
@@ -214,26 +214,26 @@ function Contact() {
 
           {/* Phone — Glass Card */}
           <motion.div
-            className="relative p-8 md:p-10 group rounded-2xl overflow-hidden bg-[#121216]/90 backdrop-blur-xl border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.6)] hover:border-white/20 transition-all"
+            className="relative p-8 md:p-10 group rounded-2xl overflow-hidden bg-[var(--card-bg)] backdrop-blur-xl border border-[var(--card-border)] shadow-xl transition-all duration-300"
             whileHover={{ y: -6, scale: 1.01 }}
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
           >
             <div className="relative z-10">
               <div className="flex items-center justify-between mb-6">
-                <span className="text-xs tracking-[0.2em] uppercase text-slate-400 bg-white/5 px-3 py-1.5 rounded-full border border-white/10">
+                <span className="text-xs tracking-[0.2em] uppercase text-[var(--text-dim)] bg-[var(--badge-bg)] px-3 py-1.5 rounded-full border border-[var(--badge-border)]">
                   Phone
                 </span>
-                <FiPhone className="text-xl text-slate-400 group-hover:text-white group-hover:scale-110 transition-all duration-300" />
+                <FiPhone className="text-xl text-[var(--text-dim)] group-hover:text-[var(--text-main)] group-hover:scale-110 transition-all duration-300" />
               </div>
               <a
                 href="tel:+919037348073"
-                className="text-xl md:text-2xl font-semibold text-white hover:text-emerald-400 transition-colors block mb-6 tracking-tight"
+                className="text-xl md:text-2xl font-semibold text-[var(--text-main)] hover:text-emerald-400 transition-colors block mb-6 tracking-tight"
               >
                 +91 9037 348 073
               </a>
               <MagneticButton
                 onClick={() => copyToClipboard("+919037348073", "phone")}
-                className="text-xs tracking-[0.15em] uppercase text-slate-300 hover:text-white transition-colors flex items-center gap-2 bg-white/5 hover:bg-white/10 px-4 py-2 rounded-full border border-white/10 shadow-sm"
+                className="text-xs tracking-[0.15em] uppercase text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors flex items-center gap-2 bg-[var(--badge-bg)] hover:opacity-90 px-4 py-2 rounded-full border border-[var(--badge-border)] shadow-sm cursor-pointer"
               >
                 {copiedPhone ? (
                   <>
