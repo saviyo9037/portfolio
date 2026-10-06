@@ -20,24 +20,19 @@ function Home() {
           <Introduction />
         </section>
 
-        <section id="about" className="relative z-20 bg-transparent border-t border-[var(--border-subtle)]">
+        <section id="about" className="relative z-20 bg-transparent">
           <About />
         </section>
 
-        {/* Curved wave transition */}
-        <div className="relative z-[25] bg-transparent">
-          <CurvedDivider color="var(--bg-surface)" />
-        </div>
-
-        <section id="experience" className="relative z-30 bg-transparent border-t border-[var(--border-subtle)]">
+        <section id="experience" className="relative z-30 bg-transparent">
           <Experiences />
         </section>
 
-        <section id="skills" className="relative z-40 bg-transparent border-t border-[var(--border-subtle)]">
+        <section id="skills" className="relative z-40 bg-transparent">
           <Skills />
         </section>
 
-        <section id="education" className="relative z-50 bg-transparent border-t border-[var(--border-subtle)]">
+        <section id="education" className="relative z-50 bg-transparent">
           <Education />
         </section>
 
@@ -48,17 +43,12 @@ function Home() {
 
         <div
           id="projects"
-          className="relative z-[60] bg-transparent border-t border-[var(--border-subtle)]"
+          className="relative z-[60] bg-transparent"
         >
           <Projects />
         </div>
 
-        {/* Curved wave before contact */}
-        <div className="relative z-[65] bg-transparent">
-          <CurvedDivider color="var(--bg-surface)" inverted />
-        </div>
-
-        <section id="contact" className="relative z-70 bg-transparent border-t border-[var(--border-subtle)]">
+        <section id="contact" className="relative z-70 bg-transparent">
           <Contact />
         </section>
       </main>
