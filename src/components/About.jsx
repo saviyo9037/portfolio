@@ -18,6 +18,10 @@ import {
 // Cutout portrait asset (Saviyo in coat from saviyo-hero.jpg)
 import saviyoCutout from "../assets/saviyo-coat-cutout.png";
 
+// Import NeonBorder for the cards
+import NeonBorder from "./NeonBorder";
+
+
 // ================= CODE SNIPPETS FOR LAPTOP TABS =================
 const LAPTOP_FILES = {
   "AboutSaviyo.tsx": {
@@ -950,6 +954,13 @@ export default function About() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
             {CAPABILITY_CARDS.map((card, idx) => {
               const Icon = card.icon;
+              
+              // Determine neon color based on index to match the cards
+              let neonColor = "#a855f7"; // purple
+              if (idx === 1) neonColor = "#06b6d4"; // cyan
+              if (idx === 2) neonColor = "#f59e0b"; // amber
+              if (idx === 3) neonColor = "#10b981"; // emerald
+
               return (
                 <motion.div
                   key={card.num}
@@ -958,40 +969,52 @@ export default function About() {
                   viewport={{ once: true, margin: "-40px" }}
                   transition={{ duration: 0.6, delay: idx * 0.1 }}
                   whileHover={{ y: -6, transition: { duration: 0.2 } }}
-                  className={`group relative rounded-2xl bg-[var(--card-bg)]/85 backdrop-blur-xl border border-[var(--border-subtle)] p-5 shadow-xl transition-all duration-300 ${card.cardBorder} hover:shadow-[0_20px_40px_rgba(0,0,0,0.5)] cursor-pointer flex flex-col justify-between`}
+                  className={`group relative rounded-2xl bg-[var(--card-bg)]/85 backdrop-blur-xl shadow-xl transition-all duration-300 hover:shadow-[0_20px_40px_rgba(0,0,0,0.5)] cursor-pointer h-full`}
                 >
-                  {/* Subtle Card Ambient Glow */}
-                  <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${card.glowColor} opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none`} />
+                  <NeonBorder
+                    color={neonColor}
+                    rounded={16}
+                    borderSize={30}
+                    thickness={2}
+                    glow={15}
+                    movement="step" /* Scratch/step style movement */
+                    speed={2}
+                  >
+                    <div className="flex flex-col justify-between h-full p-5 relative z-10">
+                      {/* Subtle Card Ambient Glow */}
+                      <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${card.glowColor} opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none`} />
 
-                  {/* Top Bar: Number & Corner Icon */}
-                  <div className="relative flex items-center justify-between mb-4">
-                    <span className="font-mono text-xs font-bold text-[var(--text-dim)] tracking-wider group-hover:text-[var(--text-muted)] transition-colors">
-                      {card.num}
-                    </span>
-                    <FiMaximize2 className="text-xs text-[var(--text-dim)] group-hover:text-[var(--text-muted)] transition-colors" />
-                  </div>
+                      {/* Top Bar: Number & Corner Icon */}
+                      <div className="relative flex items-center justify-between mb-4">
+                        <span className="font-mono text-xs font-bold text-[var(--text-dim)] tracking-wider group-hover:text-[var(--text-muted)] transition-colors">
+                          {card.num}
+                        </span>
+                        <FiMaximize2 className="text-xs text-[var(--text-dim)] group-hover:text-[var(--text-muted)] transition-colors" />
+                      </div>
 
-                  {/* Icon & Title Block */}
-                  <div className="relative flex items-start gap-3.5 mb-3">
-                    <div className={`w-11 h-11 rounded-xl flex items-center justify-center text-lg border transition-transform duration-300 group-hover:scale-110 shrink-0 ${card.iconBg}`}>
-                      <Icon />
-                    </div>
-                    <div>
-                      <h4 className="text-sm font-bold text-[var(--text-main)] tracking-wide uppercase leading-tight group-hover:text-cyan-300 transition-colors">
-                        {card.title}
-                      </h4>
-                      <p className="text-xs text-[var(--text-muted)] leading-relaxed mt-1.5">
-                        {card.desc}
-                      </p>
-                    </div>
-                  </div>
+                      {/* Icon & Title Block */}
+                      <div className="relative flex items-start gap-3.5 mb-3">
+                        <div className={`w-11 h-11 rounded-xl flex items-center justify-center text-lg border transition-transform duration-300 group-hover:scale-110 shrink-0 ${card.iconBg}`}>
+                          <Icon />
+                        </div>
+                        <div>
+                          <div className="text-[15px] font-bold font-sans text-[var(--text-main)] tracking-wider uppercase leading-snug group-hover:text-white transition-colors mb-2">
+                            {card.title}
+                          </div>
+                          <p className="text-sm text-[var(--text-muted)] leading-relaxed font-medium">
+                            {card.desc}
+                          </p>
+                        </div>
+                      </div>
 
-                  {/* Bottom Corner Button */}
-                  <div className="relative mt-2 pt-2 border-t border-[var(--border-subtle)] flex items-center justify-end">
-                    <div className="w-7 h-7 rounded-lg bg-white/5 group-hover:bg-white/10 flex items-center justify-center text-[var(--text-dim)] group-hover:text-[var(--text-main)] transition-all">
-                      <FiArrowUpRight className="text-sm group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                      {/* Bottom Corner Button */}
+                      <div className="relative mt-2 pt-2 border-t border-[var(--border-subtle)] flex items-center justify-end">
+                        <div className="w-7 h-7 rounded-lg bg-white/5 group-hover:bg-white/10 flex items-center justify-center text-[var(--text-dim)] group-hover:text-[var(--text-main)] transition-all">
+                          <FiArrowUpRight className="text-sm group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                  </NeonBorder>
                 </motion.div>
               );
             })}

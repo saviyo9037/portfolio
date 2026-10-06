@@ -178,7 +178,9 @@ export default function NeonBorder(props) {
     const groupBRef = useRef(null);
 
     const live = useRef({ speed, movement, borderSize, color });
-    live.current = { speed, movement, borderSize, color };
+    useEffect(() => {
+        live.current = { speed, movement, borderSize, color };
+    });
 
     const rootRef = useRef(null);
     const sizeRef = useRef({ w: 0, h: 0 });

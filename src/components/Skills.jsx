@@ -104,7 +104,7 @@ const Left = ({ i }) => {
         </p>
         <p className="italic text-lg leading-snug mt-6">“{c[3]}”</p>
         <span className="font-mono text-[10px] mt-6 flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-[#1a9c52] animate-pulse" />
+          <span className="w-2 h-2 rounded-full bg-[#fbbf24] animate-pulse" />
           PRODUCTION VERIFIED @ D3INNOVATIVES
         </span>
       </div>
@@ -127,25 +127,27 @@ const Right = ({ i }) => (
 );
 
 const Cover = () => (
-  <div className="flex-1 flex flex-col justify-between p-5 border border-[#39ff88]/40 h-full">
-    <span className="font-mono text-[10px] tracking-widest text-[#39ff88]">
+  <div className="flex-1 flex flex-col justify-between p-5 border border-[#f59e0b]/40 h-full">
+    <span className="font-mono text-[10px] tracking-widest text-[#f59e0b]">
       VOL. XXIV · NO. 08
     </span>
     <div>
-      <h4 className="font-['Anton'] text-5xl lg:text-6xl text-white">
-        The Developer
+      <h4 className="font-['Anton'] text-5xl lg:text-6xl uppercase leading-[0.95] tracking-wide" style={{ color: "#ffffff" }}>
+        THE
         <br />
-        <span className="text-stroke text-transparent">Gazette</span>
+        <span className="text-amber-500">DEVELOPER</span>
+        <br />
+        <span className="text-transparent" style={{ WebkitTextStroke: "1px #ffffff" }}>GAZETTE</span>
       </h4>
-      <p className="font-mono text-[11px] tracking-widest mt-4 text-[#9a9a9a]">
+      <p className="font-mono text-[11px] tracking-widest mt-4 text-[#e5e7eb]">
         TECHNICAL LEDGER // SAVIYO GEORGE
       </p>
     </div>
     <div>
-      <p className="font-mono text-[10px] tracking-widest text-[#9a9a9a]">
+      <p className="font-mono text-[10px] tracking-widest text-[#e5e7eb]">
         MALAPPURAM &amp; KERALA EDITION · EST. 2021
       </p>
-      <p className="font-mono text-[11px] mt-3 text-[#39ff88] animate-pulse font-bold">
+      <p className="font-mono text-[11px] mt-3 text-[#f59e0b] animate-pulse font-bold">
         CLICK TO OPEN ▸
       </p>
     </div>
@@ -166,18 +168,18 @@ const Back = () => {
   };
 
   return (
-    <div className="flex-1 flex flex-col items-center justify-center gap-5 text-center border border-[#39ff88]/40 p-5 h-full">
-      <span className="font-mono text-[10px] tracking-widest text-[#39ff88]">
+    <div className="flex-1 flex flex-col items-center justify-center gap-5 text-center border border-[#f59e0b]/40 p-5 h-full">
+      <span className="font-mono text-[10px] tracking-widest text-[#f59e0b]">
         END OF LEDGER
       </span>
-      <h4 className="font-['Anton'] text-4xl text-white">
+      <h4 className="font-['Anton'] text-4xl" style={{ color: "#ffffff" }}>
         Need this stack
         <br />
         on your team?
       </h4>
       <button
         onClick={scrollToContact}
-        className="btn-minimal px-6 py-2.5 text-xs font-mono font-bold tracking-widest uppercase hover:border-[#39ff88] hover:text-[#39ff88] transition-colors"
+        className="btn-minimal px-6 py-2.5 text-xs font-mono font-bold tracking-widest uppercase hover:border-[#f59e0b] hover:text-[#f59e0b] transition-colors"
       >
         [ INITIATE_COMMS ]
       </button>
@@ -245,7 +247,7 @@ export default function Skills() {
       <div className="flex items-baseline gap-4 mb-6 border-b border-[var(--border-subtle)] pb-4">
         <span className="section-label">[03]</span>
         <h2 className="font-['Anton'] text-5xl md:text-7xl uppercase tracking-tight">
-          <span className="heading-gradient-cyan">THE DEVELOPER</span>{" "}
+          <span className="text-amber-500" style={{ textShadow: "0 0 20px rgba(245,158,11,0.4)" }}>THE DEVELOPER</span>{" "}
           <span className="text-[var(--text-main)]">GAZETTE</span>
         </h2>
       </div>
@@ -285,9 +287,9 @@ export default function Skills() {
                   className="font-mono text-xs px-3 py-1.5 border transition-all cursor-pointer shadow-sm"
                   style={{
                     borderRadius: 999,
-                    borderColor: cur === i ? "#39ff88" : "rgba(255, 255, 255, 0.12)",
-                    background: cur === i ? "rgba(57, 255, 136, 0.15)" : "rgba(255, 255, 255, 0.05)",
-                    color: cur === i ? "#39ff88" : "#94a3b8",
+                    borderColor: cur === i ? "#f59e0b" : "rgba(255, 255, 255, 0.12)",
+                    background: cur === i ? "rgba(245, 158, 11, 0.15)" : "rgba(255, 255, 255, 0.05)",
+                    color: cur === i ? "#f59e0b" : "#94a3b8",
                     fontWeight: cur === i ? 700 : 500,
                   }}
                 >
@@ -343,7 +345,7 @@ export default function Skills() {
                   border: "1px solid var(--border-subtle)",
                   borderRadius: 8,
                   boxShadow:
-                    "0 50px 90px rgba(0,0,0,.85), 0 0 70px rgba(57,255,136,.12)",
+                    "0 50px 90px rgba(0,0,0,.85), 0 0 70px rgba(245,158,11,.12)",
                   opacity: op,
                   transition: "opacity 0.3s ease",
                 }}
