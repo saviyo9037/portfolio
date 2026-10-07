@@ -7,7 +7,6 @@ import CustomCursor from './components/CustomCursor'
 import Chatbot from './components/Chatbot'
 import ThemeSwitcher from './components/ThemeSwitcher'
 import Preloader from './components/Preloader'
-import BackgroundAnimation from './components/BackgroundAnimation'
 
 function App() {
   const [isLoading, setIsLoading] = useState(true)
@@ -16,7 +15,7 @@ function App() {
     setIsLoading(false)
   }, [])
 
-  // Smooth top reading progress line
+  // Smooth top reading progress lineu
   const { scrollYProgress } = useScroll()
   const scaleX = useSpring(scrollYProgress, {
     stiffness: 100,
@@ -63,7 +62,6 @@ function App() {
       </AnimatePresence>
       {!isLoading && (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }}>
-          <BackgroundAnimation />
           <Home />
           <Chatbot />
           <ThemeSwitcher />

@@ -115,7 +115,7 @@ function Navbar() {
   return (
     <>
       <motion.nav
-        className="fixed top-0 left-0 w-full z-50 pointer-events-auto"
+        className="fixed top-0 left-0 w-full z-[100] pointer-events-auto"
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
@@ -196,7 +196,7 @@ function Navbar() {
             {/* Mobile Toggle */}
             <motion.button
               onClick={() => setIsOpen(!isOpen)}
-              className="lg:hidden text-xs tracking-[0.2em] uppercase font-semibold text-[var(--text-main)] relative z-[60] bg-[var(--card-bg)] border border-[var(--border-subtle)] px-3.5 py-1.5 rounded-full shadow-sm cursor-pointer"
+              className="lg:hidden text-xs tracking-[0.2em] uppercase font-semibold text-[var(--text-main)] relative z-[120] bg-[var(--card-bg)] border border-[var(--border-subtle)] px-3.5 py-1.5 rounded-full shadow-sm cursor-pointer"
               whileTap={{ scale: 0.95 }}
             >
               <AnimatePresence mode="wait">
@@ -219,7 +219,7 @@ function Navbar() {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            className="fixed inset-0 z-[55] bg-[var(--bg-base)]/98 backdrop-blur-2xl flex flex-col items-start justify-center px-10 text-[var(--text-main)]"
+            className="fixed inset-0 z-[110] bg-[var(--bg-base)]/98 backdrop-blur-2xl flex flex-col items-start justify-center px-10 text-[var(--text-main)]"
             initial={{ clipPath: "circle(0% at calc(100% - 40px) 40px)" }}
             animate={{ clipPath: "circle(150% at calc(100% - 40px) 40px)" }}
             exit={{ clipPath: "circle(0% at calc(100% - 40px) 40px)" }}

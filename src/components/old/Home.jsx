@@ -16,36 +16,39 @@ function Home() {
       <Navbar />
 
       <main className="relative bg-transparent">
-        <section id="introduction" className="relative bg-transparent">
+        <section id="introduction" className="relative z-10 bg-transparent">
           <Introduction />
         </section>
 
-        <section id="about" className="relative bg-transparent">
+        <section id="about" className="relative z-20 bg-transparent">
           <About />
         </section>
 
-        <section id="experience" className="relative bg-transparent">
+        <section id="experience" className="relative z-30 bg-transparent">
           <Experiences />
         </section>
 
-        <section id="skills" className="relative bg-transparent">
+        <section id="skills" className="relative z-40 bg-transparent">
           <Skills />
         </section>
 
-        <section id="education" className="relative bg-transparent">
+        <section id="education" className="relative z-50 bg-transparent">
           <Education />
         </section>
 
-        {/* Horizontal Project Ticker removed to fix duplicate projects */}
+        {/* Horizontal Project Ticker */}
+        <div className="relative z-[55] bg-transparent">
+          <ProjectTicker />
+        </div>
 
         <div
           id="projects"
-          className="relative bg-transparent"
+          className="relative z-[60] bg-transparent"
         >
           <Projects />
         </div>
 
-        <section id="contact" className="relative bg-transparent">
+        <section id="contact" className="relative z-70 bg-transparent">
           <Contact />
         </section>
       </main>

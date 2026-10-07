@@ -40,7 +40,7 @@ export const projects = [
     cta: "Internal Tool",
     image: "",
     gradient: "from-orange-400 to-red-600",
-    featured: false,
+    featured: true,
   },
   {
     id: "betterinu-lms",
@@ -76,7 +76,7 @@ export const projects = [
     cta: "Internal Platform",
     image: "",
     gradient: "from-blue-500 to-indigo-600",
-    featured: false,
+    featured: true,
   },
   {
     id: "moneytrack",
