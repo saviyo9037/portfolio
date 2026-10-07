@@ -432,8 +432,110 @@ export default function About() {
         {/* ================= MAIN HERO / SHOWCASE ROW ================= */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-4 items-center">
 
-          {/* ---------------- COLUMN 1: CENTER BIO & TYPOGRAPHY (6 COLS) ---------------- */}
-          <div className="lg:col-span-6 flex flex-col justify-center space-y-4 lg:pr-2">
+          {/* ---------------- COLUMN 1: SAVIYO 3D PORTRAIT & PORTAL (4 COLS) ---------------- */}
+          <div className="lg:col-span-4 relative flex flex-col items-center justify-center">
+
+            {/* Cyber HUD Strip on the far left */}
+            <div className="hidden xl:flex absolute -left-6 top-8 bottom-12 flex-col items-center justify-between text-[11px] font-mono text-[var(--text-dim)] select-none">
+              <span className="font-bold text-[var(--text-muted)]">01</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shadow-[0_0_8px_#fbbf24]" />
+              <div
+                className="tracking-[0.35em] text-[10px] text-[var(--text-muted)] uppercase font-semibold"
+                style={{ writingMode: "vertical-rl", transform: "rotate(180deg)" }}
+              >
+                SAVIYO
+              </div>
+              <span className="w-1.5 h-1.5 rounded-full bg-orange-400 shadow-[0_0_8px_#f97316]" />
+              <div className="space-y-2 text-[10px] text-[var(--text-dim)] font-mono">
+                <div>02</div>
+                <div>03</div>
+                <div>04</div>
+              </div>
+            </div>
+
+            {/* Glowing Cosmic Neon Portal Rings */}
+            <div className="relative w-[300px] h-[340px] sm:w-[350px] sm:h-[400px] flex items-center justify-center">
+
+              {/* Outer Amber Ring */}
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 35, repeat: Infinity, ease: "linear" }}
+                className="absolute w-[280px] h-[280px] sm:w-[330px] sm:h-[330px] rounded-full border border-amber-400/30 shadow-[0_0_40px_rgba(251,191,36,0.25)] pointer-events-none"
+                style={{
+                  borderTopColor: "rgba(251, 191, 36, 0.8)",
+                  borderRightColor: "transparent",
+                }}
+              />
+
+              {/* Inner Orange Portal Ring with Intense Glow */}
+              <motion.div
+                animate={{ rotate: -360 }}
+                transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+                className="absolute w-[240px] h-[240px] sm:w-[290px] sm:h-[290px] rounded-full border-2 border-orange-500/40 shadow-[0_0_55px_rgba(249,115,22,0.35)] pointer-events-none"
+                style={{
+                  borderLeftColor: "rgba(249, 115, 22, 0.9)",
+                  borderBottomColor: "transparent",
+                }}
+              />
+
+              {/* Central Radiant Halo Glow */}
+              <div className="absolute w-[200px] h-[200px] sm:w-[240px] sm:h-[240px] rounded-full bg-gradient-to-tr from-amber-600/30 via-orange-500/20 to-yellow-500/30 blur-2xl" />
+
+              {/* High-Resolution Cutout Photo of Saviyo George (Coat from saviyo-hero.jpg) */}
+              <motion.img
+                initial={{ opacity: 0, scale: 0.92, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                src={saviyoCutout}
+                alt="Saviyo George - Full-Stack Developer"
+                className="relative z-10 w-full h-full max-h-[380px] sm:max-h-[440px] object-contain object-bottom drop-shadow-[0_20px_35px_rgba(0,0,0,0.85)] filter contrast-[1.03]"
+              />
+
+              {/* Floating Circular 3+ Years Experience Badge */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8, x: -20 }}
+                animate={{ opacity: 1, scale: 1, x: 0 }}
+                transition={{ delay: 0.4, duration: 0.6 }}
+                whileHover={{ scale: 1.08 }}
+                className="absolute left-[-10px] bottom-10 z-20 w-[95px] h-[95px] sm:w-[110px] sm:h-[110px] rounded-full bg-[var(--card-bg)]/90 backdrop-blur-xl border-2 border-amber-500/60 shadow-[0_0_30px_rgba(245,158,11,0.5)] flex flex-col items-center justify-center text-center cursor-pointer select-none group"
+              >
+                <span className="text-2xl sm:text-3xl font-black bg-gradient-to-br from-white via-slate-100 to-amber-300 bg-clip-text text-transparent group-hover:from-amber-200 group-hover:to-orange-200 transition-all">
+                  3+
+                </span>
+                <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-[var(--text-main)]">
+                  Years
+                </span>
+                <span className="text-[8px] sm:text-[9px] font-mono text-amber-300">
+                  Experience
+                </span>
+              </motion.div>
+            </div>
+
+            {/* Bottom Status Pill: Open for Opportunities */}
+            <motion.div
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5, duration: 0.6 }}
+              className="mt-4 w-full max-w-[280px] px-4 py-2 rounded-xl bg-[var(--card-bg)]/85 backdrop-blur-md border border-[var(--border-subtle)] flex items-center justify-between text-xs shadow-lg hover:border-lime-500/50 transition-all group"
+            >
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-lime-400 shadow-[0_0_8px_#a3e635] animate-pulse" />
+                <div>
+                  <span className="text-[10px] text-[var(--text-dim)] block uppercase font-mono">Currently</span>
+                  <span className="font-semibold text-[var(--text-main)] group-hover:text-lime-400 transition-colors">
+                    Open for Opportunities
+                  </span>
+                </div>
+              </div>
+              <div className="w-6 h-6 rounded-lg bg-white/5 flex items-center justify-center text-[var(--text-dim)] group-hover:text-lime-400 group-hover:bg-lime-500/10 transition-colors">
+                <FiArrowUpRight className="text-sm" />
+              </div>
+            </motion.div>
+
+          </div>
+
+          {/* ---------------- COLUMN 2: CENTER BIO & TYPOGRAPHY (4 COLS) ---------------- */}
+          <div className="lg:col-span-4 flex flex-col justify-center space-y-4 lg:pr-2">
 
             {/* Top Badges */}
             <motion.div
@@ -563,12 +665,12 @@ export default function About() {
 
           </div>
 
-          {/* ---------------- COLUMN 3: 3D ANGLED LAPTOP & TECH STACK WIDGET (6 COLS) ---------------- */}
+          {/* ---------------- COLUMN 3: 3D ANGLED LAPTOP & TECH STACK WIDGET (4 COLS) ---------------- */}
           <div
             ref={laptopRef}
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
-            className="lg:col-span-6 relative flex items-center justify-center pt-6 lg:pt-0"
+            className="lg:col-span-4 relative flex items-center justify-center pt-6 lg:pt-0"
           >
             {/* Top Right Handwritten Doodle Accent */}
             <div className="absolute -top-10 right-4 sm:right-8 z-30 select-none hidden sm:flex flex-col items-end">
