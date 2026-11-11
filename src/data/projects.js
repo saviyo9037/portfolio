@@ -62,6 +62,7 @@ export const projects = [
   },
   {
     id: "crm-live",
+    repo: "CRM", // links this entry to its GitHub repo so it is not listed twice
     title: "CRM Live Project",
     category: "company",
     categoryLabel: "Company Work",
