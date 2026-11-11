@@ -3,172 +3,204 @@ import { motion, AnimatePresence } from "framer-motion";
 import { projects, PROJECT_CATEGORIES } from "../data/projects";
 import { FiArrowUpRight } from "react-icons/fi";
 
+const FILTERS = [
+  { key: PROJECT_CATEGORIES.COMPANY, label: "Company" },
+  { key: PROJECT_CATEGORIES.PERSONAL, label: "Personal" },
+  { key: PROJECT_CATEGORIES.ALL, label: "All" },
+];
+
+const imageSrc = (image) =>
+  image.startsWith("/") || image.startsWith("http") ? image : `/${image}`;
+
 export default function Projects() {
-  const [selectedCategory, setSelectedCategory] = useState(PROJECT_CATEGORIES.COMPANY);
+  const [category, setCategory] = useState(PROJECT_CATEGORIES.COMPANY);
+  const [selectedId, setSelectedId] = useState(null);
 
-  // Filter projects based on selected category tab
-  const filteredProjects = useMemo(() => {
-    if (selectedCategory === PROJECT_CATEGORIES.ALL) {
-      return projects;
-    }
-    return projects.filter((p) => p.category === selectedCategory);
-  }, [selectedCategory]);
+  const visible = useMemo(
+    () =>
+      category === PROJECT_CATEGORIES.ALL
+        ? projects
+        : projects.filter((p) => p.category === category),
+    [category]
+  );
 
-  const companyCount = projects.filter((p) => p.category === PROJECT_CATEGORIES.COMPANY).length;
-  const personalCount = projects.filter((p) => p.category === PROJECT_CATEGORIES.PERSONAL).length;
+  // Fall back to the first project when the selection is hidden by the filter
+  const active = visible.find((p) => p.id === selectedId) || visible[0];
+
+  const count = (key) =>
+    key === PROJECT_CATEGORIES.ALL
+      ? projects.length
+      : projects.filter((p) => p.category === key).length;
 
   return (
-    <section id="work" className="relative w-full max-w-[1400px] mx-auto px-4 md:px-8 py-20 md:py-32">
-      {/* Section Header */}
-      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 mb-16 md:mb-24 border-b border-[var(--border-subtle)] pb-8">
-        <div className="flex flex-col gap-3">
-          <span className="font-mono text-sm tracking-[0.3em] uppercase text-[var(--accent)] font-bold flex items-center gap-3">
-            [04] PORTFOLIO <span className="h-[1px] w-12 bg-[var(--accent)] opacity-40"></span>
-          </span>
-          <h2 className="font-['Anton'] text-6xl md:text-8xl uppercase tracking-tight leading-none">
-            <span className="text-[var(--text-main)]">Selected</span>{" "}
-            <span className="text-[var(--text-muted)] opacity-40">Works</span>
-          </h2>
-        </div>
+    <section
+      id="work"
+      className="relative w-full max-w-[1400px] mx-auto px-4 md:px-8 py-20 md:py-32"
+    >
+      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 mb-12 md:mb-16">
+        <h2 className="font-['Anton'] text-6xl md:text-8xl uppercase tracking-tight leading-none text-[var(--text-main)]">
+          Selected Works
+        </h2>
 
-        {/* Category Filter Tabs */}
-        <div className="flex flex-wrap items-center gap-3 bg-[var(--nav-pill-bg)] p-1.5 rounded-full border border-[var(--nav-pill-border)] shadow-sm">
-          <button
-            onClick={() => setSelectedCategory(PROJECT_CATEGORIES.COMPANY)}
-            className={`font-mono text-xs uppercase px-5 py-2.5 rounded-full transition-all duration-300 outline-none ${selectedCategory === PROJECT_CATEGORIES.COMPANY
-                ? "bg-[var(--accent)] text-black font-bold shadow-md scale-100"
-                : "text-[var(--text-muted)] hover:text-[var(--text-main)] scale-95 hover:scale-100"
-              }`}
-          >
-            Company [{String(companyCount).padStart(2, "0")}]
-          </button>
-          <button
-            onClick={() => setSelectedCategory(PROJECT_CATEGORIES.PERSONAL)}
-            className={`font-mono text-xs uppercase px-5 py-2.5 rounded-full transition-all duration-300 outline-none ${selectedCategory === PROJECT_CATEGORIES.PERSONAL
-                ? "bg-[var(--accent)] text-black font-bold shadow-md scale-100"
-                : "text-[var(--text-muted)] hover:text-[var(--text-main)] scale-95 hover:scale-100"
-              }`}
-          >
-            Personal [{String(personalCount).padStart(2, "0")}]
-          </button>
-          <button
-            onClick={() => setSelectedCategory(PROJECT_CATEGORIES.ALL)}
-            className={`font-mono text-xs uppercase px-5 py-2.5 rounded-full transition-all duration-300 outline-none ${selectedCategory === PROJECT_CATEGORIES.ALL
-                ? "bg-[var(--accent)] text-black font-bold shadow-md scale-100"
-                : "text-[var(--text-muted)] hover:text-[var(--text-main)] scale-95 hover:scale-100"
-              }`}
-          >
-            All [{String(projects.length).padStart(2, "0")}]
-          </button>
+        <div
+          role="group"
+          aria-label="Filter projects"
+          className="flex items-center gap-6 border-b border-[var(--border-subtle)]"
+        >
+          {FILTERS.map((f) => {
+            const on = category === f.key;
+            return (
+              <button
+                key={f.key}
+                type="button"
+                aria-pressed={on}
+                onClick={() => setCategory(f.key)}
+                className={`relative pb-3 text-base font-medium transition-colors ${
+                  on
+                    ? "text-[var(--text-main)]"
+                    : "text-[var(--text-dim)] hover:text-[var(--text-main)]"
+                }`}
+              >
+                {f.label}{" "}
+                <span className="text-[var(--text-dim)] font-normal">
+                  {count(f.key)}
+                </span>
+                {on && (
+                  <motion.span
+                    layoutId="works-filter-underline"
+                    className="absolute left-0 right-0 -bottom-px h-[2px] bg-[var(--accent)]"
+                  />
+                )}
+              </button>
+            );
+          })}
         </div>
       </div>
 
-      {/* Sticky Stacking Cards Layout */}
-      <div className="relative flex flex-col gap-12 md:gap-24 w-full pb-32">
-        <AnimatePresence mode="popLayout">
-          {filteredProjects.map((proj, idx) => (
-            <StackingCard key={proj.id} proj={proj} idx={idx} />
-          ))}
-        </AnimatePresence>
+      <div className="grid lg:grid-cols-12 gap-x-16 items-start">
+        {/* Project index */}
+        <ul className="lg:col-span-7 border-t border-[var(--border-subtle)] list-none m-0 p-0">
+          {visible.map((p) => {
+            const isActive = active && p.id === active.id;
+            return (
+              <li key={p.id} className="border-b border-[var(--border-subtle)]">
+                <button
+                  type="button"
+                  aria-expanded={isActive}
+                  onClick={() => setSelectedId(p.id)}
+                  onMouseEnter={() => setSelectedId(p.id)}
+                  onFocus={() => setSelectedId(p.id)}
+                  className="w-full text-left py-6 md:py-8 flex items-baseline justify-between gap-6 group"
+                >
+                  <span
+                    className={`font-['Anton'] uppercase text-3xl md:text-5xl leading-none transition-colors duration-300 ${
+                      isActive
+                        ? "text-[var(--text-main)]"
+                        : "text-[var(--text-dim)] group-hover:text-[var(--text-muted)]"
+                    }`}
+                  >
+                    {p.title}
+                  </span>
+                  <span
+                    className={`hidden sm:block shrink-0 text-sm transition-colors ${
+                      isActive ? "text-[var(--accent)]" : "text-[var(--text-dim)]"
+                    }`}
+                  >
+                    {p.company || "Personal"}
+                  </span>
+                </button>
+
+                {/* Details inline on small screens */}
+                <AnimatePresence initial={false}>
+                  {isActive && (
+                    <motion.div
+                      key="inline"
+                      className="lg:hidden overflow-hidden"
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.3, ease: [0.25, 1, 0.5, 1] }}
+                    >
+                      <div className="pb-8">
+                        <Details project={p} />
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </li>
+            );
+          })}
+        </ul>
+
+        {/* Preview panel, large screens */}
+        <div className="hidden lg:block lg:col-span-5 sticky top-28">
+          <AnimatePresence mode="wait">
+            {active && (
+              <motion.div
+                key={active.id}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.25 }}
+              >
+                <Details project={active} />
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
       </div>
     </section>
   );
 }
 
-function StackingCard({ proj, idx }) {
-  const isCompany = proj.category === "company";
-  const targetUrl = proj.liveUrl || proj.githubUrl;
-  const hasUrl = Boolean(targetUrl);
-
-  const techChips = (proj.tags && proj.tags.length > 0)
-    ? proj.tags
-    : proj.tech.split(",").map((t) => t.trim());
-
-  // Vibrant fallback gradients
-  const fallbackGradients = [
-    "from-indigo-900 to-purple-900",
-    "from-blue-900 to-cyan-900",
-    "from-emerald-900 to-teal-900",
-    "from-rose-900 to-pink-900",
-  ];
-  const gradient = proj.gradient || fallbackGradients[idx % fallbackGradients.length];
-
-  // Dynamic sticky top offset: 
-  // Base offset is 100px. Each subsequent card gets +20px so they stack visibly.
-  const stickyTop = `calc(80px + ${idx * 20}px)`;
+function Details({ project: p }) {
+  const url = p.liveUrl || p.githubUrl;
+  const tags = p.tags?.length ? p.tags : p.tech.split(",").map((t) => t.trim());
 
   return (
-    <motion.div
-      layout
-      initial={{ opacity: 0, y: 100 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -50, scale: 0.95 }}
-      transition={{ duration: 0.6, ease: [0.25, 1, 0.5, 1] }}
-      className="sticky w-full rounded-[30px] md:rounded-[40px] border border-[var(--border-subtle)] bg-[var(--bg-elevated)] shadow-2xl overflow-hidden flex flex-col md:flex-row h-auto md:h-[75vh] min-h-[500px] max-h-[800px] backdrop-blur-xl"
-      style={{ top: stickyTop }}
-    >
-      {/* Content Side */}
-      <div className="w-full md:w-5/12 p-8 md:p-14 lg:p-16 flex flex-col justify-between relative z-10 bg-[var(--bg-elevated)]">
-        <div className="flex flex-col gap-5">
-          <div className="flex items-center gap-4">
-            <span className="font-mono text-[10px] md:text-xs uppercase tracking-widest text-[var(--accent)] border border-[var(--accent)]/30 bg-[var(--accent)]/5 px-4 py-1.5 rounded-full">
-              {proj.type || (isCompany ? "Company Work" : "Personal Project")}
-            </span>
-            <span className="font-mono text-sm text-[var(--text-dim)]">
-              0{idx + 1}
-            </span>
-          </div>
-
-          <h3 className="font-['Anton'] text-4xl md:text-5xl lg:text-7xl uppercase text-[var(--text-main)] leading-[1.05]">
-            {proj.title}
-          </h3>
-
-          <p className="text-[var(--text-muted)] text-sm md:text-base leading-relaxed mt-2 max-w-md">
-            {proj.description}
-          </p>
-        </div>
-
-        <div className="flex flex-col gap-8 mt-10 md:mt-0">
-          <div className="flex flex-wrap gap-2">
-            {techChips.slice(0, 6).map(t => (
-              <span key={t} className="px-3 py-1.5 rounded-md border border-[var(--border-subtle)] text-[11px] font-mono text-[var(--text-main)] bg-[var(--nav-pill-bg)]">
-                {t}
-              </span>
-            ))}
-          </div>
-
-          {hasUrl && (
-            <a
-              href={targetUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="flex items-center gap-4 group w-max mt-2"
-            >
-              <div className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-[var(--accent)] flex items-center justify-center text-black group-hover:scale-110 transition-transform duration-500 shadow-md group-hover:shadow-lg">
-                <FiArrowUpRight className="text-2xl md:text-3xl" />
-              </div>
-              <span className="font-mono uppercase font-bold text-[var(--text-main)] tracking-widest group-hover:text-[var(--accent)] transition-colors text-xs md:text-sm">
-                View Project
-              </span>
-            </a>
-          )}
-        </div>
-      </div>
-
-      {/* Image Side */}
-      <div className="w-full md:w-7/12 h-[300px] md:h-full relative bg-black/5">
-        {proj.image ? (
+    <div className="flex flex-col gap-6">
+      <div className="aspect-[4/3] w-full overflow-hidden rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-elevated)]">
+        {p.image ? (
           <img
-            src={proj.image.startsWith("/") || proj.image.startsWith("http") ? proj.image : `/${proj.image}`}
-            alt={proj.title}
+            src={imageSrc(p.image)}
+            alt={`${p.title} screenshot`}
             className="w-full h-full object-cover object-top"
           />
         ) : (
-          <div className={`w-full h-full bg-gradient-to-br ${gradient} opacity-90`} />
+          <div
+            className={`w-full h-full bg-gradient-to-br ${p.gradient} flex items-end p-6`}
+          >
+            <span className="text-white/90 text-sm">
+              {p.company ? `${p.company}, no public screenshot` : "No screenshot yet"}
+            </span>
+          </div>
         )}
-        {/* Subtle inner shadow for depth */}
-        <div className="absolute inset-0 shadow-[inset_0_0_40px_rgba(0,0,0,0.1)] pointer-events-none" />
       </div>
-    </motion.div>
+
+      <div>
+        <p className="text-sm text-[var(--text-dim)] m-0">{p.type}</p>
+        <p className="mt-3 mb-0 text-[var(--text-muted)] leading-relaxed max-w-[60ch]">
+          {p.description}
+        </p>
+        <p className="mt-4 mb-0 text-sm text-[var(--text-dim)]">
+          {tags.slice(0, 6).join(", ")}
+        </p>
+      </div>
+
+      {url ? (
+        <a
+          href={url}
+          target="_blank"
+          rel="noreferrer"
+          className="inline-flex items-center gap-2 w-max font-semibold text-[var(--text-main)] border-b-2 border-[var(--accent)] pb-1 hover:text-[var(--accent)] transition-colors"
+        >
+          View project
+          <FiArrowUpRight aria-hidden="true" />
+          <span className="sr-only">: {p.title} (opens in a new tab)</span>
+        </a>
+      ) : (
+        <p className="m-0 text-sm text-[var(--text-dim)]">{p.cta}</p>
+      )}
+    </div>
   );
 }
