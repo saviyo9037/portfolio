@@ -1,12 +1,30 @@
 import { useEffect, useState, useCallback } from 'react'
 import { motion, AnimatePresence, useScroll, useSpring } from 'framer-motion'
+import { Routes, Route, useLocation } from 'react-router-dom'
 import Lenis from 'lenis'
 import './App.css'
 import Home from './pages/Home'
+import TechnologiesPage from './pages/TechnologiesPage'
+import { scrollToId, scrollToTop } from './lib/scroll'
 import CustomCursor from './components/CustomCursor'
 import Chatbot from './components/Chatbot'
 import ThemeSwitcher from './components/ThemeSwitcher'
 import Preloader from './components/Preloader'
+
+// New page: start at the top. Home with a #section: jump to that section.
+function ScrollManager() {
+  const { pathname, hash } = useLocation()
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (hash && scrollToId(hash.slice(1), { immediate: true })) return
+      scrollToTop({ immediate: true })
+    }, 60)
+    return () => clearTimeout(timer)
+  }, [pathname, hash])
+
+  return null
+}
 
 function App() {
   const [isLoading, setIsLoading] = useState(true)
@@ -62,7 +80,11 @@ function App() {
       </AnimatePresence>
       {!isLoading && (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }}>
-          <Home />
+          <ScrollManager />
+          <Routes>
+            <Route path="/skills" element={<TechnologiesPage />} />
+            <Route path="*" element={<Home />} />
+          </Routes>
           <Chatbot />
           <ThemeSwitcher />
         </motion.div>

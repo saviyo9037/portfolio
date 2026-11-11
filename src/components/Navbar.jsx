@@ -1,213 +1,176 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from "framer-motion";
-import { FiArrowUpRight } from "react-icons/fi";
+import { FiArrowUpRight, FiX, FiMenu } from "react-icons/fi";
+import { useLocation, useNavigate } from "react-router-dom";
 import { ThemeContext } from "../context/ThemeContext";
 import ThemeSwitcher from "./ThemeSwitcher";
 
-function Navbar() {
-  const [isOpen, setIsOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
+// ─── nav items ────────────────────────────────────────────────────────────────
+const NAV_ITEMS = [
+  { id: "about",        label: "About" },
+  { id: "experience",   label: "Experience" },
+  { id: "skills",       label: "Skills" },
+  { id: "projects",     label: "Projects" },
+  { id: "education",    label: "Education" },
+  { id: "contact",      label: "Contact" },
+  { id: "technologies", label: "Tech & Skills", route: "/skills" },
+];
+
+// ─── component ────────────────────────────────────────────────────────────────
+export default function Navbar() {
+  const [isOpen, setIsOpen]             = useState(false);
+  const [scrolled, setScrolled]         = useState(false);
   const [activeSection, setActiveSection] = useState("introduction");
   const { isDark } = useContext(ThemeContext);
+  const { pathname } = useLocation();
+  const navigate     = useNavigate();
+  const onHome       = pathname === "/";
 
-  const navItems = [
-    { href: "#about", label: "ABOUT", id: "about" },
-    { href: "#experience", label: "EXPERIENCE", id: "experience" },
-    { href: "#skills", label: "SKILLS", id: "skills" },
-    { href: "#projects", label: "PROJECTS", id: "projects" },
-    { href: "#education", label: "EDUCATION", id: "education" },
-    { href: "#contact", label: "CONTACT", id: "contact" },
-  ];
+  const current = pathname === "/skills" ? "technologies" : activeSection;
 
-  // Scroll detection for navbar background
+  // ── scroll detection ──
   const { scrollY } = useScroll();
-  useMotionValueEvent(scrollY, "change", (latest) => {
-    setScrolled(latest > 30);
-  });
+  useMotionValueEvent(scrollY, "change", (v) => setScrolled(v > 20));
 
-  // Active section detection via IntersectionObserver
+  // ── active section via IntersectionObserver ──
   useEffect(() => {
-    const sectionIds = ["introduction", "about", "experience", "skills", "education", "projects", "contact"];
-    const observers = [];
-
-    sectionIds.forEach((id) => {
+    if (!onHome) return;
+    const ids = ["introduction", "about", "experience", "skills", "education", "projects", "contact"];
+    const obs = ids.map((id) => {
       const el = document.getElementById(id);
-      if (!el) return;
-
-      const observer = new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting) {
-            setActiveSection(id);
-          }
-        },
-        { threshold: 0.3, rootMargin: "-10% 0px -60% 0px" }
+      if (!el) return null;
+      const o = new IntersectionObserver(
+        ([e]) => { if (e.isIntersecting) setActiveSection(id); },
+        { threshold: 0.25, rootMargin: "-10% 0px -60% 0px" }
       );
-      observer.observe(el);
-      observers.push(observer);
+      o.observe(el);
+      return o;
     });
+    return () => obs.forEach((o) => o?.disconnect());
+  }, [onHome]);
 
-    return () => observers.forEach((o) => o.disconnect());
-  }, []);
-
-  const handleScroll = (id) => {
+  // ── navigation helper ──
+  const go = (id) => {
     setIsOpen(false);
-
+    if (id === "technologies") { navigate("/skills"); return; }
+    if (!onHome) { navigate(id === "introduction" ? "/" : `/#${id}`); return; }
     if (id === "introduction") {
-      if (window.__lenis) {
-        window.__lenis.scrollTo(0, { duration: 1.2 });
-      } else {
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      }
+      window.__lenis ? window.__lenis.scrollTo(0, { duration: 1.2 }) : window.scrollTo({ top: 0, behavior: "smooth" });
       return;
     }
-
-    const element = document.getElementById(id);
-    if (element) {
-      if (window.__lenis) {
-        window.__lenis.scrollTo(element, { offset: -60, duration: 1.2 });
-      } else {
-        element.scrollIntoView({ behavior: "smooth" });
-      }
+    const el = document.getElementById(id);
+    if (el) {
+      window.__lenis
+        ? window.__lenis.scrollTo(el, { offset: -68, duration: 1.2 })
+        : el.scrollIntoView({ behavior: "smooth" });
     }
   };
 
-  // Magnetic hover effect for nav items
-  const MagneticNavItem = ({ children, className, onClick, isActive }) => {
-    const itemRef = useRef(null);
-    const [pos, setPos] = useState({ x: 0, y: 0 });
-
-    const handleMouseMove = (e) => {
-      const rect = itemRef.current.getBoundingClientRect();
-      const centerX = rect.left + rect.width / 2;
-      const centerY = rect.top + rect.height / 2;
-      setPos({
-        x: (e.clientX - centerX) * 0.15,
-        y: (e.clientY - centerY) * 0.15,
-      });
-    };
-
-    const handleMouseLeave = () => setPos({ x: 0, y: 0 });
-
-    return (
-      <motion.div
-        ref={itemRef}
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
-        animate={{ x: pos.x, y: pos.y }}
-        transition={{ type: "spring", stiffness: 300, damping: 15, mass: 0.1 }}
-        className="relative"
-      >
-        <button onClick={onClick} className={className}>
-          {children}
-        </button>
-        {/* Active indicator dot */}
-        {isActive && (
-          <motion.div
-            layoutId="navActiveIndicator"
-            className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-[#10b981]"
-            transition={{ type: "spring", stiffness: 400, damping: 25 }}
-          />
-        )}
-      </motion.div>
-    );
-  };
+  // lock body scroll when mobile menu is open
+  useEffect(() => {
+    document.body.style.overflow = isOpen ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
+  }, [isOpen]);
 
   return (
     <>
+      {/* ══════════════════ NAV BAR ══════════════════ */}
       <motion.nav
-        className="fixed top-0 left-0 w-full z-[100] pointer-events-auto"
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+        className="fixed top-0 left-0 right-0 z-[100]"
+        initial={{ y: -80, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.7, delay: 0.05, ease: [0.22, 1, 0.36, 1] }}
       >
-        {/* Background that appears on scroll */}
+        {/* frosted backdrop — fades in on scroll */}
         <motion.div
-          className="absolute inset-0 bg-[var(--nav-bg)] backdrop-blur-xl border-b border-[var(--border-subtle)] shadow-lg transition-colors duration-300"
+          className="absolute inset-0 bg-[var(--nav-bg)] backdrop-blur-2xl border-b border-[var(--border-subtle)] transition-colors duration-300"
           initial={{ opacity: 0 }}
           animate={{ opacity: scrolled ? 1 : 0 }}
-          transition={{ duration: 0.3 }}
+          transition={{ duration: 0.25 }}
         />
 
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-3.5 sm:py-4 flex items-center justify-between relative z-10">
-          {/* Brand Pill */}
-          <motion.a
-            href="#introduction"
-            onClick={(e) => {
-              e.preventDefault();
-              handleScroll("introduction");
-            }}
-            className="inline-flex items-center gap-3 px-3.5 py-1.5 rounded-full border border-[var(--nav-pill-border)] bg-[var(--nav-pill-bg)] backdrop-blur-md shadow-xs hover:border-[var(--text-main)]/40 transition-all cursor-pointer group"
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-          >
-            <span className="w-2.5 h-2.5 rounded-full bg-[#10b981] shadow-[0_0_8px_#10b981] animate-pulse shrink-0" />
-            <div className="flex items-center gap-2.5">
-              <span className="font-['JetBrains_Mono',monospace] text-xs sm:text-sm font-bold tracking-widest text-[var(--text-main)] uppercase">
-                SAVIYO GEORGE
-              </span>
-              <span className="hidden xl:inline-block w-[1px] h-3 bg-[var(--border-subtle)]" />
-              <span className="hidden xl:inline-block font-mono text-[9px] text-[var(--text-dim)] uppercase tracking-wider">
-                FULL-STACK DEVELOPER <span className="opacity-40">/</span> SOFTWARE SOLUTION BUILDER
-              </span>
-            </div>
-          </motion.a>
+        <div className="relative z-10 max-w-[1340px] mx-auto px-5 sm:px-8 lg:px-12 h-16 flex items-center justify-between gap-6">
 
-          {/* Desktop Nav */}
-          <div className="hidden lg:flex items-center gap-6 xl:gap-8">
-            {navItems.map((item) => (
-              <MagneticNavItem
-                key={item.label}
-                isActive={activeSection === item.id}
-                onClick={() => handleScroll(item.id)}
-                className={`text-[11px] font-mono tracking-[0.2em] uppercase font-bold transition-colors cursor-pointer ${
-                  activeSection === item.id
-                    ? "text-[var(--text-main)]"
-                    : "text-[var(--text-muted)] hover:text-[var(--text-main)]"
-                }`}
-              >
-                {item.label}
-              </MagneticNavItem>
-            ))}
+          {/* ── BRAND ── */}
+          <motion.button
+            onClick={() => go("introduction")}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.97 }}
+            className="flex items-center gap-2.5 shrink-0 cursor-pointer group"
+          >
+            {/* green pulse dot */}
+            <span className="relative flex h-2.5 w-2.5 shrink-0">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60" />
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
+            </span>
+            <span className="font-['JetBrains_Mono',monospace] text-sm font-bold tracking-[0.12em] uppercase text-[var(--text-main)] group-hover:text-emerald-400 transition-colors duration-200">
+              Saviyo George
+            </span>
+          </motion.button>
+
+          {/* ── DESKTOP NAV ── */}
+          <div className="hidden lg:flex items-center gap-1 xl:gap-0">
+            {NAV_ITEMS.map((item) => {
+              const isActive = current === item.id;
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => go(item.id)}
+                  className={[
+                    "relative px-3 xl:px-4 py-2 font-mono text-[11px] xl:text-[12px] font-semibold tracking-[0.12em] uppercase rounded-lg transition-colors duration-200 cursor-pointer whitespace-nowrap",
+                    isActive
+                      ? "text-[var(--text-main)]"
+                      : "text-[var(--text-dim)] hover:text-[var(--text-main)]",
+                  ].join(" ")}
+                >
+                  {item.label}
+                  {/* animated underline indicator */}
+                  {isActive && (
+                    <motion.span
+                      layoutId="navUnderline"
+                      className="absolute bottom-0.5 left-3 xl:left-4 right-3 xl:right-4 h-[2px] rounded-full bg-emerald-400"
+                      transition={{ type: "spring", stiffness: 380, damping: 28 }}
+                    />
+                  )}
+                </button>
+              );
+            })}
           </div>
 
-          {/* Right Actions: Theme Toggle + Connect CTA */}
-          <div className="flex items-center gap-3">
-            {/* Theme Switcher Button */}
+          {/* ── RIGHT ACTIONS ── */}
+          <div className="flex items-center gap-2 shrink-0">
+            {/* Theme toggle */}
             <ThemeSwitcher compact />
 
-            {/* Right Connect CTA (Hidden on tiny mobile) */}
-            <div className="hidden sm:flex items-center">
-              <motion.a
-                href="#contact"
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleScroll("contact");
-                }}
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
-                className="inline-flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full bg-[var(--btn-cta-bg)] text-[var(--btn-cta-text)] font-mono text-xs font-bold tracking-wider hover:opacity-90 transition-all shadow-md group cursor-pointer border border-transparent"
-              >
-                <span className="w-2 h-2 rounded-full bg-[#10b981] shadow-[0_0_8px_#10b981] group-hover:scale-125 transition-transform" />
-                <span>LET'S CONNECT</span>
-                <FiArrowUpRight className="text-sm group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-              </motion.a>
-            </div>
-
-            {/* Mobile Toggle */}
+            {/* Let's Connect CTA — hidden on mobile */}
             <motion.button
-              onClick={() => setIsOpen(!isOpen)}
-              className="lg:hidden text-xs tracking-[0.2em] uppercase font-semibold text-[var(--text-main)] relative z-[120] bg-[var(--card-bg)] border border-[var(--border-subtle)] px-3.5 py-1.5 rounded-full shadow-sm cursor-pointer"
-              whileTap={{ scale: 0.95 }}
+              onClick={() => go("contact")}
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.96 }}
+              className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-[var(--btn-cta-bg)] text-[var(--btn-cta-text)] font-mono text-[11px] font-bold tracking-widest uppercase shadow-md hover:opacity-90 transition-all cursor-pointer group"
             >
-              <AnimatePresence mode="wait">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.9)] group-hover:scale-125 transition-transform" />
+              Connect
+              <FiArrowUpRight className="text-sm group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+            </motion.button>
+
+            {/* Mobile hamburger */}
+            <motion.button
+              onClick={() => setIsOpen((v) => !v)}
+              whileTap={{ scale: 0.93 }}
+              aria-label="Toggle menu"
+              className="lg:hidden flex items-center justify-center w-9 h-9 rounded-full border border-[var(--border-subtle)] bg-[var(--nav-pill-bg)] text-[var(--text-main)] hover:border-[var(--text-dim)]/40 transition-all cursor-pointer"
+            >
+              <AnimatePresence mode="wait" initial={false}>
                 <motion.span
-                  key={isOpen ? "close" : "menu"}
-                  initial={{ opacity: 0, y: 6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -6 }}
-                  transition={{ duration: 0.2 }}
+                  key={isOpen ? "x" : "menu"}
+                  initial={{ rotate: -90, opacity: 0 }}
+                  animate={{ rotate: 0, opacity: 1 }}
+                  exit={{ rotate: 90, opacity: 0 }}
+                  transition={{ duration: 0.18 }}
+                  className="flex items-center justify-center"
                 >
-                  {isOpen ? "Close" : "Menu"}
+                  {isOpen ? <FiX className="text-base" /> : <FiMenu className="text-base" />}
                 </motion.span>
               </AnimatePresence>
             </motion.button>
@@ -215,75 +178,109 @@ function Navbar() {
         </div>
       </motion.nav>
 
-      {/* Mobile Overlay */}
+      {/* ══════════════════ MOBILE MENU OVERLAY ══════════════════ */}
       <AnimatePresence>
         {isOpen && (
-          <motion.div
-            className="fixed inset-0 z-[110] bg-[var(--bg-base)]/98 backdrop-blur-2xl flex flex-col items-start justify-center px-10 text-[var(--text-main)]"
-            initial={{ clipPath: "circle(0% at calc(100% - 40px) 40px)" }}
-            animate={{ clipPath: "circle(150% at calc(100% - 40px) 40px)" }}
-            exit={{ clipPath: "circle(0% at calc(100% - 40px) 40px)" }}
-            transition={{ duration: 0.7, ease: [0.76, 0, 0.24, 1] }}
-          >
-            {/* Decorative watermark */}
-            <motion.span
-              className="absolute top-8 right-20 text-[30vw] font-['Anton'] text-[var(--text-main)]/[0.04] leading-none pointer-events-none"
+          <>
+            {/* backdrop */}
+            <motion.div
+              className="fixed inset-0 z-[108] bg-black/40 backdrop-blur-sm"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 0.3 }}
-            >
-              ☰
-            </motion.span>
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.25 }}
+              onClick={() => setIsOpen(false)}
+            />
 
-            <nav className="flex flex-col gap-4 relative z-10">
-              {navItems.map((item, i) => (
-                <motion.a
-                  key={item.href}
-                  href={item.href}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handleScroll(item.id);
-                  }}
-                  className="text-4xl sm:text-5xl font-['Anton'] uppercase tracking-tight text-[var(--text-main)] hover:text-emerald-400 transition-colors flex items-center gap-4"
-                  initial={{ y: 60, opacity: 0, filter: "blur(10px)" }}
-                  animate={{
-                    y: 0,
-                    opacity: 1,
-                    filter: "blur(0px)",
-                    transition: { delay: 0.15 + i * 0.08, duration: 0.5, ease: [0.22, 1, 0.36, 1] },
-                  }}
-                  exit={{ y: 30, opacity: 0, filter: "blur(5px)" }}
-                >
-                  <span className="text-sm text-[var(--text-dim)] font-['Inter'] font-normal tracking-widest">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  {item.label}
-                </motion.a>
-              ))}
-            </nav>
-
-            {/* Bottom info + theme toggle */}
+            {/* drawer panel — slides from top */}
             <motion.div
-              className="absolute bottom-10 left-10 right-10 flex justify-between items-end border-t border-[var(--border-subtle)] pt-6"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5, duration: 0.5 }}
+              className="fixed top-0 left-0 right-0 z-[109] bg-[var(--bg-base)] border-b border-[var(--border-subtle)] shadow-2xl overflow-hidden"
+              initial={{ y: "-100%" }}
+              animate={{ y: 0 }}
+              exit={{ y: "-100%" }}
+              transition={{ duration: 0.38, ease: [0.32, 0, 0.1, 1] }}
             >
-              <div>
-                <p className="text-xs text-[var(--text-dim)] tracking-widest uppercase">
-                  © 2026 Saviyo George
-                </p>
-                <p className="text-xs text-[var(--text-dim)] tracking-widest uppercase mt-1">
-                  Kerala, India
-                </p>
+              {/* header row */}
+              <div className="flex items-center justify-between px-5 sm:px-8 h-16 border-b border-[var(--border-subtle)]/50">
+                <div className="flex items-center gap-2.5">
+                  <span className="relative flex h-2.5 w-2.5">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60" />
+                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-400" />
+                  </span>
+                  <span className="font-['JetBrains_Mono',monospace] text-sm font-bold tracking-[0.12em] uppercase text-[var(--text-main)]">
+                    Saviyo George
+                  </span>
+                </div>
+                <button
+                  onClick={() => setIsOpen(false)}
+                  className="flex items-center justify-center w-9 h-9 rounded-full border border-[var(--border-subtle)] bg-[var(--nav-pill-bg)] text-[var(--text-main)] cursor-pointer hover:border-[var(--text-dim)]/40 transition-all"
+                >
+                  <FiX className="text-base" />
+                </button>
               </div>
-              <ThemeSwitcher compact />
+
+              {/* nav links */}
+              <nav className="px-5 sm:px-8 py-4">
+                {NAV_ITEMS.map((item, i) => {
+                  const isActive = current === item.id;
+                  return (
+                    <motion.button
+                      key={item.id}
+                      onClick={() => go(item.id)}
+                      initial={{ opacity: 0, x: -16 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.06 + i * 0.045, duration: 0.3, ease: "easeOut" }}
+                      className={[
+                        "flex items-center justify-between w-full px-4 py-3.5 rounded-xl mb-1 font-mono text-[13px] font-semibold tracking-[0.1em] uppercase transition-colors duration-150 cursor-pointer group",
+                        isActive
+                          ? "bg-[var(--bg-elevated)] text-[var(--text-main)]"
+                          : "text-[var(--text-dim)] hover:bg-[var(--bg-surface)] hover:text-[var(--text-main)]",
+                      ].join(" ")}
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="font-mono text-[10px] text-[var(--text-dim)]/60 w-5">
+                          {String(i + 1).padStart(2, "0")}
+                        </span>
+                        {item.label}
+                      </div>
+                      {isActive && (
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.8)]" />
+                      )}
+                    </motion.button>
+                  );
+                })}
+              </nav>
+
+              {/* footer row */}
+              <motion.div
+                className="flex items-center justify-between px-5 sm:px-8 pb-6 pt-2 border-t border-[var(--border-subtle)]/50"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.35 }}
+              >
+                <div className="flex flex-col gap-0.5">
+                  <span className="font-mono text-[10px] text-[var(--text-dim)] uppercase tracking-widest">
+                    © 2026 Saviyo George
+                  </span>
+                  <span className="font-mono text-[10px] text-[var(--text-dim)]/60 uppercase tracking-widest">
+                    Kerala, India
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <ThemeSwitcher compact />
+                  <button
+                    onClick={() => go("contact")}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-[var(--btn-cta-bg)] text-[var(--btn-cta-text)] font-mono text-[11px] font-bold tracking-widest uppercase shadow-md hover:opacity-90 transition-all cursor-pointer"
+                  >
+                    Connect
+                    <FiArrowUpRight className="text-sm" />
+                  </button>
+                </div>
+              </motion.div>
             </motion.div>
-          </motion.div>
+          </>
         )}
       </AnimatePresence>
     </>
   );
 }
-
-export default Navbar;

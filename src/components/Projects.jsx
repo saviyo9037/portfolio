@@ -84,7 +84,14 @@ export default function Projects() {
   const renderGroup = (title, items) =>
     items.length > 0 && (
       <div className="mb-10">
-        {title && <h3 className="font-['Inter'] normal-case tracking-normal leading-normal text-sm text-[var(--accent)] font-medium mb-3">{title}</h3>}
+        {title && (
+          <h3
+            className="text-sm text-[var(--accent)] font-medium mb-3"
+            style={{ fontFamily: "'Inter', sans-serif", textTransform: "none", letterSpacing: "normal", lineHeight: 1.4 }}
+          >
+            {title}
+          </h3>
+        )}
         <ul className="border-t border-[var(--border-subtle)] list-none m-0 p-0">
           {items.map((p) => (
             <ProjectRow
