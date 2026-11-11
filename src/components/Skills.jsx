@@ -270,7 +270,7 @@ export default function Skills() {
           style={{
             position: "sticky",
             top: 80,
-            height: "calc(100vh - 80px)",
+            height: "calc(100dvh - 80px)",
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
@@ -327,7 +327,7 @@ export default function Skills() {
           <div style={{ perspective: "2400px", padding: "16px 0 12px" }}>
             <div
               style={{
-                width: "min(100%, 1000px, calc((100vh - 250px) * 1.5625))",
+                width: "min(100%, 1000px, calc((100dvh - 250px) * 1.5625))",
                 aspectRatio: "1000 / 640",
                 margin: "0 auto",
                 position: "relative",

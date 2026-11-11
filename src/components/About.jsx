@@ -427,7 +427,7 @@ export default function About() {
         </div>
       </div>
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 z-10 flex flex-col justify-between min-h-[85vh]">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 z-10 flex flex-col justify-between lg:min-h-[85vh]">
 
         {/* ================= MAIN HERO / SHOWCASE ROW ================= */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-4 items-center">

@@ -12,7 +12,7 @@ import { CurvedDivider } from "../components/CurvedDivider";
 
 function Home() {
   return (
-    <div className="bg-transparent text-[var(--text-main)] min-h-screen relative selection:bg-[#39ff88] selection:text-[#0A0A0A]">
+    <div className="bg-transparent text-[var(--text-main)] min-h-dvh relative selection:bg-[#39ff88] selection:text-[#0A0A0A]">
       <Navbar />
 
       <main className="relative bg-transparent">

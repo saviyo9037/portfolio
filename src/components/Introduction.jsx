@@ -172,7 +172,7 @@ function Introduction() {
       ref={heroRef}
       onMouseMove={handleHeroMouseMove}
       onMouseLeave={handleHeroMouseLeave}
-      className="relative w-full min-h-screen bg-transparent text-[var(--text-main)] overflow-hidden flex flex-col justify-between pt-24 sm:pt-28 select-none transition-colors duration-300"
+      className="relative w-full min-h-[100svh] bg-transparent text-[var(--text-main)] overflow-hidden flex flex-col justify-between pt-24 sm:pt-28 select-none transition-colors duration-300"
     >
       {/* ================= CUSTOM EMBEDDED STYLES ================= */}
       <style>{`

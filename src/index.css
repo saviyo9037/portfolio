@@ -129,7 +129,7 @@ body {
 #root {
   background-color: transparent;
   color: var(--text-main);
-  min-height: 100vh;
+  min-height: 100dvh;
   position: relative;
 }
 

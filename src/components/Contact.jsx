@@ -118,10 +118,10 @@ const ContactDetail = ({ title, value, type }) => {
       <div className="flex flex-col gap-4">
         <a 
           href={href}
-          className="text-2xl md:text-4xl lg:text-5xl font-['Anton'] tracking-wide text-[var(--text-main)] group-hover:text-[var(--accent)] transition-colors inline-flex items-center gap-4 break-all"
+          className="text-xl min-[400px]:text-2xl md:text-4xl lg:text-5xl font-['Anton'] tracking-wide text-[var(--text-main)] group-hover:text-[var(--accent)] transition-colors inline-flex items-center gap-4 break-words max-w-full"
         >
           {value}
-          <div className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-[var(--border-subtle)] flex items-center justify-center opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 group-hover:border-[var(--accent)] transition-all duration-300 shrink-0">
+          <div className="hidden md:flex w-12 h-12 rounded-full border border-[var(--border-subtle)] items-center justify-center opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 group-hover:border-[var(--accent)] transition-all duration-300 shrink-0">
             <FiArrowUpRight className="text-xl" />
           </div>
         </a>
