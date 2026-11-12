@@ -54,9 +54,9 @@ export default function Education() {
               </div>
               <span className="font-semibold tracking-wide">2021 — 2024</span>
             </div>
-            <div className="flex items-center gap-3 font-mono text-[10px] text-emerald-500">
-              <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shadow-sm">
-                <FiAward className="text-emerald-500 text-sm" />
+            <div className="flex items-center gap-3 font-mono text-[10px] text-orange-500">
+              <div className="w-8 h-8 rounded-lg bg-orange-500/10 border border-orange-500/20 flex items-center justify-center shadow-sm">
+                <FiAward className="text-orange-500 text-sm" />
               </div>
               <span className="font-bold tracking-widest uppercase">Verified</span>
             </div>

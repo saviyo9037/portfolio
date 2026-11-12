@@ -13,6 +13,10 @@ import { CurvedDivider } from "../components/CurvedDivider";
 function Home() {
   return (
     <div className="bg-transparent text-[var(--text-main)] min-h-dvh relative selection:bg-[#39ff88] selection:text-[#0A0A0A]">
+      {/* Soft orange light in two corners. Fixed to the viewport, so it never adds scroll width. */}
+      <div aria-hidden="true" className="pointer-events-none fixed -left-48 -top-48 z-0 h-[36rem] w-[36rem] rounded-full bg-orange-500/15 blur-[140px]" />
+      <div aria-hidden="true" className="pointer-events-none fixed -bottom-48 -right-48 z-0 h-[36rem] w-[36rem] rounded-full bg-orange-500/15 blur-[140px]" />
+
       <Navbar />
 
       <main className="relative bg-transparent">
