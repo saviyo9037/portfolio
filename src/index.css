@@ -1021,74 +1021,74 @@ html.lenis body {
    ============================================================== */
 
 /* Overriding hardcoded dark backgrounds to light alternatives */
-.bg-\[\#0A0A0A\],
-.bg-\[\#121216\],
-.bg-\[\#111116\],
-.bg-\[\#181820\],
-.bg-\[\#050508\],
-.bg-\[\#0f0f13\],
-.bg-\[\#0b0b14\],
-.bg-\[\#0a0a0c\],
-.bg-black {
+:root.light .bg-\[\#0A0A0A\],
+:root.light .bg-\[\#121216\],
+:root.light .bg-\[\#111116\],
+:root.light .bg-\[\#181820\],
+:root.light .bg-\[\#050508\],
+:root.light .bg-\[\#0f0f13\],
+:root.light .bg-\[\#0b0b14\],
+:root.light .bg-\[\#0a0a0c\],
+:root.light .bg-black {
   background-color: #FFFFFF !important;
 }
 
 /* Overriding hardcoded text colors */
-.text-white {
+:root.light .text-white {
   color: #0F172A !important;
 }
 
-.text-[#F0F0F0],
-.text-\[\#F0F0F0\] {
+:root.light .text-[#F0F0F0],
+:root.light .text-\[\#F0F0F0\] {
   color: #1E293B !important;
 }
 
-.text-slate-400 {
+:root.light .text-slate-400 {
   color: #475569 !important;
 }
 
-.text-slate-300 {
+:root.light .text-slate-300 {
   color: #334155 !important;
 }
 
-.text-white\/50,
-.text-white\/60,
-.text-white\/80 {
+:root.light .text-white\/50,
+:root.light .text-white\/60,
+:root.light .text-white\/80 {
   color: #64748B !important;
 }
 
-.text-white\/10,
-.text-white\/20,
-.text-white\/5 {
+:root.light .text-white\/10,
+:root.light .text-white\/20,
+:root.light .text-white\/5 {
   color: rgba(0, 0, 0, 0.15) !important;
 }
 
 /* Overriding borders */
-.border-white\/10,
-.border-white\/15,
-.border-white\/20,
-.border-white\/30 {
+:root.light .border-white\/10,
+:root.light .border-white\/15,
+:root.light .border-white\/20,
+:root.light .border-white\/30 {
   border-color: rgba(0, 0, 0, 0.1) !important;
 }
 
 /* Overriding semi-transparent backgrounds */
-.bg-white\/5,
-.bg-white\/10,
-.bg-white\/15,
-.bg-white\/20 {
+:root.light .bg-white\/5,
+:root.light .bg-white\/10,
+:root.light .bg-white\/15,
+:root.light .bg-white\/20 {
   background-color: rgba(0, 0, 0, 0.03) !important;
 }
 
 /* Adjusting the gradient mesh (BackgroundAnimation) to be subtle in light mode */
-canvas {
+:root.light canvas {
   filter: invert(1) hue-rotate(180deg) opacity(0.2) contrast(1.5) !important;
 }
 
 /* Exception for terminal modal so it stays authentic/dark */
-.bg-\[\#121216\]\/95 {
+:root.light .bg-\[\#121216\]\/95 {
   background-color: rgba(18, 18, 22, 0.95) !important;
 }
 
-.text-white.font-medium {
+:root.light .text-white.font-medium {
   color: #FFFFFF !important;
 }
