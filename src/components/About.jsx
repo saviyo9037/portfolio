@@ -12,14 +12,11 @@ import {
   FiCopy,
   FiRotateCcw,
   FiCode,
-  FiMaximize2,
 } from "react-icons/fi";
 
 // Cutout portrait asset (Saviyo in coat from saviyo-hero.jpg)
 import saviyoCutout from "../assets/saviyo-coat-cutout.png";
 
-// Import NeonBorder for the cards
-import NeonBorder from "./NeonBorder";
 
 
 // ================= CODE SNIPPETS FOR LAPTOP TABS =================
@@ -260,40 +257,24 @@ const LAPTOP_FILES = {
 // 4 CAPABILITY CARDS DATA
 const CAPABILITY_CARDS = [
   {
-    num: "01",
-    title: "10+ ERP MODULES",
+    title: "10+ ERP modules",
     desc: "Billing, Inventory, POS, Customer & RBAC in live deployment.",
     icon: FiBox,
-    glowColor: "from-purple-500/20 to-purple-700/5",
-    iconBg: "bg-purple-500/20 text-purple-400 border-purple-500/40 shadow-[0_0_15px_rgba(168,85,247,0.3)]",
-    cardBorder: "hover:border-purple-500/50",
   },
   {
-    num: "02",
-    title: "SUB-SECOND CACHE",
+    title: "Sub-second cache",
     desc: "TanStack Query optimistic UI & multi-tier state sync.",
     icon: FiDatabase,
-    glowColor: "from-cyan-500/20 to-cyan-700/5",
-    iconBg: "bg-cyan-500/20 text-cyan-400 border-cyan-500/40 shadow-[0_0_15px_rgba(56,189,248,0.3)]",
-    cardBorder: "hover:border-cyan-500/50",
   },
   {
-    num: "03",
-    title: "ESC/POS DAEMONS",
+    title: "ESC/POS daemons",
     desc: "Direct WebSocket thermal receipts & barcode scanner automation.",
     icon: FiCpu,
-    glowColor: "from-amber-500/20 to-amber-700/5",
-    iconBg: "bg-amber-500/20 text-amber-400 border-amber-500/40 shadow-[0_0_15px_rgba(245,158,11,0.3)]",
-    cardBorder: "hover:border-amber-500/50",
   },
   {
-    num: "04",
-    title: "BCA DISTINCTION",
+    title: "BCA distinction",
     desc: "Honors graduate in Computer Applications from MG University.",
     icon: FiAward,
-    glowColor: "from-emerald-500/20 to-emerald-700/5",
-    iconBg: "bg-emerald-500/20 text-emerald-400 border-emerald-500/40 shadow-[0_0_15px_rgba(16,185,129,0.3)]",
-    cardBorder: "hover:border-emerald-500/50",
   },
 ];
 
@@ -847,77 +828,30 @@ export default function About() {
 
         </div>
 
-        {/* ================= BOTTOM ROW: 4 CAPABILITY GLASSMORPHIC CARDS ================= */}
-        <div className="mt-14 sm:mt-16 lg:mt-20">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
-            {CAPABILITY_CARDS.map((card, idx) => {
-              const Icon = card.icon;
-              
-              // Determine neon color based on index to match the cards
-              let neonColor = "#a855f7"; // purple
-              if (idx === 1) neonColor = "#06b6d4"; // cyan
-              if (idx === 2) neonColor = "#f59e0b"; // amber
-              if (idx === 3) neonColor = "#10b981"; // emerald
-
-              return (
-                <motion.div
-                  key={card.num}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-40px" }}
-                  transition={{ duration: 0.6, delay: idx * 0.1 }}
-                  whileHover={{ y: -6, transition: { duration: 0.2 } }}
-                  className={`group relative rounded-2xl bg-[var(--card-bg)]/85 backdrop-blur-xl shadow-xl transition-all duration-300 hover:shadow-[0_20px_40px_rgba(0,0,0,0.5)] cursor-pointer h-full`}
-                >
-                  <NeonBorder
-                    color={neonColor}
-                    rounded={16}
-                    borderSize={30}
-                    thickness={2}
-                    glow={15}
-                    movement="step" /* Scratch/step style movement */
-                    speed={2}
-                  >
-                    <div className="flex flex-col justify-between h-full p-5 relative z-10">
-                      {/* Subtle Card Ambient Glow */}
-                      <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${card.glowColor} opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none`} />
-
-                      {/* Top Bar: Number & Corner Icon */}
-                      <div className="relative flex items-center justify-between mb-4">
-                        <span className="font-mono text-xs font-bold text-[var(--text-dim)] tracking-wider group-hover:text-[var(--text-muted)] transition-colors">
-                          {card.num}
-                        </span>
-                        <FiMaximize2 className="text-xs text-[var(--text-dim)] group-hover:text-[var(--text-muted)] transition-colors" />
-                      </div>
-
-                      {/* Icon & Title Block */}
-                      <div className="relative flex items-start gap-3.5 mb-3">
-                        <div className={`w-11 h-11 rounded-xl flex items-center justify-center text-lg border transition-transform duration-300 group-hover:scale-110 shrink-0 ${card.iconBg}`}>
-                          <Icon />
-                        </div>
-                        <div>
-                          <div className="text-[15px] font-bold font-sans text-[var(--text-main)] tracking-wider uppercase leading-snug group-hover:text-white transition-colors mb-2">
-                            {card.title}
-                          </div>
-                          <p className="text-sm text-[var(--text-muted)] leading-relaxed font-medium">
-                            {card.desc}
-                          </p>
-                        </div>
-                      </div>
-
-                      {/* Bottom Corner Button */}
-                      <div className="relative mt-2 pt-2 border-t border-[var(--border-subtle)] flex items-center justify-end">
-                        <div className="w-7 h-7 rounded-lg bg-white/5 group-hover:bg-white/10 flex items-center justify-center text-[var(--text-dim)] group-hover:text-[var(--text-main)] transition-all">
-                          <FiArrowUpRight className="text-sm group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                        </div>
-                      </div>
-                    </div>
-                  </NeonBorder>
-                </motion.div>
-              );
-            })}
-          </div>
-        </div>
+        {/* ================= BOTTOM ROW: 4 CAPABILITY CARDS (static) ================= */}
+        <ul className="m-0 mt-14 grid list-none grid-cols-1 gap-4 p-0 sm:mt-16 sm:grid-cols-2 sm:gap-5 lg:mt-20 lg:grid-cols-4">
+          {CAPABILITY_CARDS.map((card) => (
+            <li
+              key={card.title}
+              className="flex flex-col gap-4 rounded-xl border border-[var(--card-border)] bg-[var(--card-bg)] p-6"
+            >
+              <span
+                aria-hidden="true"
+                className="flex h-10 w-10 items-center justify-center rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-elevated)] text-lg text-[var(--accent)]"
+              >
+                <card.icon />
+              </span>
+              <div>
+                <p className="m-0 text-lg font-semibold leading-snug text-[var(--text-main)]">
+                  {card.title}
+                </p>
+                <p className="mb-0 mt-2 text-sm leading-relaxed text-[var(--text-muted)]">
+                  {card.desc}
+                </p>
+              </div>
+            </li>
+          ))}
+        </ul>
 
       </div>
     </section>
