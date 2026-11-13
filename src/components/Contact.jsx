@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Magnetic } from "./motion/effects";
 import { FiArrowUpRight, FiCopy, FiCheck, FiGithub, FiLinkedin, FiMail, FiPhone } from "react-icons/fi";
 
 const ACCENT = "#ff8a1f";
@@ -60,6 +61,7 @@ export default function Contact() {
         Got an idea, a role or just a question? My inbox is open.
       </p>
 
+      <Magnetic strength={0.12}>
       <a
         href={`mailto:${EMAIL}`}
         className="mx-auto mt-10 inline-flex max-w-full items-center gap-3 break-all border-b-4 pb-2 text-xl font-bold text-[var(--text-main)] transition-colors hover:text-[var(--accent)] md:text-3xl"
@@ -68,6 +70,7 @@ export default function Contact() {
         <FiMail aria-hidden="true" className="shrink-0" style={{ color: ACCENT }} />
         {EMAIL}
       </a>
+      </Magnetic>
 
       <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
         <CopyPill value={EMAIL} label="email" pill={{ Icon: FiCopy }} />

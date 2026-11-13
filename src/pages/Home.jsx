@@ -1,4 +1,5 @@
 import React from "react";
+import { Reveal } from "../components/motion/effects";
 import Introduction from "../components/Introduction";
 import About from "../components/About";
 import Skills from "../components/Skills";
@@ -22,19 +23,19 @@ function Home() {
         </section>
 
         <section id="about" className="relative bg-transparent">
-          <About />
+          <Reveal><About /></Reveal>
         </section>
 
         <section id="experience" className="relative bg-transparent">
-          <Experiences />
+          <Reveal><Experiences /></Reveal>
         </section>
 
         <section id="skills" className="relative bg-transparent">
-          <Skills />
+          <Reveal><Skills /></Reveal>
         </section>
 
         <section id="education" className="relative bg-transparent">
-          <Education />
+          <Reveal><Education /></Reveal>
         </section>
 
         {/* Horizontal Project Ticker removed to fix duplicate projects */}
@@ -43,11 +44,11 @@ function Home() {
           id="projects"
           className="relative bg-transparent"
         >
-          <Projects />
+          <Reveal><Projects /></Reveal>
         </div>
 
         <section id="contact" className="relative bg-transparent">
-          <Contact />
+          <Reveal><Contact /></Reveal>
         </section>
       </main>
     </div>

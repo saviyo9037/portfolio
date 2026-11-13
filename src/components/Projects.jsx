@@ -288,6 +288,18 @@ function hostOf(url) {
 const focusRing =
   "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ff8a1f]";
 
+// Tilts the card a few degrees toward the pointer. Mouse only, and not for reduced motion.
+function tilt(e) {
+  if (!window.matchMedia("(pointer: fine) and (prefers-reduced-motion: no-preference)").matches) return;
+  const r = e.currentTarget.getBoundingClientRect();
+  const x = (e.clientX - r.left) / r.width - 0.5;
+  const y = (e.clientY - r.top) / r.height - 0.5;
+  e.currentTarget.style.transform = `perspective(700px) rotateX(${(-y * 6).toFixed(2)}deg) rotateY(${(x * 6).toFixed(2)}deg) translateY(-2px)`;
+}
+function untilt(e) {
+  e.currentTarget.style.transform = "";
+}
+
 function ProjectCard({ project: p }) {
   const demo = demoUrl(p);
   const repo = repoUrl(p);
@@ -296,7 +308,11 @@ function ProjectCard({ project: p }) {
   const address = hostOf(demo) || (repo ? hostOf(repo) + repo.replace(/^https?:\/\/[^/]+/, "") : "private project");
 
   return (
-    <li className="group flex w-[230px] shrink-0 flex-col overflow-hidden rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] transition-colors duration-300 hover:border-[#ff8a1f] sm:w-[260px]">
+    <li
+      onMouseMove={tilt}
+      onMouseLeave={untilt}
+      className="group flex w-[230px] shrink-0 flex-col overflow-hidden rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] transition-[transform,border-color] duration-200 hover:border-[#ff8a1f] sm:w-[260px]"
+    >
       {/* Title bar */}
       <div className="flex items-center gap-2 border-b border-[var(--border-subtle)] bg-[var(--bg-elevated)] px-3 py-2">
         <span className="flex gap-1.5" aria-hidden="true">

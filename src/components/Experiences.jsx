@@ -1,4 +1,5 @@
 import React from "react";
+import { motion, useReducedMotion } from "framer-motion";
 import { experience } from "../data/experience";
 
 const ACCENT = "#ff8a1f";
@@ -6,6 +7,7 @@ const ACCENT = "#ff8a1f";
 const jobs = experience.filter((item) => item.type === "work");
 
 export default function Experiences() {
+  const reduce = useReducedMotion();
   return (
     <section className="mx-auto w-full max-w-[1680px] px-5 py-20 md:px-8 md:py-32">
       <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
@@ -32,8 +34,12 @@ export default function Experiences() {
         {/* Roles */}
         <ol className="m-0 list-none p-0 lg:col-span-8">
           {jobs.map((job) => (
-            <li
+            <motion.li
               key={`${job.company}-${job.period}`}
+              initial={reduce ? false : { opacity: 0, x: 24 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, margin: "-60px" }}
+              transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
               className="grid gap-6 border-t border-[var(--border-subtle)] py-12 first:border-t-0 first:pt-0 md:grid-cols-[minmax(0,3fr)_minmax(0,9fr)] md:gap-10"
             >
               <div className="text-sm text-[var(--text-dim)]">
@@ -80,7 +86,7 @@ export default function Experiences() {
                   </p>
                 )}
               </div>
-            </li>
+            </motion.li>
           ))}
         </ol>
       </div>
