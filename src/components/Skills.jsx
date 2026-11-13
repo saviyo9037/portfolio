@@ -243,7 +243,7 @@ export default function Skills() {
   );
 
   return (
-    <section id="skills" className="relative max-w-7xl mx-auto px-4 md:px-6 py-12 md:py-20 text-[var(--text-main)] transition-colors duration-300">
+    <section id="skills" className="relative max-w-[1680px] mx-auto px-4 md:px-6 py-12 md:py-20 text-[var(--text-main)] transition-colors duration-300">
       <div className="flex items-baseline gap-4 mb-6 border-b border-[var(--border-subtle)] pb-4">
         <span className="section-label">[03]</span>
         <h2 className="font-['Anton'] text-5xl md:text-7xl uppercase tracking-tight">

@@ -70,7 +70,7 @@ export default function About() {
       id="about-details"
       className="relative w-full overflow-hidden bg-[#07090c] px-4 pb-10 pt-20 text-white md:px-8 md:pt-24"
     >
-      <div className="mx-auto max-w-[1400px]">
+      <div className="mx-auto max-w-[1680px]">
         <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-6">
           {/* Left: copy */}
           <motion.div

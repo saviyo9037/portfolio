@@ -1,150 +1,92 @@
 import React, { useState } from "react";
-import { motion } from "framer-motion";
-import SocialIcons from "./SocialIcons";
-import { FiArrowUpRight, FiCopy, FiCheck } from "react-icons/fi";
+import { FiArrowUpRight, FiCopy, FiCheck, FiGithub, FiLinkedin, FiMail, FiPhone } from "react-icons/fi";
 
-function Contact() {
+const ACCENT = "#ff8a1f";
+const EMAIL = "saviyogeorge903734@gmail.com";
+const PHONE = "+91 9037 348 073";
+
+function CopyPill(props) {
+  const { value, label } = props;
+  const [copied, setCopied] = useState(false);
+
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(value);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      /* clipboard blocked: the link still works */
+    }
+  };
+
   return (
-    <section id="contact" className="relative bg-[var(--bg-base)] text-[var(--text-main)] py-20 md:py-32 z-20 border-t border-[var(--border-subtle)]">
-      <div className="container-custom relative z-10">
-        
-        {/* Section Header */}
-        <div className="flex flex-col gap-3 mb-16 md:mb-24">
-          <span className="font-mono text-sm tracking-[0.3em] uppercase text-[var(--accent)] font-bold flex items-center gap-3">
-            [06] CONTACT <span className="h-[1px] w-12 bg-[var(--accent)] opacity-40"></span>
-          </span>
-          <h2 className="font-['Anton'] text-6xl md:text-8xl uppercase tracking-tight leading-none">
-            <span className="text-[var(--text-main)]">Get in</span>{" "}
-            <span className="text-[var(--text-muted)] opacity-40">Touch</span>
-          </h2>
-        </div>
+    <button
+      type="button"
+      onClick={copy}
+      aria-label={`Copy ${label}`}
+      className="inline-flex items-center gap-2 rounded-full border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-5 py-3 text-sm font-semibold text-[var(--text-main)] transition-colors hover:border-[#ff8a1f]"
+    >
+      {copied ? <FiCheck aria-hidden="true" style={{ color: ACCENT }} /> : <props.pill.Icon aria-hidden="true" />}
+      {copied ? "Copied" : `Copy ${label}`}
+    </button>
+  );
+}
 
-        {/* Two Column Layout */}
-        <div className="flex flex-col lg:flex-row justify-between gap-16 lg:gap-24">
-          
-          {/* Left Column: Intro & Socials */}
-          <div className="flex flex-col gap-10 lg:w-5/12">
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              className="flex flex-col gap-6"
-            >
-              <div className="flex items-center gap-4">
-                <div className="w-2.5 h-2.5 rounded-full bg-[#39ff88] animate-pulse shadow-[0_0_15px_#39ff88]" />
-                <span className="font-mono text-sm tracking-widest uppercase text-[var(--text-main)]">
-                  Available for new opportunities
-                </span>
-              </div>
-              <p className="text-lg md:text-xl text-[var(--text-muted)] leading-relaxed max-w-md font-light">
-                Whether you have an idea for a project, need a developer, or just want to say hi, my inbox is always open. Let's build something amazing together.
-              </p>
-            </motion.div>
+const LINKS = [
+  { label: "Call", href: `tel:${PHONE.replace(/\s+/g, "")}`, Icon: FiPhone },
+  { label: "GitHub", href: "https://github.com/saviyo9037", Icon: FiGithub, external: true },
+  { label: "LinkedIn", href: "https://linkedin.com/in/saviyo-george", Icon: FiLinkedin, external: true },
+];
 
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="flex flex-col gap-5 pt-4"
-            >
-              <span className="font-mono text-xs uppercase tracking-[0.2em] text-[var(--text-muted)] border-b border-[var(--border-subtle)] pb-4 max-w-xs">
-                Connect
-              </span>
-              <div className="mt-2">
-                <SocialIcons />
-              </div>
-            </motion.div>
-          </div>
+export default function Contact() {
+  return (
+    <section id="contact" className="mx-auto w-full max-w-[1680px] px-5 py-20 text-center md:px-8 md:py-32">
+      <p className="m-0 inline-flex items-center gap-2 rounded-full border border-[var(--border-subtle)] px-4 py-1.5 text-sm text-[var(--text-muted)]">
+        <span className="relative flex h-2 w-2">
+          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
+          <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
+        </span>
+        Available for new opportunities
+      </p>
 
-          {/* Right Column: Contact Details */}
-          <div className="flex flex-col gap-12 lg:w-6/12 pt-4 lg:pt-0">
-            {/* Email */}
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-            >
-              <ContactDetail title="Email" value="saviyogeorge903734@gmail.com" type="email" />
-            </motion.div>
+      <h2
+        className="mb-0 mt-8 text-[clamp(3.5rem,11vw,9rem)] font-black leading-[0.9] tracking-tighter text-[var(--text-main)]"
+        style={{ fontFamily: "'Inter', sans-serif", textTransform: "none" }}
+      >
+        Let's talk<span style={{ color: ACCENT }}>.</span>
+      </h2>
 
-            {/* Phone */}
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-            >
-              <ContactDetail title="Phone" value="+91 9037 348 073" type="tel" />
-            </motion.div>
-          </div>
+      <p className="mx-auto mb-0 mt-6 max-w-[48ch] text-lg leading-relaxed text-[var(--text-muted)]">
+        Got an idea, a role or just a question? My inbox is open.
+      </p>
 
-        </div>
+      <a
+        href={`mailto:${EMAIL}`}
+        className="mx-auto mt-10 inline-flex max-w-full items-center gap-3 break-all border-b-4 pb-2 text-xl font-bold text-[var(--text-main)] transition-colors hover:text-[var(--accent)] md:text-3xl"
+        style={{ borderColor: ACCENT }}
+      >
+        <FiMail aria-hidden="true" className="shrink-0" style={{ color: ACCENT }} />
+        {EMAIL}
+      </a>
 
-        {/* Footer */}
-        <div className="mt-32 pt-8 border-t border-[var(--border-subtle)] flex flex-col md:flex-row justify-between items-center gap-4 font-mono text-xs uppercase tracking-widest text-[var(--text-muted)]">
-          <span>© {new Date().getFullYear()} Saviyo George</span>
-          <span className="flex items-center gap-2">
-            <span className="w-1.5 h-1.5 bg-[#39ff88] rounded-full animate-pulse" /> 
-            Based in Kerala, India
-          </span>
-        </div>
+      <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
+        <CopyPill value={EMAIL} label="email" pill={{ Icon: FiCopy }} />
+        {LINKS.map((link) => (
+          <a
+            key={link.label}
+            href={link.href}
+            {...(link.external ? { target: "_blank", rel: "noreferrer" } : {})}
+            className="inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-semibold text-[var(--text-main)] transition-colors hover:text-[var(--accent)]"
+          >
+            <link.Icon aria-hidden="true" /> {link.label} <FiArrowUpRight aria-hidden="true" className="text-[var(--text-dim)]" />
+          </a>
+        ))}
+      </div>
 
+      <div className="mt-24 flex flex-col items-center justify-between gap-2 border-t border-[var(--border-subtle)] pt-8 text-sm text-[var(--text-muted)] md:flex-row">
+        <span>© {new Date().getFullYear()} Saviyo George</span>
+        <span>Based in Kerala, India</span>
       </div>
     </section>
   );
 }
-
-// Contact Detail Component
-const ContactDetail = ({ title, value, type }) => {
-  const [copied, setCopied] = useState(false);
-  const href = type === 'email' ? `mailto:${value}` : `tel:${value.replace(/\s+/g, '')}`;
-  
-  const copy = (e) => {
-    e.preventDefault();
-    navigator.clipboard.writeText(value);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
-  return (
-    <div className="flex flex-col gap-4 group">
-      <span className="font-mono text-sm uppercase tracking-[0.2em] text-[var(--text-muted)]">
-        {title}
-      </span>
-      
-      <div className="flex flex-col gap-4">
-        <a 
-          href={href}
-          className="text-xl min-[400px]:text-2xl md:text-4xl lg:text-5xl font-['Anton'] tracking-wide text-[var(--text-main)] group-hover:text-[var(--accent)] transition-colors inline-flex items-center gap-4 break-words max-w-full"
-        >
-          {value}
-          <div className="hidden md:flex w-12 h-12 rounded-full border border-[var(--border-subtle)] items-center justify-center opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 group-hover:border-[var(--accent)] transition-all duration-300 shrink-0">
-            <FiArrowUpRight className="text-xl" />
-          </div>
-        </a>
-        
-        <button 
-          onClick={copy}
-          className="w-max flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--bg-elevated)] border border-[var(--border-subtle)] font-mono text-[10px] uppercase tracking-widest text-[var(--text-muted)] hover:text-[var(--text-main)] hover:border-[var(--text-muted)] transition-all"
-        >
-          {copied ? (
-            <>
-              <FiCheck className="text-[#39ff88] text-sm" /> 
-              <span className="text-[#39ff88]">Copied</span>
-            </>
-          ) : (
-            <>
-              <FiCopy className="text-sm" /> 
-              <span>Copy</span>
-            </>
-          )}
-        </button>
-      </div>
-    </div>
-  );
-};
-
-export default Contact;

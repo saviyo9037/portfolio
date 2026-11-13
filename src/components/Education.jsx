@@ -1,67 +1,70 @@
 import React from "react";
-import { FaGraduationCap, FaUniversity } from "react-icons/fa";
-import { FiCalendar, FiMapPin, FiAward } from "react-icons/fi";
+import { FiAward, FiCalendar, FiMapPin } from "react-icons/fi";
+
+const ACCENT = "#ff8a1f";
 
 export default function Education() {
   return (
-    <section id="education" className="relative w-full max-w-7xl mx-auto px-4 md:px-6 py-12 md:py-16 text-[var(--text-main)] transition-colors duration-300">
-
-      {/* ================= SECTION HEADER ================= */}
-      <div className="flex items-baseline gap-4 mb-8 md:mb-10 border-b border-[var(--border-subtle)] pb-4">
-        <span className="section-label">[04]</span>
-        <h2 className="font-['Anton'] text-5xl md:text-6xl uppercase tracking-tight">
-          <span className="text-amber-500" style={{ textShadow: "0 0 20px rgba(245,158,11,0.4)" }}>ACADEMIC</span>{" "}
-          <span className="text-[var(--text-main)]">BACKGROUND</span>
+    <section id="education" className="mx-auto w-full max-w-[1680px] px-5 py-14 md:px-8 md:py-20">
+      <div className="mb-8">
+        <p className="m-0 text-sm font-semibold uppercase tracking-[0.2em]" style={{ color: ACCENT }}>
+          Education
+        </p>
+        <h2
+          className="mb-0 mt-3 text-2xl font-extrabold tracking-tight text-[var(--text-main)] md:text-3xl"
+          style={{ fontFamily: "'Inter', sans-serif", textTransform: "none" }}
+        >
+          Academic Background
         </h2>
       </div>
 
-      {/* ================= COMPACT CONTENT ================= */}
-      <div className="max-w-4xl mx-auto rounded-3xl bg-[var(--card-bg)] border border-[var(--card-border)] shadow-xl p-6 md:p-8 backdrop-blur-xl hover:border-amber-500/30 transition-all duration-300 group">
+      {/* Three panels divided by hairlines (gap-px shows the background colour through) */}
+      <div className="grid gap-px overflow-hidden rounded-2xl border border-[var(--border-subtle)] bg-[var(--border-subtle)] md:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
+        <div className="flex flex-col gap-6 bg-[var(--bg-surface)] p-6 md:p-8">
+          <span
+            className="w-max rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-black"
+            style={{ backgroundColor: ACCENT }}
+          >
+            Undergraduate Degree
+          </span>
+          <h3
+            className="m-0 text-xl font-bold leading-snug text-[var(--text-main)] md:text-2xl"
+            style={{ fontFamily: "'Inter', sans-serif", textTransform: "none" }}
+          >
+            Bachelor of Computer Applications (BCA)
+          </h3>
+          <ul className="m-0 flex list-none flex-col gap-2 p-0 text-sm text-[var(--text-muted)]">
+            <li className="flex items-center gap-2">
+              <FiAward aria-hidden="true" style={{ color: ACCENT }} /> Sree Sabareesa College
+            </li>
+            <li className="flex items-center gap-2">
+              <FiMapPin aria-hidden="true" style={{ color: ACCENT }} /> MG University, Kerala
+            </li>
+          </ul>
+        </div>
 
-        <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
+        <div className="flex flex-col justify-center gap-4 bg-[var(--bg-surface)] p-6 md:p-8">
+          <p className="m-0 text-xs font-semibold uppercase tracking-[0.14em] text-[var(--text-dim)]">
+            Graduated with
+          </p>
+          <p
+            className="m-0 text-lg font-bold text-[var(--text-main)]"
+            style={{ fontFamily: "'Inter', sans-serif", textTransform: "none" }}
+          >
+            First Class Distinction
+          </p>
+          <p className="m-0 text-sm leading-relaxed text-[var(--text-muted)]">
+            Software engineering, object-oriented programming, data structures, and database management systems.
+          </p>
+        </div>
 
-          <div className="flex-1">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-[10px] font-mono text-amber-500 uppercase tracking-wider mb-5 font-bold shadow-sm">
-              <FaGraduationCap className="text-sm" />
-              <span>Undergraduate Degree</span>
-            </div>
-
-            <h3 className="font-['Anton'] text-3xl sm:text-4xl text-[var(--text-main)] tracking-tight leading-tight mb-3">
-              Bachelor of Computer Applications (BCA)
-            </h3>
-
-            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 font-mono text-[11px] md:text-xs text-[var(--text-muted)] mb-6">
-              <div className="flex items-center gap-1.5">
-                <FaUniversity className="text-amber-500 text-sm" />
-                <span>Sree Sabareesa College</span>
-              </div>
-              <span className="hidden sm:inline opacity-30">|</span>
-              <div className="flex items-center gap-1.5">
-                <FiMapPin className="text-amber-500 text-sm" />
-                <span>MG University, Kerala</span>
-              </div>
-            </div>
-
-            <p className="text-sm text-[var(--text-muted)] font-sans leading-relaxed max-w-2xl border-l-2 border-amber-500 pl-4 py-1.5 italic bg-[var(--badge-bg)] rounded-r-lg shadow-sm">
-              "Graduated with First Class Distinction. Intensive program covering software engineering, object-oriented programming, data structures, and database management systems."
-            </p>
-          </div>
-
-          <div className="flex flex-row md:flex-col gap-3 shrink-0 border-t md:border-t-0 md:border-l border-[var(--border-subtle)] pt-5 md:pt-0 md:pl-6">
-            <div className="flex items-center gap-3 font-mono text-xs text-[var(--text-main)]">
-              <div className="w-8 h-8 rounded-lg bg-[var(--badge-bg)] border border-[var(--badge-border)] flex items-center justify-center shadow-sm">
-                <FiCalendar className="text-amber-500 text-sm" />
-              </div>
-              <span className="font-semibold tracking-wide">2021 — 2024</span>
-            </div>
-            <div className="flex items-center gap-3 font-mono text-[10px] text-orange-500">
-              <div className="w-8 h-8 rounded-lg bg-orange-500/10 border border-orange-500/20 flex items-center justify-center shadow-sm">
-                <FiAward className="text-orange-500 text-sm" />
-              </div>
-              <span className="font-bold tracking-widest uppercase">Verified</span>
-            </div>
-          </div>
-
+        <div className="flex flex-row flex-wrap items-center justify-between gap-4 bg-[var(--bg-surface)] p-6 md:col-span-2 md:p-8">
+          <span className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--text-main)]">
+            <FiCalendar aria-hidden="true" style={{ color: ACCENT }} /> 2021 — 2024
+          </span>
+          <span className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">
+            <span className="h-2 w-2 rounded-full bg-emerald-400" aria-hidden="true" /> Verified
+          </span>
         </div>
       </div>
     </section>

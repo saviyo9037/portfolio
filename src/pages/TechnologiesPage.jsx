@@ -38,7 +38,7 @@ export default function TechnologiesPage() {
     <div className="relative min-h-dvh bg-transparent text-[var(--text-main)]">
       <Navbar />
 
-      <main className="mx-auto w-full max-w-[1400px] px-4 pb-24 pt-32 md:px-8 md:pt-40">
+      <main className="mx-auto w-full max-w-[1680px] px-4 pb-24 pt-32 md:px-8 md:pt-40">
         <Link
           to="/"
           className="mb-10 inline-flex items-center gap-2 text-sm text-[var(--text-muted)] transition-colors hover:text-[var(--text-main)]"

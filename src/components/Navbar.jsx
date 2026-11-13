@@ -125,7 +125,7 @@ export default function Navbar() {
           style={{ opacity: scrolled ? 1 : 0 }}
         />
 
-        <div className="relative z-10 mx-auto flex h-20 max-w-[1400px] items-center justify-between gap-6 px-5 sm:px-8">
+        <div className="relative z-10 mx-auto flex h-20 max-w-[1680px] items-center justify-between gap-6 px-5 sm:px-8">
           {/* Brand badge */}
           <button
             type="button"

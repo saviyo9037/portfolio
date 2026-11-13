@@ -65,7 +65,7 @@ export default function Introduction() {
   };
 
   return (
-    <section className="mx-auto w-full max-w-[1340px] px-5 pb-16 pt-28 md:px-8">
+    <section className="mx-auto w-full max-w-[1680px] px-5 pb-16 pt-28 md:px-8">
       <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,1.12fr)_minmax(0,0.88fr)] lg:gap-6">
         {/* Left: copy */}
         <div>
