@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Anton&family=Caveat:wght@600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=UnifrakturCook:wght@700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Anton&family=Caveat:wght@600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=UnifrakturCook:wght@700&display=swap');
 
 @import "tailwindcss";
 
@@ -158,8 +158,8 @@ h6 {
 }
 
 ::selection {
-  background: #6366f1;
-  color: #ffffff;
+  background: #ff8a1f;
+  color: #000000;
 }
 
 /* ===== VIBRANT LIGHT THEME TYPOGRAPHY ===== */
@@ -291,7 +291,7 @@ h6 {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #39ff88;
+  background: #ff8a1f;
 }
 
 /* ===== LAYOUT ===== */
