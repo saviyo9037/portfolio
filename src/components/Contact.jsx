@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Magnetic } from "./motion/effects";
 import { FiArrowUpRight, FiCopy, FiCheck, FiGithub, FiLinkedin, FiMail, FiPhone } from "react-icons/fi";
 
-const ACCENT = "#ff8a1f";
+const ACCENT = "#ffc933";
 const EMAIL = "saviyogeorge903734@gmail.com";
 const PHONE = "+91 9037 348 073";
 
@@ -25,7 +25,7 @@ function CopyPill(props) {
       type="button"
       onClick={copy}
       aria-label={`Copy ${label}`}
-      className="inline-flex items-center gap-2 rounded-full border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-5 py-3 text-sm font-semibold text-[var(--text-main)] transition-colors hover:border-[#ff8a1f]"
+      className="inline-flex items-center gap-2 rounded-full border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-5 py-3 text-sm font-semibold text-[var(--text-main)] transition-colors hover:border-[#ffc933]"
     >
       {copied ? <FiCheck aria-hidden="true" style={{ color: ACCENT }} /> : <props.pill.Icon aria-hidden="true" />}
       {copied ? "Copied" : `Copy ${label}`}

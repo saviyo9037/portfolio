@@ -1,17 +1,17 @@
 import React from "react";
 import { FiAward, FiCalendar, FiMapPin } from "react-icons/fi";
 
-const ACCENT = "#ff8a1f";
+const ACCENT = "#ffc933";
 
 export default function Education() {
   return (
     <section id="education" className="mx-auto w-full max-w-[1680px] px-5 py-14 md:px-8 md:py-20">
       <div className="mb-8">
-        <p className="m-0 text-sm font-semibold uppercase tracking-[0.2em]" style={{ color: ACCENT }}>
+        <p className="m-0 text-xs font-semibold uppercase tracking-[0.32em]" style={{ color: ACCENT }}>
           Education
         </p>
         <h2
-          className="mb-0 mt-3 text-2xl font-extrabold tracking-tight text-[var(--text-main)] md:text-3xl"
+          className="mb-0 mt-3 text-3xl font-extrabold tracking-tight text-[var(--text-main)] md:text-4xl"
           style={{ fontFamily: "'Inter', sans-serif", textTransform: "none" }}
         >
           Academic Background

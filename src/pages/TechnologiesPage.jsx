@@ -10,9 +10,9 @@ import { mergeProjects } from "../lib/mergeProjects";
 import { buildEvidence, languageCounts } from "../lib/techEvidence";
 import { scrollToId } from "../lib/scroll";
 
-const ACCENT = "#ff8a1f";
+const ACCENT = "#ffc933";
 const focusRing =
-  "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#ff8a1f]";
+  "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#ffc933]";
 
 export default function TechnologiesPage() {
   const { projects: githubProjects, status, error } = useGithubProjects();
@@ -65,7 +65,7 @@ export default function TechnologiesPage() {
 
         <header className="max-w-[60ch]">
           <h1
-            className="m-0 text-4xl font-extrabold leading-tight text-[var(--text-main)] md:text-6xl"
+            className="m-0 text-5xl font-extrabold leading-tight text-[var(--text-main)] md:text-7xl"
             style={{ fontFamily: "'Inter', sans-serif", textTransform: "none", letterSpacing: "-0.03em" }}
           >
             Technologies &amp; Skills
@@ -95,7 +95,7 @@ export default function TechnologiesPage() {
                       aria-current={on ? "true" : undefined}
                       className={`flex items-center justify-between gap-3 whitespace-nowrap rounded-lg lg:whitespace-normal px-3 py-2 text-sm font-semibold transition-colors ${focusRing} ${
                         on
-                          ? "bg-[#ff8a1f]/10 text-[#ff8a1f]"
+                          ? "bg-[#ffc933]/10 text-[#ffc933]"
                           : "text-[var(--text-muted)] hover:text-[var(--text-main)]"
                       }`}
                     >
@@ -114,7 +114,7 @@ export default function TechnologiesPage() {
               <section key={category.id} id={category.id} aria-labelledby={`${category.id}-title`}>
                 <h2
                   id={`${category.id}-title`}
-                  className="m-0 text-2xl font-bold text-[var(--text-main)]"
+                  className="m-0 text-3xl font-bold text-[var(--text-main)]"
                   style={{ fontFamily: "'Inter', sans-serif", textTransform: "none", letterSpacing: "-0.01em" }}
                 >
                   {category.title}

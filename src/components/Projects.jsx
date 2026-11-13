@@ -12,7 +12,7 @@ import {
 } from "../lib/mergeProjects";
 import ProjectControls from "./ProjectControls";
 
-const ACCENT = "#ff8a1f";
+const ACCENT = "#ffc933";
 
 const FILTERS = [
   { key: PROJECT_CATEGORIES.COMPANY, label: "Company" },
@@ -86,7 +86,7 @@ export default function Projects() {
       <div className="flex flex-col gap-6 px-5 md:flex-row md:items-end md:justify-between md:px-8">
         <div>
           <h2
-            className="m-0 text-3xl font-extrabold tracking-tight text-[var(--text-main)] md:text-4xl"
+            className="m-0 text-4xl font-extrabold tracking-tight text-[var(--text-main)] md:text-5xl"
             style={{ fontFamily: "'Inter', sans-serif", textTransform: "none" }}
           >
             Projects
@@ -107,7 +107,7 @@ export default function Projects() {
                 type="button"
                 aria-pressed={on}
                 onClick={() => setCategory(f.key)}
-                className={`relative rounded-lg px-4 py-2 text-sm font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ff8a1f] ${
+                className={`relative rounded-lg px-4 py-2 text-sm font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ffc933] ${
                   on ? "text-black" : "text-[var(--text-muted)] hover:text-[var(--text-main)]"
                 }`}
               >
@@ -201,7 +201,7 @@ export default function Projects() {
           <button
             type="button"
             onClick={() => setShowAll(true)}
-            className="inline-flex items-center gap-2 rounded-full border border-[var(--border-subtle)] px-6 py-3 text-sm font-semibold text-[var(--text-main)] transition-colors hover:border-[#ff8a1f]/60"
+            className="inline-flex items-center gap-2 rounded-full border border-[var(--border-subtle)] px-6 py-3 text-sm font-semibold text-[var(--text-main)] transition-colors hover:border-[#ffc933]/60"
           >
             Show all {matches.length} projects <FiArrowUpRight aria-hidden="true" />
           </button>
@@ -360,7 +360,7 @@ function Carousel({ items }) {
         type="button"
         onClick={() => scrollBy(-1)}
         aria-label="Previous project"
-        className="absolute left-3 top-1/2 z-[200] flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-[var(--border-subtle)] bg-[var(--bg-surface)] text-[var(--text-main)] transition-colors hover:border-[#ff8a1f] md:left-6"
+        className="absolute left-3 top-1/2 z-[200] flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-[var(--border-subtle)] bg-[var(--bg-surface)] text-[var(--text-main)] transition-colors hover:border-[#ffc933] md:left-6"
       >
         <FiArrowLeft aria-hidden="true" />
       </button>
@@ -368,7 +368,7 @@ function Carousel({ items }) {
         type="button"
         onClick={() => scrollBy(1)}
         aria-label="Next project"
-        className="absolute right-3 top-1/2 z-[200] flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-[var(--border-subtle)] bg-[var(--bg-surface)] text-[var(--text-main)] transition-colors hover:border-[#ff8a1f] md:right-6"
+        className="absolute right-3 top-1/2 z-[200] flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-[var(--border-subtle)] bg-[var(--bg-surface)] text-[var(--text-main)] transition-colors hover:border-[#ffc933] md:right-6"
       >
         <FiArrowRight aria-hidden="true" />
       </button>
@@ -395,7 +395,7 @@ function hostOf(url) {
 }
 
 const focusRing =
-  "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ff8a1f]";
+  "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ffc933]";
 
 // Tilts the card a few degrees toward the pointer. Mouse only, and not for reduced motion.
 function tilt(e) {
@@ -422,7 +422,7 @@ function ProjectCard({ project: p }) {
     <li
       onMouseMove={tilt}
       onMouseLeave={untilt}
-      className="group -ml-16 will-change-transform flex w-[340px] shrink-0 flex-col first:ml-0 overflow-hidden rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] transition-[transform,border-color] duration-200 hover:border-[#ff8a1f] sm:w-[400px]"
+      className="group -ml-16 will-change-transform flex w-[340px] shrink-0 flex-col first:ml-0 overflow-hidden rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] transition-[transform,border-color] duration-200 hover:border-[#ffc933] sm:w-[400px]"
     >
       {/* Title bar */}
       <div className="flex items-center gap-2 border-b border-[var(--border-subtle)] bg-[var(--bg-elevated)] px-3 py-2">
@@ -473,7 +473,7 @@ function ProjectCard({ project: p }) {
             {tags.slice(0, 3).map((t) => (
               <li
                 key={t}
-                className="rounded-full bg-[#ff8a1f]/10 px-2.5 py-1 text-xs font-semibold text-[#ff8a1f]"
+                className="rounded-full bg-[#ffc933]/10 px-2.5 py-1 text-xs font-semibold text-[#ffc933]"
               >
                 {t}
               </li>
@@ -499,7 +499,7 @@ function ProjectCard({ project: p }) {
               href={repo}
               target="_blank"
               rel="noreferrer"
-              className={`inline-flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-[var(--border-subtle)] px-3 py-2.5 text-sm font-semibold text-[var(--text-main)] transition-colors hover:border-[#ff8a1f] ${focusRing}`}
+              className={`inline-flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-[var(--border-subtle)] px-3 py-2.5 text-sm font-semibold text-[var(--text-main)] transition-colors hover:border-[#ffc933] ${focusRing}`}
             >
               View project <FiArrowUpRight aria-hidden="true" />
               <span className="sr-only"> for {p.title} on GitHub (opens in a new tab)</span>

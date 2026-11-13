@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FiX, FiMenu, FiArrowRight, FiCpu } from "react-icons/fi";
 import { useLocation, useNavigate } from "react-router-dom";
 
-const ACCENT = "#ff8a1f";
+const ACCENT = "#ffc933";
 
 // Section ids on the home page. "technologies" is its own page at /skills.
 const NAV_ITEMS = [
@@ -83,7 +83,7 @@ export default function Navbar() {
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, delay: 0.05, ease: [0.22, 1, 0.36, 1] }}
       >
-        <div className="relative z-10 mx-auto flex h-16 max-w-[1280px] items-center justify-between gap-3 rounded-full border border-white/10 bg-[#0b0e13]/70 py-2 pl-3 pr-2 shadow-[0_14px_30px_-14px_rgba(0,0,0,0.9)] backdrop-blur-xl sm:pl-4">
+        <div className="relative z-10 mx-auto flex h-16 max-w-[1280px] items-center justify-between gap-3 rounded-full border border-white/10 bg-[#222222]/70 py-2 pl-3 pr-2 shadow-[0_14px_30px_-14px_rgba(0,0,0,0.9)] backdrop-blur-xl sm:pl-4">
           {/* Brand badge */}
           <button
             type="button"
@@ -115,7 +115,7 @@ export default function Navbar() {
                     item.id === "technologies"
                       ? isActive
                         ? "border border-dashed border-transparent font-semibold text-black"
-                        : "border border-dashed border-[#ff8a1f] font-semibold text-[#ff8a1f] hover:bg-[#ff8a1f]/15"
+                        : "border border-dashed border-[#ffc933] font-semibold text-[#ffc933] hover:bg-[#ffc933]/15"
                       : isActive
                         ? "font-semibold text-black"
                         : "text-[var(--text-muted)] hover:text-[var(--text-main)]"
@@ -206,7 +206,7 @@ export default function Navbar() {
                         item.id === "technologies"
                           ? isActive
                             ? "border border-dashed border-transparent font-semibold text-black"
-                            : "border border-dashed border-[#ff8a1f] font-semibold text-[#ff8a1f] hover:bg-[#ff8a1f]/15"
+                            : "border border-dashed border-[#ffc933] font-semibold text-[#ffc933] hover:bg-[#ffc933]/15"
                           : isActive
                             ? "font-semibold text-black"
                             : "text-[var(--text-main)] hover:bg-[var(--bg-surface)]"

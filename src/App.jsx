@@ -103,7 +103,7 @@ function App() {
 
       {/* Top Reading Progress Bar with Neon Gradient */}
       <motion.div
-        className="fixed top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-orange-400 via-amber-400 to-orange-600 origin-left z-[100] shadow-[0_0_12px_rgba(255,138,31,0.8)]"
+        className="fixed top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-yellow-400 via-yellow-400 to-yellow-400 origin-left z-[100] shadow-[0_0_12px_rgba(255, 201, 51,0.8)]"
         style={{ scaleX }}
       />
 

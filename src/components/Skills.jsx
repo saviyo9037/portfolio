@@ -135,7 +135,7 @@ const Cover = () => (
       <h4 className="font-['Anton'] text-5xl lg:text-6xl uppercase leading-[0.95] tracking-wide" style={{ color: "#ffffff" }}>
         THE
         <br />
-        <span className="text-amber-500">DEVELOPER</span>
+        <span className="text-yellow-400">DEVELOPER</span>
         <br />
         <span className="text-transparent" style={{ WebkitTextStroke: "1px #ffffff" }}>GAZETTE</span>
       </h4>
@@ -247,7 +247,7 @@ export default function Skills() {
       <div className="flex items-baseline gap-4 mb-6 border-b border-[var(--border-subtle)] pb-4">
         <span className="section-label">[03]</span>
         <h2 className="font-['Anton'] text-5xl md:text-7xl uppercase tracking-tight">
-          <span className="text-amber-500" style={{ textShadow: "0 0 20px rgba(245,158,11,0.4)" }}>THE DEVELOPER</span>{" "}
+          <span className="text-yellow-400" style={{ textShadow: "0 0 20px rgba(245,158,11,0.4)" }}>THE DEVELOPER</span>{" "}
           <span className="text-[var(--text-main)]">GAZETTE</span>
         </h2>
       </div>

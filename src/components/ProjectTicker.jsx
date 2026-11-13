@@ -152,7 +152,7 @@ function TickerCard({ project, index, onViewImage }) {
   const gradients = [
     "from-purple-600/40 to-indigo-600/40",
     "from-cyan-600/40 to-blue-600/40",
-    "from-amber-600/40 to-orange-600/40",
+    "from-yellow-400/40 to-yellow-400/40",
     "from-emerald-600/40 to-teal-600/40",
     "from-rose-600/40 to-pink-600/40",
   ];

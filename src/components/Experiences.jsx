@@ -2,7 +2,7 @@ import React from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { experience } from "../data/experience";
 
-const ACCENT = "#ff8a1f";
+const ACCENT = "#ffc933";
 
 const jobs = experience.filter((item) => item.type === "work");
 
@@ -14,7 +14,7 @@ export default function Experiences() {
         {/* Sticky intro */}
         <aside className="lg:col-span-4">
           <div className="lg:sticky lg:top-28">
-            <p className="m-0 text-sm font-semibold uppercase tracking-[0.2em]" style={{ color: ACCENT }}>
+            <p className="m-0 text-xs font-semibold uppercase tracking-[0.32em]" style={{ color: ACCENT }}>
               Experience
             </p>
             <h2

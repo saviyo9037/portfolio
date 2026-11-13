@@ -4,7 +4,7 @@ import { FiArrowRight, FiDownload, FiLayers, FiBriefcase, FiCode } from "react-i
 import { scrollToId } from "../lib/scroll";
 import { FocusLine, CountUp, Magnetic, Float } from "./motion/effects";
 
-const ACCENT = "#ff8a1f";
+const ACCENT = "#ffc933";
 
 const STATS = [
   { Icon: FiLayers, value: "4+", label: "Projects" },
@@ -13,7 +13,7 @@ const STATS = [
 ];
 
 const focusRing =
-  "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#ff8a1f]";
+  "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#ffc933]";
 
 export default function Introduction() {
   const goTo = (id) => (e) => {
@@ -29,10 +29,14 @@ export default function Introduction() {
         <img
           src={heroScene}
           alt="Saviyo George at a laptop, with a code card and the React, Node.js, MongoDB, Express and Tailwind logos"
-          className="h-full w-full select-none object-cover object-[left_bottom] lg:object-[left_center]"
+          className="h-full w-full select-none [filter:hue-rotate(14deg)_saturate(1.05)] object-cover object-[left_bottom] lg:object-[left_center]"
           style={{
-            maskImage: "linear-gradient(to right, transparent 0%, #000 22%)",
-            WebkitMaskImage: "linear-gradient(to right, transparent 0%, #000 22%)",
+            maskImage:
+              "linear-gradient(to right, transparent 0%, #000 22%), linear-gradient(to bottom, transparent 0%, #000 10%, #000 86%, transparent 100%)",
+            maskComposite: "intersect",
+            WebkitMaskImage:
+              "linear-gradient(to right, transparent 0%, #000 22%), linear-gradient(to bottom, transparent 0%, #000 10%, #000 86%, transparent 100%)",
+            WebkitMaskComposite: "source-in",
           }}
         />
         </Float>
@@ -97,7 +101,7 @@ export default function Introduction() {
             <a
               href="/Saviyo_George_Resume.pdf"
               download
-              className={`inline-flex items-center gap-3 rounded-xl border border-[var(--text-dim)] px-7 py-4 text-base font-semibold text-[var(--text-main)] transition-colors hover:border-[#ff8a1f] ${focusRing}`}
+              className={`inline-flex items-center gap-3 rounded-xl border border-[var(--text-dim)] px-7 py-4 text-base font-semibold text-[var(--text-main)] transition-colors hover:border-[#ffc933] ${focusRing}`}
             >
               <FiDownload aria-hidden="true" /> Download Resume
             </a>
