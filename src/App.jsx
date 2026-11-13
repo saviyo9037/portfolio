@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, useRef } from 'react'
 import { motion, AnimatePresence, useScroll, useSpring } from 'framer-motion'
 import { Routes, Route, useLocation } from 'react-router-dom'
 import Lenis from 'lenis'
@@ -11,13 +11,28 @@ import Chatbot from './components/Chatbot'
 import ThemeSwitcher from './components/ThemeSwitcher'
 import Preloader from './components/Preloader'
 
-// New page: start at the top. Home with a #section: jump to that section.
+// The first load always opens at the top, even if the address carries a #section or the
+// browser remembers an old scroll position. After that, a new page starts at the top and
+// a link to a #section on Home jumps to that section.
 function ScrollManager() {
   const { pathname, hash } = useLocation()
+  const firstLoad = useRef(true)
 
   useEffect(() => {
+    if ('scrollRestoration' in window.history) window.history.scrollRestoration = 'manual'
+  }, [])
+
+  useEffect(() => {
+    const isFirst = firstLoad.current
+    firstLoad.current = false
+
+    if (isFirst && hash) {
+      // Drop the leftover #section from the address so it does not jump back later
+      window.history.replaceState(null, '', pathname + window.location.search)
+    }
+
     const timer = setTimeout(() => {
-      if (hash && scrollToId(hash.slice(1), { immediate: true })) return
+      if (!isFirst && hash && scrollToId(hash.slice(1), { immediate: true })) return
       scrollToTop({ immediate: true })
     }, 60)
     return () => clearTimeout(timer)
@@ -31,6 +46,10 @@ function App() {
 
   const handlePreloaderComplete = useCallback(() => {
     setIsLoading(false)
+    // The page content appears now. Reset to the top once it has laid out (and again a moment
+    // later) so the browser's own jump to a remembered #section or scroll position cannot win.
+    requestAnimationFrame(() => window.scrollTo(0, 0))
+    setTimeout(() => window.scrollTo(0, 0), 250)
   }, [])
 
   // Smooth top reading progress lineu

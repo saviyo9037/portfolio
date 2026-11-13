@@ -122,7 +122,7 @@ export default function Navbar() {
         <div
           aria-hidden="true"
           className="absolute inset-0 border-b border-[var(--border-subtle)] bg-[var(--bg-base)]/90 backdrop-blur-xl transition-opacity duration-300"
-          style={{ opacity: scrolled ? 1 : 0 }}
+          style={{ opacity: 1 }}
         />
 
         <div className="relative z-10 mx-auto flex h-20 max-w-[1680px] items-center justify-between gap-6 px-5 sm:px-8">

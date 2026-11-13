@@ -1,132 +1,117 @@
 import React from "react";
-import { motion, useReducedMotion } from "framer-motion";
-import saviyoCutout from "../assets/saviyo-cutout.png";
-import { FiArrowRight, FiDownload, FiMapPin } from "react-icons/fi";
-import { SiReact, SiNodedotjs, SiTypescript, SiMongodb, SiNextdotjs, SiTailwindcss } from "react-icons/si";
+import heroScene from "../assets/hero-scene.png";
+import { FiArrowRight, FiDownload, FiLayers, FiBriefcase, FiCode } from "react-icons/fi";
 import { scrollToId } from "../lib/scroll";
 
 const ACCENT = "#ff8a1f";
-const DISPLAY = "'Bricolage Grotesque', 'Inter', sans-serif";
 
-const STACK = [
-  { Icon: SiReact, name: "React" },
-  { Icon: SiNodedotjs, name: "Node.js" },
-  { Icon: SiTypescript, name: "TypeScript" },
-  { Icon: SiMongodb, name: "MongoDB" },
-  { Icon: SiNextdotjs, name: "Next.js" },
-  { Icon: SiTailwindcss, name: "Tailwind CSS" },
+const STATS = [
+  { Icon: FiLayers, value: "4+", label: "Projects" },
+  { Icon: FiBriefcase, value: "1.5+ Years", label: "Experience" },
+  { Icon: FiCode, value: "MERN Stack", label: "Specialization" },
 ];
 
 const focusRing =
   "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#ff8a1f]";
 
 export default function Introduction() {
-  const reduce = useReducedMotion();
   const goTo = (id) => (e) => {
     e.preventDefault();
     scrollToId(id);
   };
 
-  // One authored moment: the two name lines rise out of a mask on load
-  const line = (i) => ({
-    initial: reduce ? false : { y: "105%" },
-    animate: { y: 0 },
-    transition: { duration: 0.9, delay: 0.1 + i * 0.12, ease: [0.16, 1, 0.3, 1] },
-  });
-
   return (
-    <section className="relative mx-auto w-full max-w-[1680px] px-5 pt-28 md:px-8 md:pt-32">
-      <div className="grid items-end gap-10 lg:grid-cols-12 lg:gap-6">
-        {/* Name and copy */}
-        <div className="pb-6 lg:col-span-7 lg:pb-16">
+    <section className="relative overflow-hidden">
+      {/* Artwork: you at the laptop, the code card and the tech chips */}
+      <div className="pointer-events-none relative mt-24 lg:absolute lg:bottom-0 lg:right-0 lg:top-20 lg:mt-0 lg:w-[58%]">
+        <img
+          src={heroScene}
+          alt="Saviyo George at a laptop, with a code card and the React, Node.js, MongoDB, Express and Tailwind logos"
+          className="h-full w-full select-none object-cover object-[left_bottom] lg:object-[left_center]"
+          style={{
+            maskImage: "linear-gradient(to right, transparent 0%, #000 22%)",
+            WebkitMaskImage: "linear-gradient(to right, transparent 0%, #000 22%)",
+          }}
+        />
+      </div>
+
+      <div className="relative z-10 mx-auto w-full max-w-[1680px] px-5 pb-16 pt-28 md:px-8 lg:pb-20 lg:pt-36">
+        <div className="lg:w-[52%]">
+          <span className="inline-flex items-center gap-3 rounded-full border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-5 py-3 text-base font-semibold text-[var(--text-main)]">
+            <FiCode aria-hidden="true" style={{ color: ACCENT }} className="text-xl" />
+            Full-Stack Developer
+          </span>
+
           <h1
-            className="m-0 text-[clamp(3.5rem,10.5vw,9.5rem)] font-extrabold leading-[0.86] text-[var(--text-main)]"
-            style={{ fontFamily: DISPLAY, textTransform: "none", letterSpacing: "-0.035em" }}
+            className="mb-0 mt-9 font-bold leading-[1.12] text-[var(--text-main)]"
+            style={{
+              fontFamily: "'Inter', sans-serif",
+              textTransform: "none",
+              letterSpacing: "-0.02em",
+              fontSize: "clamp(2.5rem, 4.6vw, 4.5rem)",
+            }}
           >
-            <span className="block overflow-hidden pb-[0.08em]">
-              <motion.span className="block" {...line(0)}>
-                Saviyo
-              </motion.span>
-            </span>
-            <span className="block overflow-hidden pb-[0.08em]">
-              <motion.span className="block" {...line(1)}>
-                George
-              </motion.span>
+            Building
+            <br />
+            Real-World Solutions
+            <br />
+            with{" "}
+            <span className="relative inline-block" style={{ color: ACCENT }}>
+              MERN Stack
+              <svg
+                aria-hidden="true"
+                viewBox="0 0 260 14"
+                preserveAspectRatio="none"
+                className="absolute -bottom-3 left-0 h-3 w-full"
+                fill="none"
+                stroke={ACCENT}
+                strokeWidth="3"
+                strokeLinecap="round"
+              >
+                <path d="M3 9 C 60 3, 110 12, 170 6" />
+                <path d="M120 11 C 170 6, 215 9, 257 5" />
+              </svg>
             </span>
           </h1>
 
-          <p
-            className="mb-0 mt-8 max-w-[24ch] text-2xl font-bold leading-tight text-[var(--text-main)] md:text-3xl"
-            style={{ fontFamily: DISPLAY, textWrap: "balance" }}
-          >
-            Full-stack developer building software that solves real problems.
+          <p className="mb-0 mt-10 max-w-[44ch] text-lg leading-relaxed text-[var(--text-muted)]">
+            I design and develop production-ready web applications, ERP &amp; POS systems, CRM/LMS platforms and
+            AI-powered tools that solve real business problems.
           </p>
 
-          <p className="mb-0 mt-5 max-w-[60ch] text-lg leading-relaxed text-[var(--text-muted)]">
-            Production-ready web applications, ERP and POS systems, CRM and LMS platforms, AI-powered tools and
-            custom business software.
-          </p>
-
-          <div className="mt-9 flex flex-wrap items-center gap-x-6 gap-y-4">
+          <div className="mt-10 flex flex-wrap items-center gap-4">
             <a
               href="#projects"
               onClick={goTo("projects")}
-              className={`inline-flex items-center gap-2 rounded-xl px-7 py-4 font-bold text-black transition-colors hover:bg-white ${focusRing}`}
+              className={`inline-flex items-center gap-3 rounded-xl px-8 py-4 text-base font-bold text-black transition-colors hover:bg-white ${focusRing}`}
               style={{ backgroundColor: ACCENT }}
             >
-              View my work <FiArrowRight aria-hidden="true" />
+              View Projects <FiArrowRight aria-hidden="true" />
             </a>
             <a
               href="/Saviyo_George_Resume.pdf"
               download
-              className={`inline-flex items-center gap-2 font-semibold text-[var(--text-main)] underline decoration-[var(--border-subtle)] decoration-2 underline-offset-8 transition-colors hover:decoration-[#ff8a1f] ${focusRing}`}
+              className={`inline-flex items-center gap-3 rounded-xl border border-[var(--text-dim)] px-7 py-4 text-base font-semibold text-[var(--text-main)] transition-colors hover:border-[#ff8a1f] ${focusRing}`}
             >
-              <FiDownload aria-hidden="true" /> Download resume
+              <FiDownload aria-hidden="true" /> Download Resume
             </a>
           </div>
-        </div>
 
-        {/* Portrait: the head breaks out above a solid block */}
-        <div className="relative mx-auto w-full max-w-[520px] lg:col-span-5 lg:max-w-none">
-          <div
-            aria-hidden="true"
-            className="absolute inset-x-[6%] bottom-0 top-[22%] rounded-2xl"
-            style={{ backgroundColor: ACCENT }}
-          />
-          <motion.img
-            src={saviyoCutout}
-            alt="Portrait of Saviyo George"
-            initial={reduce ? false : { opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
-            className="relative mx-auto block h-auto w-[92%] select-none object-contain"
-          />
+          <ul className="m-0 mt-12 flex list-none flex-wrap items-center gap-y-6 p-0">
+            {STATS.map((s, i) => (
+              <li
+                key={s.label}
+                className={`flex items-center gap-4 pr-8 ${i > 0 ? "sm:border-l sm:border-[var(--border-subtle)] sm:pl-8" : ""}`}
+              >
+                <s.Icon aria-hidden="true" className="text-4xl" style={{ color: ACCENT }} />
+                <div>
+                  <p className="m-0 text-xl font-bold text-[var(--text-main)]">{s.value}</p>
+                  <p className="m-0 text-[var(--text-muted)]">{s.label}</p>
+                </div>
+              </li>
+            ))}
+          </ul>
         </div>
-      </div>
-
-      {/* Facts as plain text, one line each */}
-      <div className="grid gap-6 border-t border-[var(--border-subtle)] py-8 md:grid-cols-12 md:items-center">
-        <p className="m-0 flex flex-wrap items-center gap-x-6 gap-y-2 text-[var(--text-muted)] md:col-span-6">
-          <span className="inline-flex items-center gap-2 font-semibold text-[var(--text-main)]">
-            <span className="relative flex h-2 w-2" aria-hidden="true">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60 motion-reduce:animate-none" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
-            </span>
-            Available for work
-          </span>
-          <span>Developer at D3innovatives</span>
-          <span className="inline-flex items-center gap-1.5">
-            <FiMapPin aria-hidden="true" /> Kerala, India
-          </span>
-        </p>
-        <ul className="m-0 flex list-none flex-wrap gap-x-6 gap-y-2 p-0 md:col-span-6 md:justify-end">
-          {STACK.map((t) => (
-            <li key={t.name} className="flex items-center gap-2 text-sm text-[var(--text-muted)]">
-              <t.Icon aria-hidden="true" className="text-base text-[var(--text-main)]" />
-              {t.name}
-            </li>
-          ))}
-        </ul>
       </div>
     </section>
   );
