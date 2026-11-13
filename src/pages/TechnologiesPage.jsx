@@ -1,9 +1,8 @@
-import React, { useEffect, useMemo } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { FiArrowLeft } from "react-icons/fi";
 import Navbar from "../components/Navbar";
-import TechCard from "../components/tech/TechCard";
+import TechRow from "../components/tech/TechRow";
 import { TECHNOLOGIES, TECH_CATEGORIES } from "../data/technologies";
 import { experience } from "../data/experience";
 import { projects as manualProjects } from "../data/projects";
@@ -12,9 +11,13 @@ import { mergeProjects } from "../lib/mergeProjects";
 import { buildEvidence, languageCounts } from "../lib/techEvidence";
 import { scrollToId } from "../lib/scroll";
 
+const ACCENT = "#ff8a1f";
+const focusRing =
+  "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#ff8a1f]";
+
 export default function TechnologiesPage() {
-  const reduceMotion = useReducedMotion();
   const { projects: githubProjects, status, error } = useGithubProjects();
+  const [active, setActive] = useState(TECH_CATEGORIES[0].id);
 
   useEffect(() => {
     const previous = document.title;
@@ -22,6 +25,23 @@ export default function TechnologiesPage() {
     return () => {
       document.title = previous;
     };
+  }, []);
+
+  // Highlight the category currently in view
+  useEffect(() => {
+    const observers = TECH_CATEGORIES.map(({ id }) => {
+      const el = document.getElementById(id);
+      if (!el) return null;
+      const o = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) setActive(id);
+        },
+        { rootMargin: "-20% 0px -65% 0px" }
+      );
+      o.observe(el);
+      return o;
+    });
+    return () => observers.forEach((o) => o?.disconnect());
   }, []);
 
   const allProjects = useMemo(
@@ -35,129 +55,151 @@ export default function TechnologiesPage() {
   const languages = useMemo(() => languageCounts(githubProjects), [githubProjects]);
 
   return (
-    <div className="relative min-h-dvh bg-transparent text-[var(--text-main)]">
+    <div className="relative min-h-dvh text-[var(--text-main)]">
       <Navbar />
 
-      <main className="mx-auto w-full max-w-[1680px] px-4 pb-24 pt-32 md:px-8 md:pt-40">
+      <main className="mx-auto w-full max-w-[1240px] px-5 pb-24 pt-32 md:px-8 md:pt-40">
         <Link
           to="/"
-          className="mb-10 inline-flex items-center gap-2 text-sm text-[var(--text-muted)] transition-colors hover:text-[var(--text-main)]"
+          className={`mb-10 inline-flex items-center gap-2 text-sm text-[var(--text-muted)] transition-colors hover:text-[var(--text-main)] ${focusRing}`}
         >
-          <FiArrowLeft aria-hidden="true" />
-          Back to portfolio
+          <FiArrowLeft aria-hidden="true" /> Back to portfolio
         </Link>
 
-        <header className="mb-12 md:mb-16">
-          <h1 className="m-0 font-['Anton'] text-6xl uppercase leading-none tracking-tight text-[var(--text-main)] md:text-8xl">
+        <header className="max-w-[60ch]">
+          <h1
+            className="m-0 text-4xl font-extrabold leading-tight text-[var(--text-main)] md:text-6xl"
+            style={{ fontFamily: "'Inter', sans-serif", textTransform: "none", letterSpacing: "-0.03em" }}
+          >
             Technologies &amp; Skills
           </h1>
-          <p className="mt-6 max-w-[62ch] text-lg leading-relaxed text-[var(--text-muted)]">
-            The tools I build with, grouped by what they do. Each card shows where I have used
-            the technology, in a job or in a project, rather than a rating.
+          <p className="mb-0 mt-5 text-lg leading-relaxed text-[var(--text-muted)]">
+            The tools I build with. Next to each one is where I have used it, in a job or a project, instead of a
+            rating.
           </p>
-
-          <nav aria-label="Skill categories" className="mt-8 flex flex-wrap gap-x-6 gap-y-3">
-            {TECH_CATEGORIES.map((c) => (
-              <a
-                key={c.id}
-                href={`#${c.id}`}
-                onClick={(e) => {
-                  e.preventDefault();
-                  scrollToId(c.id, { offset: -100 });
-                }}
-                className="border-b border-[var(--border-subtle)] pb-1 text-sm text-[var(--text-muted)] transition-colors hover:border-[var(--accent)] hover:text-[var(--text-main)]"
-              >
-                {c.title}
-              </a>
-            ))}
-          </nav>
         </header>
 
-        <GithubLanguages languages={languages} status={status} error={error} />
+        <LanguageBar languages={languages} status={status} error={error} />
 
-        <div className="space-y-16 md:space-y-24">
-          {TECH_CATEGORIES.map((category) => (
-            <motion.section
-              key={category.id}
-              id={category.id}
-              aria-labelledby={`${category.id}-title`}
-              initial={reduceMotion ? false : { opacity: 0, y: 12 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-60px" }}
-              transition={{ duration: 0.45, ease: [0.25, 1, 0.5, 1] }}
-            >
-              <div className="mb-6 border-b border-[var(--border-subtle)] pb-4">
+        <div className="mt-16 grid grid-cols-[minmax(0,1fr)] gap-10 lg:grid-cols-[15rem_minmax(0,1fr)] lg:gap-16">
+          {/* Category index */}
+          <nav aria-label="Skill categories" className="min-w-0 lg:sticky lg:top-28 lg:self-start">
+            <ul className="m-0 flex list-none gap-2 overflow-x-auto p-0 pb-2 lg:flex-col lg:gap-1 lg:overflow-visible lg:pb-0">
+              {TECH_CATEGORIES.map((c) => {
+                const on = active === c.id;
+                return (
+                  <li key={c.id} className="shrink-0">
+                    <a
+                      href={`#${c.id}`}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        scrollToId(c.id, { offset: -100 });
+                      }}
+                      aria-current={on ? "true" : undefined}
+                      className={`flex items-center justify-between gap-3 whitespace-nowrap rounded-lg lg:whitespace-normal px-3 py-2 text-sm font-semibold transition-colors ${focusRing} ${
+                        on
+                          ? "bg-[#ff8a1f]/10 text-[#ff8a1f]"
+                          : "text-[var(--text-muted)] hover:text-[var(--text-main)]"
+                      }`}
+                    >
+                      {c.title}
+                      <span className="text-xs font-normal opacity-70">{c.items.length}</span>
+                    </a>
+                  </li>
+                );
+              })}
+            </ul>
+          </nav>
+
+          {/* Categories as lists */}
+          <div className="flex min-w-0 flex-col gap-16">
+            {TECH_CATEGORIES.map((category) => (
+              <section key={category.id} id={category.id} aria-labelledby={`${category.id}-title`}>
                 <h2
                   id={`${category.id}-title`}
-                  className="m-0 font-['Anton'] text-3xl uppercase tracking-tight text-[var(--text-main)] md:text-4xl"
+                  className="m-0 text-2xl font-bold text-[var(--text-main)]"
+                  style={{ fontFamily: "'Inter', sans-serif", textTransform: "none", letterSpacing: "-0.01em" }}
                 >
                   {category.title}
                 </h2>
-                <p className="mb-0 mt-2 text-[var(--text-muted)]">{category.description}</p>
-              </div>
-
-              <ul className="m-0 grid list-none grid-cols-1 gap-4 p-0 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                {category.items.map((id) => (
-                  <TechCard key={id} tech={TECHNOLOGIES[id]} evidence={evidence[id]} />
-                ))}
-              </ul>
-            </motion.section>
-          ))}
+                <p className="mb-5 mt-2 text-[var(--text-muted)]">{category.description}</p>
+                <ul className="m-0 list-none border-b border-[var(--border-subtle)] p-0">
+                  {category.items.map((id) => (
+                    <TechRow key={id} tech={TECHNOLOGIES[id]} evidence={evidence[id]} />
+                  ))}
+                </ul>
+              </section>
+            ))}
+          </div>
         </div>
 
         <p className="mb-0 mt-20 max-w-[62ch] text-sm leading-relaxed text-[var(--text-dim)]">
-          Evidence comes from my work experience, my projects and the main language and topics
-          of my public GitHub repositories. A technology without a line under it is one I list
-          but do not have a recorded project for yet.
+          Evidence comes from my work experience, my projects and the main language of my public GitHub repositories.
+          A row marked "No recorded project yet" is something I list but have no project for yet.
         </p>
       </main>
     </div>
   );
 }
 
-function GithubLanguages({ languages, status, error }) {
+// Main language of each public repository, as one proportional bar
+function LanguageBar({ languages, status, error }) {
+  const total = languages.reduce((sum, l) => sum + l.count, 0);
+
   return (
-    <section aria-labelledby="gh-languages-title" className="mb-16 md:mb-20">
+    <section aria-labelledby="gh-languages-title" className="mt-14 max-w-[900px]">
       <h2
         id="gh-languages-title"
-        className="m-0 text-lg font-semibold text-[var(--text-main)]"
-        style={{ fontFamily: "'Inter', sans-serif", textTransform: "none", letterSpacing: "normal", lineHeight: 1.4 }}
+        className="m-0 text-sm font-bold text-[var(--text-main)]"
+        style={{ fontFamily: "'Inter', sans-serif", textTransform: "none", letterSpacing: "normal" }}
       >
         Languages across my GitHub repositories
       </h2>
-      <p className="mb-5 mt-1 max-w-[62ch] text-sm text-[var(--text-dim)]">
-        Counted from the main language of each public project. Appearing here shows what I have
-        written, not how well I know it.
+      <p className="mb-4 mt-1 text-sm text-[var(--text-dim)]">
+        Counted from each public project's main language. It shows what I have written, not how well I know it.
       </p>
 
       <div aria-live="polite">
-        {status === "loading" && (
-          <p className="m-0 inline-flex items-center gap-2 text-sm text-[var(--text-dim)]">
-            <span className="h-2 w-2 animate-pulse rounded-full bg-[var(--accent)]" />
-            Loading GitHub data
-          </p>
-        )}
+        {status === "loading" && <p className="m-0 text-sm text-[var(--text-dim)]">Loading GitHub data…</p>}
         {status === "error" && (
           <p className="m-0 text-sm text-[var(--text-dim)]">
             {error?.rateLimited
-              ? "GitHub's request limit was reached, so this list is unavailable right now."
-              : "Couldn't load GitHub data, so this list is unavailable right now."}
+              ? "GitHub's request limit was reached, so this is unavailable right now."
+              : "Couldn't load GitHub data, so this is unavailable right now."}
           </p>
         )}
         {status === "ready" && languages.length === 0 && (
           <p className="m-0 text-sm text-[var(--text-dim)]">No repositories to count yet.</p>
         )}
-        {languages.length > 0 && (
-          <ul className="m-0 flex list-none flex-wrap gap-3 p-0">
-            {languages.map(({ language, count }) => (
-              <li
-                key={language}
-                className="rounded-full border border-[var(--border-subtle)] bg-[var(--bg-elevated)] px-4 py-1.5 text-sm text-[var(--text-main)]"
-              >
-                {language} <span className="text-[var(--text-dim)]">{count}</span>
-              </li>
-            ))}
-          </ul>
+        {total > 0 && (
+          <>
+            <div className="flex h-3 w-full overflow-hidden rounded-full bg-[var(--bg-surface)]" role="img" aria-label="Share of repositories by main language">
+              {languages.map((l, i) => (
+                <span
+                  key={l.language}
+                  title={`${l.language}: ${l.count}`}
+                  style={{
+                    width: `${(l.count / total) * 100}%`,
+                    backgroundColor: ACCENT,
+                    opacity: Math.max(0.25, 1 - i * 0.18),
+                    borderRight: "2px solid var(--bg-base)",
+                  }}
+                />
+              ))}
+            </div>
+            <ul className="m-0 mt-4 flex list-none flex-wrap gap-x-6 gap-y-2 p-0 text-sm">
+              {languages.map((l, i) => (
+                <li key={l.language} className="flex items-center gap-2 text-[var(--text-muted)]">
+                  <span
+                    aria-hidden="true"
+                    className="h-2.5 w-2.5 rounded-sm"
+                    style={{ backgroundColor: ACCENT, opacity: Math.max(0.25, 1 - i * 0.18) }}
+                  />
+                  {l.language} <span className="text-[var(--text-dim)]">{l.count}</span>
+                </li>
+              ))}
+            </ul>
+          </>
         )}
       </div>
     </section>
