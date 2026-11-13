@@ -1,8 +1,7 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FiX, FiMenu, FiSun, FiMoon, FiArrowRight } from "react-icons/fi";
+import { FiX, FiMenu, FiArrowRight } from "react-icons/fi";
 import { useLocation, useNavigate } from "react-router-dom";
-import { ThemeContext } from "../context/ThemeContext";
 
 const ACCENT = "#ff8a1f";
 
@@ -22,21 +21,12 @@ const SECTION_IDS = ["introduction", "about", "experience", "skills", "projects"
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState("introduction");
-  const { isDark, toggleTheme } = useContext(ThemeContext);
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const onHome = pathname === "/";
 
   const current = pathname === "/skills" ? "technologies" : activeSection;
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
 
   // Highlight the section in view while on the home page
   useEffect(() => {
@@ -84,32 +74,6 @@ export default function Navbar() {
     if (window.__lenis) window.__lenis.scrollTo(el, { offset: -72, duration: 1.2 });
     else el.scrollIntoView({ behavior: "smooth" });
   };
-
-  const ThemeToggle = (
-    <button
-      type="button"
-      onClick={toggleTheme}
-      aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
-      className="flex h-10 items-center gap-1 rounded-full border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-1 transition-colors hover:border-[var(--text-dim)]"
-    >
-      <span
-        className={`flex h-8 w-8 items-center justify-center rounded-full transition-colors ${
-          !isDark ? "text-black" : "text-[var(--text-dim)]"
-        }`}
-        style={!isDark ? { backgroundColor: ACCENT } : undefined}
-      >
-        <FiSun aria-hidden="true" />
-      </span>
-      <span
-        className={`flex h-8 w-8 items-center justify-center rounded-full transition-colors ${
-          isDark ? "text-black" : "text-[var(--text-dim)]"
-        }`}
-        style={isDark ? { backgroundColor: ACCENT } : undefined}
-      >
-        <FiMoon aria-hidden="true" />
-      </span>
-    </button>
-  );
 
   return (
     <>
@@ -168,8 +132,6 @@ export default function Navbar() {
 
           {/* Right actions */}
           <div className="flex shrink-0 items-center gap-3">
-            <div className="hidden sm:block">{ThemeToggle}</div>
-
             <button
               type="button"
               onClick={() => go("contact")}
@@ -246,8 +208,7 @@ export default function Navbar() {
                 })}
               </nav>
 
-              <div className="mt-6 flex items-center justify-between">
-                {ThemeToggle}
+              <div className="mt-6 flex items-center">
                 <button
                   type="button"
                   onClick={() => go("contact")}

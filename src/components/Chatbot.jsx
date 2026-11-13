@@ -38,6 +38,14 @@ function Chatbot() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
+  // The floating button is gone, but the assistant still works. Anything on the page can open it with:
+  //   window.dispatchEvent(new CustomEvent("open-chatbot"))
+  useEffect(() => {
+    const open = () => setIsOpen(true);
+    window.addEventListener("open-chatbot", open);
+    return () => window.removeEventListener("open-chatbot", open);
+  }, []);
+
   useEffect(() => {
     if (isOpen) {
       scrollToBottom();
@@ -150,32 +158,6 @@ function Chatbot() {
 
   return (
     <>
-      {/* Floating Action Button */}
-      <div className="fixed bottom-6 right-6 z-50 flex items-center">
-        <AnimatePresence>
-          {!isOpen && (
-            <motion.button
-              onClick={() => setIsOpen(true)}
-              initial={{ scale: 0, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0, opacity: 0 }}
-              whileHover={{ scale: 1.06 }}
-              whileTap={{ scale: 0.94 }}
-              className="relative flex items-center gap-2.5 bg-[var(--bg-surface)] text-[var(--text-main)] border border-[var(--border-subtle)] hover:border-[var(--text-main)] shadow-2xl px-4 py-3 rounded-full cursor-pointer transition-colors duration-300 group"
-              aria-label="Open Saviyo AI Chat"
-            >
-              <div className="relative">
-                <BsStars className="text-base text-[var(--text-main)] animate-pulse" />
-                <span className="absolute -top-1 -right-1 w-2 h-2 bg-green-400 rounded-full animate-ping" />
-              </div>
-              <span className="text-xs uppercase tracking-widest font-medium hidden sm:inline-block">
-                Ask Saviyo AI
-              </span>
-            </motion.button>
-          )}
-        </AnimatePresence>
-      </div>
-
       {/* Chat Window Modal */}
       <AnimatePresence>
         {isOpen && (

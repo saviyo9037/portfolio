@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
+import { motion } from "framer-motion";
 import { projects as manualProjects, PROJECT_CATEGORIES } from "../data/projects";
 import { FiArrowUpRight, FiArrowLeft, FiArrowRight } from "react-icons/fi";
 import { useGithubProjects } from "../hooks/useGithubProjects";
@@ -90,7 +91,12 @@ export default function Projects() {
           </h2>
         </div>
 
-        <div role="group" aria-label="Filter projects" className="flex flex-wrap gap-2">
+        {/* One track; a single orange highlight slides to the chosen option */}
+        <div
+          role="group"
+          aria-label="Filter projects"
+          className="inline-flex w-max rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-1"
+        >
           {FILTERS.map((f) => {
             const on = category === f.key;
             return (
@@ -99,14 +105,22 @@ export default function Projects() {
                 type="button"
                 aria-pressed={on}
                 onClick={() => setCategory(f.key)}
-                className={`rounded-full border px-4 py-2 text-sm font-semibold transition-colors ${
-                  on
-                    ? "border-transparent text-black"
-                    : "border-[var(--border-subtle)] text-[var(--text-muted)] hover:text-[var(--text-main)]"
+                className={`relative rounded-lg px-4 py-2 text-sm font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ff8a1f] ${
+                  on ? "text-black" : "text-[var(--text-muted)] hover:text-[var(--text-main)]"
                 }`}
-                style={on ? { backgroundColor: ACCENT } : undefined}
               >
-                {f.label} <span className="font-normal opacity-70">{count(f.key)}</span>
+                {on && (
+                  <motion.span
+                    layoutId="projects-filter-thumb"
+                    className="absolute inset-0 rounded-lg"
+                    style={{ backgroundColor: ACCENT }}
+                    transition={{ type: "spring", stiffness: 450, damping: 36 }}
+                  />
+                )}
+                <span className="relative z-10">
+                  {f.label}{" "}
+                  <span className={`font-normal ${on ? "text-black/80" : "text-[var(--text-dim)]"}`}>{count(f.key)}</span>
+                </span>
               </button>
             );
           })}
@@ -116,12 +130,21 @@ export default function Projects() {
       <div className="mt-8 px-5 md:px-8">
         <ProjectControls
           query={query}
-          onQuery={setQuery}
+          onQuery={(v) => {
+          setQuery(v);
+          if (v.trim()) setCategory(PROJECT_CATEGORIES.ALL);
+        }}
           language={language}
-          onLanguage={setLanguage}
+          onLanguage={(v) => {
+          setLanguage(v);
+          if (v) setCategory(PROJECT_CATEGORIES.ALL);
+        }}
           languages={languages}
           sort={sort}
-          onSort={setSort}
+          onSort={(v) => {
+          setSort(v);
+          setCategory(PROJECT_CATEGORIES.ALL);
+        }}
         />
       </div>
 
@@ -253,19 +276,47 @@ function Carousel({ items }) {
   );
 }
 
-// Tall portrait card for the carousel
+// Browser-window card: a title bar with the project's real address, the screenshot, then details
+function hostOf(url) {
+  try {
+    return new URL(url).host.replace(/^www\./, "");
+  } catch {
+    return "";
+  }
+}
+
+const focusRing =
+  "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ff8a1f]";
+
 function ProjectCard({ project: p }) {
   const demo = demoUrl(p);
   const repo = repoUrl(p);
   const tags = (p.tags?.length ? p.tags : (p.tech || "").split(",").map((t) => t.trim()).filter(Boolean)).slice(0, 4);
+  // Live projects show their address; others show where the code lives
+  const address = hostOf(demo) || (repo ? hostOf(repo) + repo.replace(/^https?:\/\/[^/]+/, "") : "private project");
 
   return (
-    <li className="flex w-[300px] shrink-0 flex-col overflow-hidden rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] transition-colors hover:border-[#ff8a1f]/50 sm:w-[340px]">
-      <div className="relative aspect-[4/3] overflow-hidden border-b border-[var(--border-subtle)] bg-[var(--bg-elevated)]">
-        <ProjectImage project={p} />
+    <li className="group flex w-[230px] shrink-0 flex-col overflow-hidden rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] transition-colors duration-300 hover:border-[#ff8a1f] sm:w-[260px]">
+      {/* Title bar */}
+      <div className="flex items-center gap-2 border-b border-[var(--border-subtle)] bg-[var(--bg-elevated)] px-3 py-2">
+        <span className="flex gap-1.5" aria-hidden="true">
+          <span className="h-2 w-2 rounded-full bg-[#ff5f56]" />
+          <span className="h-2 w-2 rounded-full bg-[#ffbd2e]" />
+          <span className="h-2 w-2 rounded-full bg-[#27c93f]" />
+        </span>
+        <span className="min-w-0 flex-1 truncate rounded-md bg-[var(--bg-base)] px-2 py-0.5 text-[10px] text-[var(--text-dim)]">
+          {address}
+        </span>
+      </div>
+
+      {/* Screenshot */}
+      <div className="relative aspect-[16/9] overflow-hidden bg-[var(--bg-elevated)]">
+        <div className="h-full w-full transition-transform duration-500 ease-out group-hover:scale-[1.04]">
+          <ProjectImage project={p} />
+        </div>
         {p.featured && (
           <span
-            className="absolute left-3 top-3 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-black"
+            className="absolute right-2 top-2 rounded px-1.5 py-0.5 text-[10px] font-bold text-black"
             style={{ backgroundColor: ACCENT }}
           >
             Featured
@@ -273,49 +324,64 @@ function ProjectCard({ project: p }) {
         )}
       </div>
 
-      <div className="flex flex-1 flex-col gap-2 p-5">
+      {/* Details */}
+      <div className="flex flex-1 flex-col p-4">
         <h3
-          className="m-0 text-lg font-bold leading-snug text-[var(--text-main)]"
+          className="m-0 text-base font-bold leading-snug text-[var(--text-main)]"
           style={{ fontFamily: "'Inter', sans-serif", textTransform: "none" }}
         >
           {p.title}
         </h3>
-        <p className="m-0 text-xs text-[var(--text-dim)]">
+        <p className="m-0 mt-1 text-xs text-[var(--text-dim)]">
           {p.company || p.language || "Personal"}
           {p.updatedAt && ` · ${formatDate(p.updatedAt)}`}
         </p>
+
         {p.description && (
-          <p className="m-0 line-clamp-2 text-sm leading-relaxed text-[var(--text-muted)]">{p.description}</p>
-        )}
-        {tags.length > 0 && (
-          <p className="m-0 font-mono text-[11px] text-[var(--text-dim)]">{tags.join(" · ")}</p>
+          <p className="m-0 mt-2 line-clamp-2 text-xs leading-relaxed text-[var(--text-muted)]">{p.description}</p>
         )}
 
-        <div className="mt-auto flex flex-wrap gap-x-5 gap-y-1 pt-3 text-sm font-semibold">
+        {tags.length > 0 && (
+          <ul className="m-0 mt-3 flex list-none flex-wrap gap-1 p-0">
+            {tags.slice(0, 3).map((t) => (
+              <li
+                key={t}
+                className="rounded-full bg-[#ff8a1f]/10 px-2 py-0.5 text-[10px] font-semibold text-[#ff8a1f]"
+              >
+                {t}
+              </li>
+            ))}
+          </ul>
+        )}
+
+        <div className="mt-auto flex items-center gap-2 pt-4">
           {demo && (
             <a
               href={demo}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-1 text-[var(--text-main)] transition-colors hover:text-[var(--accent)]"
+              className={`inline-flex flex-1 items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-xs font-bold text-black transition-colors hover:bg-white ${focusRing}`}
+              style={{ backgroundColor: ACCENT }}
             >
               Live demo <FiArrowUpRight aria-hidden="true" />
               <span className="sr-only"> for {p.title} (opens in a new tab)</span>
             </a>
           )}
-          {repo && (
+          {!demo && repo && (
             <a
               href={repo}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-1 text-[var(--text-dim)] transition-colors hover:text-[var(--accent)]"
+              className={`inline-flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-[var(--border-subtle)] px-3 py-2 text-xs font-semibold text-[var(--text-main)] transition-colors hover:border-[#ff8a1f] ${focusRing}`}
             >
-              {demo ? "Code" : "View project"} <FiArrowUpRight aria-hidden="true" />
+              View project <FiArrowUpRight aria-hidden="true" />
               <span className="sr-only"> for {p.title} on GitHub (opens in a new tab)</span>
             </a>
           )}
           {!demo && !repo && (
-            <span className="text-[var(--text-dim)]">{p.private ? "Private repository" : p.cta}</span>
+            <span className="flex-1 rounded-lg border border-dashed border-[var(--border-subtle)] px-3 py-2 text-center text-xs text-[var(--text-dim)]">
+              {p.private ? "Private repository" : p.cta}
+            </span>
           )}
         </div>
       </div>

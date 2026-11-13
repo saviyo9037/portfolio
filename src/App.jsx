@@ -9,7 +9,6 @@ import CustomCursor from './components/CustomCursor'
 // Loaded only when needed, so they stay out of the first download
 const TechnologiesPage = lazy(() => import('./pages/TechnologiesPage'))
 const Chatbot = lazy(() => import('./components/Chatbot'))
-import ThemeSwitcher from './components/ThemeSwitcher'
 import Preloader from './components/Preloader'
 
 // The first load always opens at the top, even if the address carries a #section or the
@@ -120,7 +119,6 @@ function App() {
             </Routes>
             <Chatbot />
           </Suspense>
-          <ThemeSwitcher />
         </motion.div>
       )}
     </div>
