@@ -1,13 +1,14 @@
-import { useEffect, useState, useCallback, useRef } from 'react'
+import { useEffect, useState, useCallback, useRef, lazy, Suspense } from 'react'
 import { motion, AnimatePresence, useScroll, useSpring } from 'framer-motion'
 import { Routes, Route, useLocation } from 'react-router-dom'
 import Lenis from 'lenis'
 import './App.css'
 import Home from './pages/Home'
-import TechnologiesPage from './pages/TechnologiesPage'
 import { scrollToId, scrollToTop } from './lib/scroll'
 import CustomCursor from './components/CustomCursor'
-import Chatbot from './components/Chatbot'
+// Loaded only when needed, so they stay out of the first download
+const TechnologiesPage = lazy(() => import('./pages/TechnologiesPage'))
+const Chatbot = lazy(() => import('./components/Chatbot'))
 import ThemeSwitcher from './components/ThemeSwitcher'
 import Preloader from './components/Preloader'
 
@@ -42,10 +43,22 @@ function ScrollManager() {
 }
 
 function App() {
-  const [isLoading, setIsLoading] = useState(true)
+  // The loading screen plays once per visit; moving between pages or reloading skips it
+  const [isLoading, setIsLoading] = useState(() => {
+    try {
+      return !sessionStorage.getItem('portfolio-seen')
+    } catch {
+      return true
+    }
+  })
 
   const handlePreloaderComplete = useCallback(() => {
     setIsLoading(false)
+    try {
+      sessionStorage.setItem('portfolio-seen', '1')
+    } catch {
+      /* storage unavailable: the loading screen just plays again next time */
+    }
     // The page content appears now. Reset to the top once it has laid out (and again a moment
     // later) so the browser's own jump to a remembered #section or scroll position cannot win.
     requestAnimationFrame(() => window.scrollTo(0, 0))
@@ -98,13 +111,15 @@ function App() {
         {isLoading && <Preloader onComplete={handlePreloaderComplete} />}
       </AnimatePresence>
       {!isLoading && (
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }}>
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.4 }}>
           <ScrollManager />
-          <Routes>
-            <Route path="/skills" element={<TechnologiesPage />} />
-            <Route path="*" element={<Home />} />
-          </Routes>
-          <Chatbot />
+          <Suspense fallback={null}>
+            <Routes>
+              <Route path="/skills" element={<TechnologiesPage />} />
+              <Route path="*" element={<Home />} />
+            </Routes>
+            <Chatbot />
+          </Suspense>
           <ThemeSwitcher />
         </motion.div>
       )}

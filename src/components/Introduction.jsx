@@ -1,5 +1,5 @@
 import React from "react";
-import heroScene from "../assets/hero-scene.png";
+import heroScene from "../assets/hero-scene.webp";
 import { FiArrowRight, FiDownload, FiLayers, FiBriefcase, FiCode } from "react-icons/fi";
 import { scrollToId } from "../lib/scroll";
 

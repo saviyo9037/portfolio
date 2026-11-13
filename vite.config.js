@@ -22,5 +22,19 @@ export default defineConfig(({ mode }) => {
   Object.assign(process.env, loadEnv(mode, process.cwd(), 'GITHUB_'))
   return {
     plugins: [react(), tailwindcss(), githubApi()],
+    build: {
+      rollupOptions: {
+        output: {
+          // Big libraries get their own files: they download in parallel and stay cached between deploys
+          manualChunks(id) {
+            if (!id.includes('node_modules')) return
+            if (id.includes('framer-motion') || id.includes('/motion')) return 'motion'
+            if (id.includes('react-router')) return 'router'
+            if (id.includes('react-icons')) return 'icons'
+            if (id.includes('/react/') || id.includes('/react-dom/') || id.includes('/scheduler/')) return 'react'
+          },
+        },
+      },
+    },
   }
 })

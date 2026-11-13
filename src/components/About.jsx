@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { FiArrowRight, FiAward, FiDatabase, FiCpu, FiDownload, FiMapPin, FiLayers, FiArrowDown } from "react-icons/fi";
 import { SiReact, SiJavascript, SiNodedotjs, SiMongodb, SiTypescript, SiTailwindcss, SiGithub, SiAmazonwebservices } from "react-icons/si";
 import { scrollToId } from "../lib/scroll";
-import aboutLaptop from "../assets/about-laptop.png";
+import aboutLaptop from "../assets/about-laptop.webp";
 
 const ACCENT = "#ff8a1f";
 
