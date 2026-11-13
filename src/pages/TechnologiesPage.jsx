@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { FiArrowLeft } from "react-icons/fi";
-import Navbar from "../components/Navbar";
 import TechRow from "../components/tech/TechRow";
 import { TECHNOLOGIES, TECH_CATEGORIES } from "../data/technologies";
 import { experience } from "../data/experience";
@@ -56,8 +55,6 @@ export default function TechnologiesPage() {
 
   return (
     <div className="relative min-h-dvh text-[var(--text-main)]">
-      <Navbar />
-
       <main className="mx-auto w-full max-w-[1240px] px-5 pb-24 pt-32 md:px-8 md:pt-40">
         <Link
           to="/"

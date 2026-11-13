@@ -1,5 +1,4 @@
 import React from "react";
-import Navbar from "../components/Navbar";
 import Introduction from "../components/Introduction";
 import About from "../components/About";
 import Skills from "../components/Skills";
@@ -16,8 +15,6 @@ function Home() {
       {/* Soft orange light in two corners. Fixed to the viewport, so it never adds scroll width. */}
       <div aria-hidden="true" className="pointer-events-none fixed -left-48 -top-48 z-0 h-[36rem] w-[36rem] rounded-full bg-orange-500/15 blur-[140px]" />
       <div aria-hidden="true" className="pointer-events-none fixed -bottom-48 -right-48 z-0 h-[36rem] w-[36rem] rounded-full bg-orange-500/15 blur-[140px]" />
-
-      <Navbar />
 
       <main className="relative bg-transparent">
         <section id="introduction" className="relative bg-transparent">

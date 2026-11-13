@@ -78,18 +78,12 @@ export default function Navbar() {
   return (
     <>
       <motion.nav
-        className="fixed left-0 right-0 top-0 z-[100]"
+        className="fixed left-0 right-0 top-0 z-[100] px-3 pt-3 sm:px-5 sm:pt-4"
         initial={{ y: -80, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, delay: 0.05, ease: [0.22, 1, 0.36, 1] }}
       >
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 border-b border-[var(--border-subtle)] bg-[var(--bg-base)]/90 backdrop-blur-xl transition-opacity duration-300"
-          style={{ opacity: 1 }}
-        />
-
-        <div className="relative z-10 mx-auto flex h-20 max-w-[1680px] items-center justify-between gap-6 px-5 sm:px-8">
+        <div className="relative z-10 mx-auto flex h-16 max-w-[1280px] items-center justify-between gap-3 rounded-full border border-white/10 bg-[#0b0e13]/70 py-2 pl-3 pr-2 shadow-[0_14px_30px_-14px_rgba(0,0,0,0.9)] backdrop-blur-xl sm:pl-4">
           {/* Brand badge */}
           <button
             type="button"
@@ -97,19 +91,19 @@ export default function Navbar() {
             className="flex shrink-0 items-center gap-3 text-left"
           >
             <span
-              className="flex h-10 w-10 items-center justify-center rounded-lg border-2 text-sm font-extrabold tracking-tight"
+              className="flex h-10 w-10 items-center justify-center rounded-full border-2 text-sm font-extrabold tracking-tight"
               style={{ borderColor: ACCENT, color: ACCENT }}
             >
               SG
             </span>
-            <span className="hidden flex-col leading-tight sm:flex">
+            <span className="hidden flex-col leading-tight xl:flex">
               <span className="text-sm font-bold text-[var(--text-main)]">Saviyo George</span>
               <span className="text-xs text-[var(--text-muted)]">Full-Stack Developer</span>
             </span>
           </button>
 
           {/* Desktop links */}
-          <div className="hidden items-center gap-1 lg:flex">
+          <div className="hidden items-center gap-0.5 rounded-full bg-white/5 p-1 lg:flex">
             {NAV_ITEMS.map((item) => {
               const isActive = current === item.id;
               return (
@@ -117,7 +111,7 @@ export default function Navbar() {
                   key={item.id}
                   type="button"
                   onClick={() => go(item.id)}
-                  className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-4 py-2 text-[15px] transition-colors ${
+                  className={`relative inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-3.5 py-2 text-sm transition-colors ${
                     item.id === "technologies"
                       ? isActive
                         ? "border border-dashed border-transparent font-semibold text-black"
@@ -126,10 +120,19 @@ export default function Navbar() {
                         ? "font-semibold text-black"
                         : "text-[var(--text-muted)] hover:text-[var(--text-main)]"
                   }`}
-                  style={isActive ? { backgroundColor: ACCENT } : undefined}
                 >
-                  {item.id === "technologies" && <FiCpu aria-hidden="true" />}
-                  {item.label}
+                  {isActive && (
+                    <motion.span
+                      layoutId="nav-active-pill"
+                      className="absolute inset-0 rounded-full"
+                      style={{ backgroundColor: ACCENT }}
+                      transition={{ type: "spring", stiffness: 450, damping: 36 }}
+                    />
+                  )}
+                  <span className="relative z-10 inline-flex items-center gap-1.5">
+                    {item.id === "technologies" && <FiCpu aria-hidden="true" />}
+                    {item.label}
+                  </span>
                 </button>
               );
             })}
@@ -140,7 +143,7 @@ export default function Navbar() {
             <button
               type="button"
               onClick={() => go("contact")}
-              className="hidden items-center gap-2 rounded-full border-2 px-5 py-2.5 text-sm font-semibold text-[var(--text-main)] transition-colors hover:text-black md:inline-flex"
+              className="hidden items-center gap-2 rounded-full border-2 px-4 py-2 text-sm font-semibold text-[var(--text-main)] transition-colors hover:text-black md:inline-flex"
               style={{ borderColor: ACCENT }}
               onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = ACCENT)}
               onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
