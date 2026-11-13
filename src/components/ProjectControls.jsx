@@ -2,7 +2,7 @@ import React from "react";
 import { FiSearch, FiX } from "react-icons/fi";
 
 const field =
-  "bg-transparent border-b border-[var(--border-subtle)] text-[var(--text-main)] placeholder:text-[var(--text-dim)] py-2 focus:border-[var(--accent)] outline-none transition-colors";
+  "bg-transparent border-b border-[var(--border-subtle)] text-[var(--text-main)] placeholder:text-[var(--text-dim)] py-1.5 focus:border-[var(--accent)] outline-none transition-colors";
 
 export default function ProjectControls({
   query,
@@ -14,7 +14,7 @@ export default function ProjectControls({
   onSort,
 }) {
   return (
-    <div className="flex flex-col sm:flex-row sm:items-end gap-5 sm:gap-8 mb-10">
+    <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-8 mb-0">
       <label className="relative flex-1 min-w-0">
         <span className="sr-only">Search projects by name</span>
         <FiSearch
@@ -26,7 +26,7 @@ export default function ProjectControls({
           value={query}
           onChange={(e) => onQuery(e.target.value)}
           placeholder="Search projects"
-          className={`${field} w-full pl-7 pr-8 text-base`}
+          className={`${field} w-full pl-7 pr-8 text-sm`}
         />
         {query && (
           <button
@@ -41,11 +41,11 @@ export default function ProjectControls({
       </label>
 
       <label className="flex flex-col gap-1 sm:w-48">
-        <span className="text-sm text-[var(--text-dim)]">Language</span>
+        <span className="sr-only">Language</span>
         <select
           value={language}
           onChange={(e) => onLanguage(e.target.value)}
-          className={`${field} text-base`}
+          className={`${field} text-sm`}
         >
           <option value="" className="bg-[var(--bg-surface)]">
             All languages
@@ -59,11 +59,11 @@ export default function ProjectControls({
       </label>
 
       <label className="flex flex-col gap-1 sm:w-48">
-        <span className="text-sm text-[var(--text-dim)]">Sort by</span>
+        <span className="sr-only">Sort by</span>
         <select
           value={sort}
           onChange={(e) => onSort(e.target.value)}
-          className={`${field} text-base`}
+          className={`${field} text-sm`}
         >
           <option value="updated" className="bg-[var(--bg-surface)]">
             Recently updated
