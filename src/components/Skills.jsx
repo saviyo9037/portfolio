@@ -110,7 +110,7 @@ export default function Skills() {
   }
 
   return (
-    <div ref={ref} aria-label="Capabilities" className="relative h-[320vh]">
+    <div ref={ref} aria-label="Capabilities" className="relative h-[250vh] md:h-[320vh]">
       <div className="sticky top-0 flex h-[100svh] w-full flex-col items-center justify-center overflow-hidden px-4 sm:px-8">
         {heading}
         <ul className={GRID} style={{ perspective: "1000px" }}>

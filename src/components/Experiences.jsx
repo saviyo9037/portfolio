@@ -75,7 +75,7 @@ function PhoneDeck({ jobs: list }) {
   const dots = useTransform(smooth, [0, 1], [0, 1]);
 
   return (
-    <div ref={ref} className="relative mt-8" style={{ height: `${(n - 1) * 70 + 100}svh`, "--deck-card": "min(22rem, 58svh)" }}>
+    <div ref={ref} className="relative mt-8" style={{ height: `${(n - 1) * 55 + 100}svh`, "--deck-card": "min(22rem, 58svh)" }}>
       <div className="sticky top-24" style={{ height: `calc(var(--deck-card) + ${(n - 1) * 0.9}rem)` }}>
         {list.map((job, i) => (
           <DeckCard key={`${job.company}-${job.period}`} job={job} index={i} count={n} progress={smooth} />
@@ -93,7 +93,7 @@ export default function Experiences() {
   const reduce = useReducedMotion();
 
   return (
-    <section className="mx-auto w-full max-w-[1680px] px-5 py-20 md:px-8 md:py-32">
+    <section className="mx-auto w-full max-w-[1680px] px-5 py-12 md:px-8 md:py-32">
       <div className="md:hidden">
         <p className="m-0 text-xs font-semibold uppercase tracking-[0.32em]" style={{ color: ACCENT }}>
           Experience

@@ -364,7 +364,7 @@ export default function Contact() {
   const reduce = useReducedMotion();
 
   return (
-    <section id="contact" className="relative w-full overflow-hidden py-12 md:py-28" style={{ contentVisibility: "auto", containIntrinsicSize: "auto 900px" }}>
+    <section id="contact" className="relative w-full overflow-hidden py-8 md:py-28" style={{ contentVisibility: "auto", containIntrinsicSize: "auto 900px" }}>
       <MobileContact reduce={reduce} />
 
       <div className="mx-auto hidden w-full max-w-[1500px] gap-10 px-5 md:grid md:gap-12 md:px-8 lg:grid-cols-2 lg:gap-16">
@@ -416,7 +416,7 @@ export default function Contact() {
         <ContactForm reduce={reduce} />
       </div>
 
-      <div className="mx-auto mt-14 hidden w-full max-w-[1500px] flex-col items-center justify-between gap-2 border-t border-[var(--border-subtle)] px-5 pt-8 text-sm text-[var(--text-muted)] md:mt-28 md:flex md:flex-row md:px-8">
+      <div className="mx-auto mt-10 hidden w-full max-w-[1500px] flex-col items-center justify-between gap-2 border-t border-[var(--border-subtle)] px-5 pt-8 text-sm text-[var(--text-muted)] md:mt-28 md:flex md:flex-row md:px-8">
         <span>© {new Date().getFullYear()} Saviyo George</span>
         <span>Designed and built in Kerala, India</span>
       </div>

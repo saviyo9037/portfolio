@@ -66,8 +66,8 @@ export default function Education() {
   const done = p >= 1;
 
   return (
-    <section ref={ref} id="education" className="mx-auto w-full max-w-[1680px] px-5 py-14 md:px-8 md:py-24">
-      <div className="mb-10">
+    <section ref={ref} id="education" className="mx-auto w-full max-w-[1680px] px-5 py-10 md:px-8 md:py-24">
+      <div className="mb-7 md:mb-10">
         <p className="m-0 text-xs font-semibold uppercase tracking-[0.32em]" style={{ color: ACCENT }}>
           Education
         </p>

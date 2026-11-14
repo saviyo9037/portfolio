@@ -280,7 +280,7 @@ function PhoneTrack({ featured, onOpen }) {
   const x = useTransform(smooth, [0, 1], [0, -(count - 1) * (cardPx + gapPx)]);
 
   return (
-    <div ref={ref} className="relative mt-6 -mx-5" style={{ height: `${(count - 1) * 70 + 100}svh` }}>
+    <div ref={ref} className="relative mt-6 -mx-5" style={{ height: `${(count - 1) * 55 + 100}svh` }}>
       {/* An invisible element exactly 100svh tall, only to measure the screen */}
       <div ref={probeRef} aria-hidden="true" className="pointer-events-none invisible absolute left-0 top-0 w-px" style={{ height: "100svh" }} />
       <div className="sticky overflow-hidden" style={{ top: TOP_OFFSET, height: `calc(100svh - ${TOP_OFFSET}px)` }}>
@@ -317,7 +317,7 @@ function Showcase({ featured, onOpen }) {
   const slider = !plain && phone && count > 1;
 
   return (
-    <div className="px-5 pb-10 pt-10 sm:px-10">
+    <div className="px-5 pb-6 pt-8 sm:px-10 md:pb-10 md:pt-10">
       <div className="mx-auto w-full lg:w-[min(78vw,1460px)]">
         <p className="m-0 text-sm font-medium" style={{ color: ACCENT }}>
           Selected projects
@@ -543,7 +543,7 @@ function Browser({ list, onOpen }) {
   const shown = showAll || filtering ? matches : matches.slice(0, PAGE);
 
   return (
-    <div className="mx-auto max-w-[1500px] px-5 pb-28 pt-16 sm:px-10">
+    <div className="mx-auto max-w-[1500px] px-5 pb-14 pt-8 sm:px-10 md:pb-28 md:pt-16">
       <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
         <div>
           <h2 className="m-0 text-3xl font-black tracking-tight text-white sm:text-4xl" style={heading}>

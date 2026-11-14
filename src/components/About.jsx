@@ -50,7 +50,7 @@ export default function About() {
   }
 
   return (
-    <div ref={ref} className="relative h-[320vh]">
+    <div ref={ref} className="relative h-[230vh] md:h-[320vh]">
       <div className="sticky top-0 flex h-[100svh] w-full items-center justify-center px-5">
         <div className="mx-auto max-w-3xl text-center">
           <h2
