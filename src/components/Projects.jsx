@@ -257,41 +257,90 @@ function Showcase({ featured, onOpen }) {
 
 /* ---------- All projects as a journey: a glowing zigzag line draws down the page and bends at every project ---------- */
 function JourneyCard({ project: p, index, left, reduce, onOpen }) {
+  const ref = useRef(null);
+  const E = [0.16, 1, 0.3, 1];
+
+  // The screenshot drifts slowly inside its frame as the card passes through the screen
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
+  const drift = useTransform(scrollYProgress, [0, 1], reduce ? ["0%", "0%"] : ["-9%", "9%"]);
+
+  // One observer per card: the card slides in, then its parts follow one after another
+  const card = {
+    hide: { opacity: 0, x: left ? -70 : 70 },
+    show: { opacity: 1, x: 0, transition: { duration: 0.7, ease: E, staggerChildren: 0.07, delayChildren: 0.15 } },
+  };
+  const part = { hide: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0, transition: { duration: 0.55, ease: E } } };
+  const wipe = {
+    hide: { clipPath: left ? "inset(0 100% 0 0)" : "inset(0 0 0 100%)" },
+    show: { clipPath: "inset(0 0% 0 0%)", transition: { duration: 0.9, ease: E, delay: 0.1 } },
+  };
+  const char = {
+    hide: { y: "110%" },
+    show: (i) => ({ y: "0%", transition: { duration: 0.6, ease: E, delay: 0.25 + i * 0.07 } }),
+  };
+
+  // A small tilt toward the mouse, written straight to the card (no re-render)
+  const tilt = (e) => {
+    if (reduce || !window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+    const el = e.currentTarget;
+    const r = el.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width - 0.5;
+    const y = (e.clientY - r.top) / r.height - 0.5;
+    el.style.transform = `perspective(900px) rotateX(${(-y * 5).toFixed(2)}deg) rotateY(${(x * 6).toFixed(2)}deg)`;
+  };
+  const untilt = (e) => {
+    e.currentTarget.style.transform = "";
+  };
+
   return (
     <motion.article
-      initial={reduce ? false : { opacity: 0, x: left ? -60 : 60 }}
-      whileInView={{ opacity: 1, x: 0 }}
+      ref={ref}
+      variants={card}
+      initial={reduce ? "show" : "hide"}
+      whileInView="show"
       viewport={{ once: false, margin: "-12% 0px" }}
-      transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
       className={`w-full lg:w-[calc(50%-4.5rem)] ${left ? "lg:mr-auto" : "lg:ml-auto"}`}
     >
       <button
         type="button"
         onClick={() => onOpen(p)}
+        onMouseMove={tilt}
+        onMouseLeave={untilt}
         aria-label={`Open ${p.title}`}
-        className="group block w-full overflow-hidden rounded-2xl border border-white/15 bg-[#26262a]/90 text-left outline-none transition-colors hover:border-[#ffc933] focus-visible:ring-2 focus-visible:ring-white/70 sm:flex"
+        className="group block w-full overflow-hidden rounded-2xl border border-white/15 bg-[#26262a]/90 text-left outline-none transition-[transform,border-color] duration-200 ease-out hover:border-[#ffc933] focus-visible:ring-2 focus-visible:ring-white/70 sm:flex"
       >
-        <span className="relative block aspect-[16/8] w-full overflow-hidden bg-[#1f1f23] sm:aspect-auto sm:min-h-[10.5rem] sm:w-[38%] sm:shrink-0">
-          <Cover project={p} className="object-top transition-transform duration-700 ease-out group-hover:scale-[1.05] motion-reduce:transition-none" />
+        <motion.span variants={wipe} className="relative block aspect-[16/8] w-full overflow-hidden bg-[#1f1f23] sm:aspect-auto sm:min-h-[10.5rem] sm:w-[38%] sm:shrink-0">
+          <motion.span className="absolute inset-0 block scale-[1.2]" style={{ y: drift }}>
+            <Cover project={p} className="object-top" />
+          </motion.span>
           {p.featured && (
             <span className="absolute right-2.5 top-2.5 rounded-full px-2.5 py-1 text-[11px] font-bold text-black" style={{ backgroundColor: ACCENT }}>
               Featured
             </span>
           )}
-        </span>
+        </motion.span>
+
         <span className="block p-4 sm:flex-1 sm:p-5">
-          {/* The year, big, like a milestone */}
-          <span className="block text-4xl font-black leading-none tracking-tight sm:text-5xl" style={{ ...heading, color: ACCENT }}>
-            {yearOf(p)}
+          {/* The year: each digit rises out of a mask */}
+          <span className="flex overflow-hidden text-4xl font-black leading-none tracking-tight sm:text-5xl" style={{ ...heading, color: ACCENT }} aria-label={String(yearOf(p))}>
+            {String(yearOf(p)).split("").map((ch, i) => (
+              <span key={i} aria-hidden="true" className="inline-block overflow-hidden">
+                <motion.span variants={char} custom={i} className="inline-block">
+                  {ch}
+                </motion.span>
+              </span>
+            ))}
           </span>
-          <span className="mt-1.5 block font-mono text-[10px] uppercase tracking-[0.2em] text-white/50">
+          <motion.span variants={part} className="mt-1.5 block font-mono text-[10px] uppercase tracking-[0.2em] text-white/50">
             {String(index + 1).padStart(2, "0")} · {kind(p)}
-          </span>
-          <span className="mt-2 block text-lg font-black uppercase leading-tight tracking-tight text-white sm:text-xl" style={heading}>
+          </motion.span>
+          <motion.span variants={part} className="mt-2 block text-lg font-black uppercase leading-tight tracking-tight text-white sm:text-xl" style={heading}>
             {p.title}
-          </span>
-          <span className="mt-2 line-clamp-2 block text-sm leading-relaxed text-white/65">{p.description}</span>
-          <span className="mt-3 flex flex-wrap items-center gap-1.5">
+          </motion.span>
+          <motion.span variants={part} className="mt-2 line-clamp-2 block text-sm leading-relaxed text-white/65">
+            {p.description}
+          </motion.span>
+          <motion.span variants={part} className="mt-3 flex flex-wrap items-center gap-1.5">
             {tagsOf(p, 3).map((t) => (
               <span key={t} className="rounded-full border border-white/15 px-2.5 py-0.5 text-xs text-white/70">
                 {t}
@@ -300,7 +349,7 @@ function JourneyCard({ project: p, index, left, reduce, onOpen }) {
             <span className="ml-auto inline-flex items-center gap-1.5 text-sm font-semibold" style={{ color: ACCENT }}>
               Open <FiArrowUpRight aria-hidden="true" className="transition-transform duration-300 group-hover:rotate-45" />
             </span>
-          </span>
+          </motion.span>
         </span>
       </button>
     </motion.article>
@@ -364,7 +413,9 @@ function ProjectJourney({ projects, onOpen }) {
                 whileInView={{ scale: 1 }}
                 viewport={{ once: false, margin: "-15% 0px" }}
                 transition={{ type: "spring", stiffness: 380, damping: 16 }}
-              />
+              >
+                {!reduce && <span className="journey-ping absolute -inset-[3px] rounded-full border-2 border-[#ffc933]" />}
+              </motion.span>
               <JourneyCard project={p} index={i} left={left} reduce={reduce} onOpen={onOpen} />
             </li>
           );
@@ -376,7 +427,7 @@ function ProjectJourney({ projects, onOpen }) {
 
 /* ---------- Browse every project, with filters ---------- */
 function Browser({ list, onOpen }) {
-  const [category, setCategory] = useState(PROJECT_CATEGORIES.ALL);
+  const [category, setCategory] = useState(PROJECT_CATEGORIES.PERSONAL);
   const [query, setQuery] = useState("");
   const [language, setLanguage] = useState("");
   const [sort, setSort] = useState("updated");

@@ -1128,3 +1128,8 @@ html.lenis body {
 @keyframes hero-marquee-rev { from { transform: translateX(-50%); } to { transform: translateX(0); } }
 .hero-marquee-rev { animation: hero-marquee-rev 40s linear infinite; }
 @media (prefers-reduced-motion: reduce) { .hero-marquee-rev { animation: none; } }
+
+/* Journey stops: a ring that grows out of each stop and fades, over and over */
+@keyframes journey-ping { 0% { transform: scale(1); opacity: 0.8; } 80%, 100% { transform: scale(3.2); opacity: 0; } }
+.journey-ping { animation: journey-ping 2.4s ease-out infinite; }
+@media (prefers-reduced-motion: reduce) { .journey-ping { animation: none; } }
