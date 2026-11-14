@@ -135,20 +135,20 @@ const arrival = (index, count) => {
 
 function CardBody({ project: p, index, tone, onOpen }) {
   return (
-    <div className="grid gap-8 p-6 sm:p-10 lg:min-h-[28rem] lg:grid-cols-2 lg:gap-12">
+    <div className="grid gap-5 p-5 sm:p-8 lg:grid-cols-2 lg:gap-10">
       <div className="flex flex-col">
         <div className="flex items-center justify-between gap-4 text-sm text-black/60">
           <span>{String(index + 1).padStart(2, "0")}</span>
           <span>{yearOf(p)}</span>
         </div>
 
-        <h3 className="m-0 mt-5 text-3xl font-black uppercase leading-[0.95] tracking-tight sm:text-5xl lg:text-6xl" style={heading}>
+        <h3 className="m-0 mt-3 text-3xl font-black uppercase leading-[0.95] tracking-tight sm:text-4xl lg:text-[clamp(2.2rem,min(4.2vw,7vh),3.8rem)]" style={heading}>
           {p.title}
         </h3>
-        <p className="m-0 mt-3 text-lg font-medium sm:text-xl" style={{ color: tone.ink }}>
+        <p className="m-0 mt-2 text-base font-medium sm:text-lg" style={{ color: tone.ink }}>
           {kind(p)}
         </p>
-        <p className="m-0 mt-4 line-clamp-4 max-w-[46ch] text-[15px] leading-relaxed text-black/70 sm:text-base">{p.description}</p>
+        <p className="m-0 mt-4 line-clamp-3 max-w-[46ch] text-[15px] leading-relaxed text-black/70">{p.description}</p>
 
         <div className="mt-auto pt-6">
           <ul className="m-0 flex list-none flex-wrap gap-2 p-0">
@@ -161,7 +161,7 @@ function CardBody({ project: p, index, tone, onOpen }) {
           <button
             type="button"
             onClick={() => onOpen(p)}
-            className="mt-5 inline-flex h-11 items-center gap-2 rounded-full bg-[#1a1a1a] px-6 text-sm font-bold text-white transition-transform hover:scale-[1.03]"
+            className="mt-4 inline-flex h-10 items-center gap-2 rounded-full bg-[#1a1a1a] px-5 text-sm font-bold text-white transition-transform hover:scale-[1.03]"
           >
             Open project <FiArrowUpRight aria-hidden="true" />
           </button>
@@ -172,7 +172,7 @@ function CardBody({ project: p, index, tone, onOpen }) {
         type="button"
         onClick={() => onOpen(p)}
         aria-label={`Open ${p.title}`}
-        className="group relative block aspect-[16/10] w-full self-center overflow-hidden rounded-3xl bg-black/10 shadow-xl outline-none focus-visible:ring-2 focus-visible:ring-black/60"
+        className="group relative block aspect-[16/10] w-full self-center overflow-hidden rounded-3xl bg-black/10 shadow-xl lg:aspect-auto lg:h-[min(49vh,23.5rem)] outline-none focus-visible:ring-2 focus-visible:ring-black/60"
       >
         <Cover project={p} className="object-top transition-transform duration-700 ease-out group-hover:scale-[1.04] motion-reduce:transition-none" />
       </button>
@@ -221,7 +221,7 @@ function Showcase({ featured, onOpen }) {
 
   return (
     <div className="px-5 pb-10 pt-10 sm:px-10">
-      <div className="mx-auto max-w-[1500px]">
+      <div className="mx-auto w-full lg:w-[min(78vw,1460px)]">
         <p className="m-0 text-sm font-medium" style={{ color: ACCENT }}>
           Selected projects
         </p>

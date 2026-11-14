@@ -1167,3 +1167,10 @@ h1, h2 {
 }
 /* Small lavender chips, like the tags in the reference */
 .chip-lilac { background: #c4b5fd; color: #1a1030; }
+
+/* Education dial: a slow turning ring inside it, and a ring that spreads out when the degree is complete */
+@keyframes edu-spin { to { transform: rotate(360deg); } }
+.edu-spin { transform-box: fill-box; transform-origin: center; animation: edu-spin 40s linear infinite; }
+@keyframes edu-pulse { 0% { transform: scale(0.92); opacity: 0.9; } 100% { transform: scale(1.18); opacity: 0; } }
+.edu-pulse { animation: edu-pulse 1.8s ease-out 3; }
+@media (prefers-reduced-motion: reduce) { .edu-spin, .edu-pulse { animation: none; } }

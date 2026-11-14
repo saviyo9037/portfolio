@@ -1,96 +1,69 @@
-import React, { useEffect, useRef, useState } from "react";
-import { motion, useInView, useReducedMotion } from "framer-motion";
+import React, { useRef, useState } from "react";
+import { AnimatePresence, motion, useMotionValueEvent, useReducedMotion, useScroll, useSpring } from "framer-motion";
 import { FiAward, FiMapPin } from "react-icons/fi";
 import { experience } from "../data/experience";
 
 const ACCENT = "#ff4d00";
 const EASE = [0.16, 1, 0.3, 1];
-const GLYPHS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#%&*+<>";
+const RADIUS = 84;
+const CIRC = 2 * Math.PI * RADIUS;
+const MONTHS = 30; // September 2021 to March 2024
+const SWEEP_MS = 5200;
 
 const study = experience.find((e) => e.type === "education");
+const STAGES = study?.milestones ?? [];
 
-// Text that decodes: every letter flickers through random characters, then settles on the real one
-function Decode({ text, run, reduce, className = "", style }) {
-  const [out, setOut] = useState(text);
+// A point on the dial, for a share of the way round (0 is the top)
+const onRing = (t, r = RADIUS) => {
+  const a = t * 2 * Math.PI - Math.PI / 2;
+  return { x: 100 + r * Math.cos(a), y: 100 + r * Math.sin(a) };
+};
 
-  useEffect(() => {
-    if (!run || reduce) return undefined;
-    let frame = 0;
-    const total = 34;
-    const id = window.setInterval(() => {
-      frame += 1;
-      const settled = Math.floor((frame / total) * text.length * 1.4);
-      setOut(
-        text
-          .split("")
-          .map((ch, i) => (ch === " " || i < settled ? ch : GLYPHS[Math.floor(Math.random() * GLYPHS.length)]))
-          .join("")
-      );
-      if (frame >= total) {
-        window.clearInterval(id);
-        setOut(text);
-      }
-    }, 38);
-    return () => window.clearInterval(id);
-  }, [run, reduce, text]);
+// Bits of paper that burst out of the dial when the degree is complete
+const CONFETTI = Array.from({ length: 30 }, (_, i) => {
+  const a = (i / 30) * Math.PI * 2 + (i % 3) * 0.2;
+  const d = 130 + ((i * 37) % 90);
+  return { x: Math.cos(a) * d, y: Math.sin(a) * d - 30, r: (i * 53) % 360, c: ["#ff4d00", "#c4b5fd", "#f4f0ff", "#ffb08a"][i % 4], w: 6 + (i % 3) * 3 };
+});
 
+function Confetti({ fire }) {
   return (
-    <span className={className} style={style} aria-label={text}>
-      <span aria-hidden="true">{run && !reduce ? out : text}</span>
-    </span>
-  );
-}
-
-// One digit of the year counter: a column of 0-9 that rolls to its number like an odometer
-function Digit({ target, run, delay, reduce }) {
-  const n = Number(target);
-  return (
-    <span className="relative inline-block h-[1em] w-[0.62em] overflow-hidden align-bottom">
-      <motion.span
-        className="absolute left-0 top-0 flex flex-col"
-        initial={reduce ? { y: `${-n}em` } : { y: "0em" }}
-        animate={run || reduce ? { y: `${-n}em` } : { y: "0em" }}
-        transition={{ duration: 1.6, delay, ease: [0.22, 1, 0.36, 1] }}
-      >
-        {Array.from({ length: 10 }, (_, d) => (
-          <span key={d} className="block h-[1em] leading-none">
-            {d}
-          </span>
-        ))}
-      </motion.span>
-    </span>
-  );
-}
-
-// A graduation cap drawn line by line, which then tosses up, spins and lands again
-function Cap({ run, reduce }) {
-  const draw = (delay) => ({
-    initial: reduce ? false : { pathLength: 0, opacity: 0 },
-    animate: run || reduce ? { pathLength: 1, opacity: 1 } : { pathLength: 0, opacity: 0 },
-    transition: { duration: 1.2, delay, ease: "easeInOut" },
-  });
-  return (
-    <motion.svg
-      viewBox="0 0 200 160"
-      aria-hidden="true"
-      className="h-auto w-full max-w-[22rem]"
-      animate={run && !reduce ? { y: [0, -34, 0], rotate: [0, -10, 0] } : undefined}
-      transition={run && !reduce ? { duration: 2.4, delay: 3.2, repeat: Infinity, repeatDelay: 2.4, ease: "easeInOut" } : undefined}
-    >
-      <g fill="none" stroke={ACCENT} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-        <motion.path d="M100 28 L188 68 L100 108 L12 68 Z" {...draw(0.1)} />
-        <motion.path d="M50 90 V122 C50 134 150 134 150 122 V90" {...draw(0.8)} />
-        <motion.path d="M188 68 V118" {...draw(1.3)} />
-      </g>
-      <motion.circle cx="188" cy="124" r="6" fill={ACCENT} initial={reduce ? false : { scale: 0 }} animate={run || reduce ? { scale: 1 } : { scale: 0 }} transition={{ type: "spring", stiffness: 400, damping: 12, delay: 2.2 }} />
-    </motion.svg>
+    <div aria-hidden="true" className="pointer-events-none absolute left-1/2 top-1/2">
+      {CONFETTI.map((c, i) => (
+        <motion.span
+          key={i}
+          className="absolute block rounded-[2px]"
+          style={{ width: c.w, height: c.w * 1.6, backgroundColor: c.c, left: 0, top: 0 }}
+          initial={{ x: 0, y: 0, opacity: 0, rotate: 0, scale: 0 }}
+          animate={fire ? { x: c.x, y: [0, c.y, c.y + 90], opacity: [0, 1, 1, 0], rotate: c.r + 360, scale: 1 } : { x: 0, y: 0, opacity: 0, rotate: 0, scale: 0 }}
+          transition={{ duration: 1.6, delay: (i % 5) * 0.03, ease: "easeOut" }}
+        />
+      ))}
+    </div>
   );
 }
 
 export default function Education() {
   const reduce = useReducedMotion();
   const ref = useRef(null);
-  const run = useInView(ref, { once: true, margin: "-20% 0px" });
+  const [p, setP] = useState(reduce ? 1 : 0);
+
+  // The scroll position drives everything: scrolling down runs the dial forward, scrolling up runs it back
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start 92%", "end end"] });
+  const smooth = useSpring(scrollYProgress, { stiffness: 120, damping: 30, mass: 0.5 });
+  useMotionValueEvent(smooth, "change", (v) => {
+    if (reduce) return;
+    // Complete once the whole section is on screen, and rounded so the page only re-renders when something visibly changes
+    const raw = Math.min(1, Math.max(0, v / 0.93));
+    const next = raw > 0.985 ? 1 : Math.round(raw * 200) / 200;
+    setP((prev) => (prev === next ? prev : next));
+  });
+
+  const month = Math.round(p * MONTHS);
+  const stageCount = Math.max(STAGES.length, 1);
+  const active = Math.min(stageCount - 1, Math.floor(p * stageCount));
+  const year = 2021 + Math.floor((8 + month) / 12); // month 0 is September 2021
+  const done = p >= 1;
 
   return (
     <section ref={ref} id="education" className="mx-auto w-full max-w-[1680px] px-5 py-14 md:px-8 md:py-24">
@@ -98,28 +71,114 @@ export default function Education() {
         <p className="m-0 text-xs font-semibold uppercase tracking-[0.32em]" style={{ color: ACCENT }}>
           Education
         </p>
-        <h2 className="mb-0 mt-3 text-3xl font-extrabold tracking-tight text-[var(--text-main)] md:text-4xl" style={{ fontFamily: "'Inter', sans-serif", textTransform: "none" }}>
+        <h2 className="mb-0 mt-3 text-3xl text-[var(--text-main)] md:text-5xl" style={{ fontFamily: "'Inter', sans-serif" }}>
           Academic <span className="serif-accent">Background</span>
         </h2>
       </div>
 
-      <div className="grid items-center gap-10 overflow-hidden rounded-3xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-6 md:p-10 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
+      <div className="grid items-center gap-12 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-20">
+        {/* The dial */}
+        <motion.div
+          initial={reduce ? false : { opacity: 0, scale: 0.88 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: false, margin: "-10% 0px" }}
+          transition={{ duration: 0.9, ease: EASE }}
+          className="relative mx-auto aspect-square w-full max-w-[26rem]"
+          role="img"
+          aria-label="Dial showing three years of study, 2021 to 2024"
+        >
+          <svg viewBox="0 0 200 200" className="h-full w-full overflow-visible" aria-hidden="true">
+            {/* Ticks around the edge, one for each month */}
+            {Array.from({ length: MONTHS }, (_, m) => {
+              const a = onRing(m / MONTHS, RADIUS + 14);
+              const b = onRing(m / MONTHS, RADIUS + (m % 12 === 4 || m % 12 === 4 ? 22 : 18));
+              const lit = m / MONTHS <= p;
+              return <line key={m} x1={a.x} y1={a.y} x2={b.x} y2={b.y} stroke={lit ? ACCENT : "rgba(255,255,255,0.22)"} strokeWidth="1" style={{ transition: "stroke 0.2s" }} />;
+            })}
+
+            {/* A slow dashed ring turning inside the dial once it is running */}
+            <circle cx="100" cy="100" r="62" fill="none" stroke="rgba(255,255,255,0.12)" strokeWidth="1" strokeDasharray="2 7" className={p > 0 && !reduce ? "edu-spin" : ""} />
+
+            {/* The track and the glowing progress ring */}
+            <circle cx="100" cy="100" r={RADIUS} fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="10" />
+            <circle
+              cx="100"
+              cy="100"
+              r={RADIUS}
+              fill="none"
+              stroke="rgba(255,77,0,0.28)"
+              strokeWidth="16"
+              strokeLinecap="round"
+              strokeDasharray={CIRC}
+              strokeDashoffset={CIRC * (1 - p)}
+              transform="rotate(-90 100 100)"
+              style={{ transition: "stroke-dashoffset 0.08s linear" }}
+            />
+            <circle
+              cx="100"
+              cy="100"
+              r={RADIUS}
+              fill="none"
+              stroke={ACCENT}
+              strokeWidth="6"
+              strokeLinecap="round"
+              strokeDasharray={CIRC}
+              strokeDashoffset={CIRC * (1 - p)}
+              transform="rotate(-90 100 100)"
+              style={{ transition: "stroke-dashoffset 0.08s linear" }}
+            />
+
+            {/* A stop for each stage, lit once the ring has passed it */}
+            {STAGES.map((s, i) => {
+              const t = i / stageCount;
+              const pt = onRing(t);
+              const lit = p >= t && (p > 0 || reduce);
+              return (
+                <g key={s.label}>
+                  <circle cx={pt.x} cy={pt.y} r="7" fill="#14121d" stroke={lit ? ACCENT : "rgba(255,255,255,0.3)"} strokeWidth="2" style={{ transition: "stroke 0.2s" }} />
+                  <text x={pt.x} y={pt.y + 2.6} textAnchor="middle" fontSize="7" fontWeight="700" fill={lit ? ACCENT : "rgba(255,255,255,0.5)"} style={{ fontFamily: "'JetBrains Mono', monospace" }}>
+                    {i + 1}
+                  </text>
+                </g>
+              );
+            })}
+
+            {/* The head of the ring */}
+            {p > 0 && p < 1 && <circle cx={onRing(p).x} cy={onRing(p).y} r="5" fill="#fff" style={{ filter: "drop-shadow(0 0 6px rgba(255,77,0,1))" }} />}
+          </svg>
+
+          {/* In the middle: the year and the stage */}
+          <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+            <p className="m-0 font-mono text-[11px] uppercase tracking-[0.3em] text-[var(--text-dim)]">{done ? "Graduated" : `Year ${Math.min(3, Math.floor(p * 3) + 1)} of 3`}</p>
+            <div className="relative mt-1 h-[4.2rem] overflow-hidden sm:h-[5.2rem]">
+              <AnimatePresence mode="popLayout" initial={false}>
+                <motion.p
+                  key={year}
+                  className="m-0 text-6xl tabular-nums text-[var(--text-main)] sm:text-7xl"
+                  style={{ fontFamily: "'Inter', sans-serif", fontWeight: 600, letterSpacing: "-0.05em", lineHeight: 1.1 }}
+                  initial={reduce ? false : { y: "100%", opacity: 0 }}
+                  animate={{ y: "0%", opacity: 1 }}
+                  exit={{ y: "-100%", opacity: 0 }}
+                  transition={{ duration: 0.45, ease: EASE }}
+                >
+                  {year}
+                </motion.p>
+              </AnimatePresence>
+            </div>
+            <p className="m-0 mt-1 font-mono text-xs text-[var(--text-muted)]">
+              Month {String(month).padStart(2, "0")} / {MONTHS}
+            </p>
+          </div>
+          {!reduce && <Confetti fire={done} />}
+          {done && !reduce && <span aria-hidden="true" className="edu-pulse pointer-events-none absolute inset-[6%] rounded-full border-2" style={{ borderColor: ACCENT }} />}
+        </motion.div>
+
+        {/* The facts and the three stages, lit as the ring reaches them */}
         <div>
-          <motion.span
-            initial={reduce ? false : { opacity: 0, y: 12 }}
-            animate={run || reduce ? { opacity: 1, y: 0 } : undefined}
-            transition={{ duration: 0.5, ease: EASE }}
-            className="inline-block rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-black"
-            style={{ backgroundColor: ACCENT }}
-          >
-            Undergraduate Degree
-          </motion.span>
-
-          <h3 className="m-0 mt-5 text-2xl font-extrabold leading-snug text-[var(--text-main)] md:text-4xl" style={{ fontFamily: "'Inter', sans-serif", textTransform: "none" }}>
-            <Decode text="Bachelor of Computer Applications (BCA)" run={run} reduce={reduce} />
-          </h3>
-
-          <ul className="m-0 mt-4 flex list-none flex-col gap-2 p-0 text-sm text-[var(--text-muted)]">
+          <p className="m-0 text-2xl text-[var(--text-main)] md:text-3xl" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 600 }}>
+            Bachelor of Computer Applications (BCA)
+          </p>
+          <ul className="m-0 mt-3 flex list-none flex-wrap gap-x-6 gap-y-2 p-0 text-sm text-[var(--text-muted)]">
             <li className="flex items-center gap-2">
               <FiAward aria-hidden="true" style={{ color: ACCENT }} /> Sree Sabareesa College
             </li>
@@ -128,55 +187,55 @@ export default function Education() {
             </li>
           </ul>
 
-          {/* Years roll like an odometer: 2021 to 2024 */}
-          <div className="mt-8 flex items-center gap-4 font-mono text-3xl font-bold text-[var(--text-main)] sm:text-5xl" aria-label="2021 to 2024">
-            <span aria-hidden="true" className="inline-flex">
-              {"2021".split("").map((d, i) => (
-                <Digit key={`a${i}`} target={d} run={run} delay={0.2 + i * 0.15} reduce={reduce} />
-              ))}
-            </span>
-            <span aria-hidden="true" className="text-[var(--text-dim)]">—</span>
-            <span aria-hidden="true" className="inline-flex" style={{ color: ACCENT }}>
-              {"2024".split("").map((d, i) => (
-                <Digit key={`b${i}`} target={d} run={run} delay={0.6 + i * 0.15} reduce={reduce} />
-              ))}
-            </span>
-          </div>
+          <ol className="m-0 mt-8 list-none space-y-3 p-0">
+            {STAGES.map((s, i) => {
+              const lit = reduce || (i <= active && p > 0);
+              const current = !reduce && !done && i === active && p > 0;
+              return (
+                <li
+                  key={s.label}
+                  className="relative overflow-hidden rounded-2xl border p-4 transition-[opacity,border-color,background-color,transform] duration-500 sm:p-5"
+                  style={{ opacity: lit ? 1 : 0.35, borderColor: current ? ACCENT : "var(--border-subtle)", backgroundColor: current ? "rgba(255,77,0,0.07)" : "var(--bg-surface)", transform: current ? "translateX(10px)" : "none" }}
+                >
+                  <span aria-hidden="true" className="absolute inset-y-0 left-0 w-1 transition-opacity duration-500" style={{ backgroundColor: ACCENT, opacity: lit ? 1 : 0 }} />
+                  <p className="m-0 font-mono text-xs" style={{ color: lit ? ACCENT : "var(--text-dim)" }}>
+                    {String(i + 1).padStart(2, "0")} · Year {i + 1}
+                  </p>
+                  <p className="m-0 mt-1 text-lg font-semibold text-[var(--text-main)]">{s.label}</p>
+                  <p className="m-0 mt-1 text-sm leading-relaxed text-[var(--text-muted)]">{s.desc}</p>
+                </li>
+              );
+            })}
+          </ol>
 
-          {/* The distinction, with a light sweeping across it */}
-          <div className="relative mt-6 inline-block overflow-hidden rounded-xl border border-[var(--border-subtle)] px-5 py-3">
-            <p className="m-0 font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--text-dim)]">Graduated with</p>
-            <p className="m-0 mt-1 text-xl font-black text-[var(--text-main)]" style={{ fontFamily: "'Inter', sans-serif" }}>
-              First Class Distinction
-            </p>
+          <div className="mt-7 flex flex-wrap items-center gap-3">
             <motion.span
-              aria-hidden="true"
-              className="pointer-events-none absolute inset-y-0 left-0 w-1/3 -skew-x-12 bg-gradient-to-r from-transparent via-white/25 to-transparent"
-              initial={{ x: "-120%" }}
-              animate={run && !reduce ? { x: ["-120%", "420%"] } : undefined}
-              transition={{ duration: 1.4, delay: 2.3, repeat: Infinity, repeatDelay: 3.5, ease: "easeInOut" }}
-            />
+              initial={reduce ? false : { opacity: 0, scale: 0.7 }}
+              animate={done || reduce ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.7 }}
+              transition={{ type: "spring", stiffness: 300, damping: 14 }}
+              className="rounded-full px-5 py-2 text-sm font-semibold text-white"
+              style={{ backgroundColor: ACCENT, boxShadow: "0 0 30px rgba(255,77,0,0.45)" }}
+            >
+              First Class Distinction · 2021 — 2024
+            </motion.span>
           </div>
 
           {study?.coursework && (
-            <ul className="m-0 mt-6 flex list-none flex-wrap gap-2 p-0">
+            <ul className="m-0 mt-5 flex list-none flex-wrap gap-2 p-0">
               {study.coursework.map((c, i) => (
                 <motion.li
                   key={c}
                   initial={reduce ? false : { opacity: 0, y: 10 }}
-                  animate={run || reduce ? { opacity: 1, y: 0 } : undefined}
-                  transition={{ duration: 0.4, delay: 1.2 + i * 0.06 }}
-                  className="rounded-full border border-[var(--border-subtle)] px-3 py-1.5 text-xs text-[var(--text-muted)]"
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-10% 0px" }}
+                  transition={{ duration: 0.4, delay: i * 0.05 }}
+                  className="chip-lilac rounded-full px-3.5 py-1.5 text-xs font-medium"
                 >
                   {c}
                 </motion.li>
               ))}
             </ul>
           )}
-        </div>
-
-        <div className="flex justify-center lg:justify-end">
-          <Cap run={run} reduce={reduce} />
         </div>
       </div>
     </section>
