@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { FiArrowRight, FiDownload, FiMapPin } from "react-icons/fi";
+import { FiArrowRight, FiDownload } from "react-icons/fi";
 import heroPhoto from "../assets/saviyo-cutout.png";
 import { scrollToId } from "../lib/scroll";
 import { CountUp, Magnetic } from "./motion/effects";
@@ -118,35 +118,20 @@ function WordsFade({ text, delay = 0, className = "" }) {
   );
 }
 
-const LINES = ["Full-stack", "developer", "& MERN."];
+const NOTES = [
+  { text: "MERN stack", bg: "#c4b5fd", fg: "#1a1030", rot: -7, pos: "left-[2%] top-[8%]" },
+  { text: "ERP & POS", bg: "#f4f0ff", fg: "#1a1030", rot: 6, pos: "right-[2%] top-[22%]" },
+  { text: "AI tools", bg: "#ff4d00", fg: "#ffffff", rot: -5, pos: "left-[6%] bottom-[10%]" },
+  { text: "CRM / LMS", bg: "#8b78d8", fg: "#ffffff", rot: 8, pos: "right-[6%] bottom-[6%]" },
+];
 
 export default function Introduction() {
   const reduce = useReducedMotion();
   const time = useKeralaTime();
-  const cardRef = useRef(null);
+  const stageRef = useRef(null);
   const goTo = (id) => (e) => {
     e.preventDefault();
     scrollToId(id);
-  };
-
-  // A spotlight on the portrait follows the pointer; the rest of the picture stays dim.
-  // Written straight to the element, so moving the mouse never re-renders anything.
-  const spot = (e) => {
-    const el = cardRef.current;
-    if (!el || reduce || !window.matchMedia("(pointer: fine)").matches) return;
-    const r = el.getBoundingClientRect();
-    el.style.setProperty("--mx", `${(((e.clientX - r.left) / r.width) * 100).toFixed(1)}%`);
-    el.style.setProperty("--my", `${(((e.clientY - r.top) / r.height) * 100).toFixed(1)}%`);
-    el.style.setProperty("--tx", (((e.clientX - r.left) / r.width - 0.5) * 2).toFixed(3));
-    el.style.setProperty("--ty", (((e.clientY - r.top) / r.height - 0.5) * 2).toFixed(3));
-  };
-  const spotOff = () => {
-    const el = cardRef.current;
-    if (!el) return;
-    el.style.setProperty("--mx", "50%");
-    el.style.setProperty("--my", "42%");
-    el.style.setProperty("--tx", "0");
-    el.style.setProperty("--ty", "0");
   };
 
   const fade = (delay) => ({
@@ -155,10 +140,8 @@ export default function Introduction() {
     transition: { duration: 0.8, delay, ease: EASE },
   });
 
-  const spotMask = "radial-gradient(circle 15rem at var(--mx, 50%) var(--my, 42%), #000 0%, #000 35%, transparent 100%)";
-
   return (
-    <section className="relative flex min-h-[100svh] w-full flex-col overflow-hidden px-5 pb-12 pt-28 sm:px-8 lg:pt-24">
+    <section className="relative flex min-h-[100svh] w-full flex-col overflow-hidden px-5 pb-14 pt-28 sm:px-8 lg:pt-24">
       {/* Background: two slow violet lights and a faint grid */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0">
         <div className="absolute -left-32 top-10 h-[36rem] w-[36rem] rounded-full bg-[radial-gradient(circle,rgba(98,64,181,0.32),transparent_65%)] [animation:hero-drift-a_14s_ease-in-out_infinite]" />
@@ -174,40 +157,59 @@ export default function Introduction() {
         />
       </div>
 
-      <div className="relative mx-auto grid w-full max-w-[1400px] flex-1 items-center gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16">
-        {/* Left: the message, one line at a time out of a mask */}
+      <div className="relative mx-auto grid w-full max-w-[1400px] flex-1 items-center gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:gap-14">
+        {/* Left: a friendly hello with a hand-drawn underline */}
         <div className="order-2 lg:order-1">
-          <motion.p {...fade(0.05)} className="m-0 flex items-center gap-3 font-mono text-xs uppercase tracking-[0.28em] text-[var(--text-dim)]">
-            <span className="h-px w-10 bg-[var(--text-dim)]" /> Portfolio · Kerala, India · {time}
+          <motion.p {...fade(0.05)} className="m-0 flex items-center gap-2.5 text-base text-[var(--text-muted)]">
+            <motion.span
+              className="inline-block origin-[70%_70%] text-2xl"
+              aria-hidden="true"
+              animate={reduce ? undefined : { rotate: [0, 16, -8, 16, 0] }}
+              transition={{ duration: 1.6, delay: 0.8, repeat: Infinity, repeatDelay: 2.4 }}
+            >
+              👋
+            </motion.span>
+            Hi there, I&apos;m
           </motion.p>
 
           <h1
-            className="m-0 mt-6 font-black uppercase leading-[0.92] text-[var(--text-main)]"
-            style={{ fontFamily: "'Inter', sans-serif", letterSpacing: "-0.045em", fontSize: "clamp(3.2rem, 8.4vw, 8rem)" }}
-            aria-label="Full-stack developer and MERN"
+            className="m-0 mt-3 font-black leading-[0.95] text-[var(--text-main)]"
+            style={{ fontFamily: "'Inter', sans-serif", letterSpacing: "-0.045em", fontSize: "clamp(3.2rem, 8vw, 7.4rem)" }}
           >
-            {LINES.map((line, i) => (
-              <span key={line} aria-hidden="true" className="block overflow-hidden pb-[0.06em]">
+            {["Saviyo", "George"].map((w, i) => (
+              <span key={w} className="block overflow-hidden pb-[0.08em]">
                 <motion.span
-                  className={`block ${i === 1 ? "text-transparent" : ""} ${i === 2 ? "serif-accent normal-case" : ""}`}
-                  style={i === 1 ? { WebkitTextStroke: "2px #c4b5fd" } : undefined}
+                  className={`inline-block ${i === 1 ? "serif-accent pr-[0.06em]" : ""}`}
                   initial={reduce ? false : { y: "110%" }}
                   animate={{ y: "0%" }}
                   transition={{ duration: 0.9, delay: 0.15 + i * 0.12, ease: EASE }}
                 >
-                  {line}
+                  {w}
                 </motion.span>
               </span>
             ))}
           </h1>
 
-          <WordsFade delay={0.8} text={INTRO_TEXT} className="m-0 mt-7 max-w-[48ch] text-lg leading-relaxed text-[var(--text-muted)]" />
+          {/* Scribble that draws itself under the name */}
+          <svg viewBox="0 0 320 18" className="mt-1 h-4 w-60 sm:w-72" fill="none" aria-hidden="true">
+            <motion.path
+              d="M3 12 C 50 3, 90 16, 140 8 S 240 4, 316 10"
+              stroke="#c4b5fd"
+              strokeWidth="4"
+              strokeLinecap="round"
+              initial={reduce ? false : { pathLength: 0 }}
+              animate={{ pathLength: 1 }}
+              transition={{ duration: 1, delay: 0.9, ease: "easeOut" }}
+            />
+          </svg>
 
-          <motion.div {...fade(1.3)}>
+          <motion.div {...fade(0.7)}>
             <TypedRole />
           </motion.div>
 
-          <motion.div {...fade(1.4)} className="mt-8 flex flex-wrap items-center gap-3">
+          <WordsFade delay={0.9} text={INTRO_TEXT} className="m-0 mt-5 max-w-[48ch] text-lg leading-relaxed text-[var(--text-muted)]" />
+
+          <motion.div {...fade(1.3)} className="mt-8 flex flex-wrap items-center gap-3">
             <Magnetic>
               <a
                 href="#projects"
@@ -229,7 +231,7 @@ export default function Introduction() {
             </Magnetic>
           </motion.div>
 
-          <motion.ul {...fade(1.55)} className="m-0 mt-10 grid max-w-xl list-none grid-cols-3 gap-2 p-0">
+          <motion.ul {...fade(1.5)} className="m-0 mt-10 grid max-w-xl list-none grid-cols-3 gap-2 p-0">
             {STATS.map((s, i) => (
               <li key={s.label} className={i > 0 ? "border-l border-[var(--border-subtle)] pl-4 sm:pl-6" : ""}>
                 <p className="m-0 text-xl font-extrabold text-[var(--text-main)] sm:text-2xl">
@@ -241,79 +243,74 @@ export default function Introduction() {
           </motion.ul>
         </div>
 
-        {/* Right: a portrait card lit by a spotlight that follows the pointer */}
-        <motion.div
-          className="order-1 mx-auto w-full max-w-[26rem] lg:order-2 lg:max-w-[32rem]"
-          initial={reduce ? false : { opacity: 0, y: 60, rotate: 3 }}
-          animate={{ opacity: 1, y: 0, rotate: 0 }}
-          transition={{ duration: 1.1, delay: 0.3, ease: EASE }}
-        >
-          <div
-            ref={cardRef}
-            onPointerMove={spot}
-            onPointerLeave={spotOff}
-            className="relative aspect-[4/5] w-full overflow-hidden rounded-[2rem] border border-white/15 bg-[#14121d] shadow-[0_30px_90px_rgba(40,24,90,0.55)]"
-            style={{ "--mx": "50%", "--my": "42%", "--tx": 0, "--ty": 0 }}
+        {/* Right: a photo print on a table with notes you can drag around */}
+        <div ref={stageRef} className="relative order-1 mx-auto h-[30rem] w-full max-w-[34rem] sm:h-[36rem] lg:order-2 lg:h-[40rem]">
+          {/* A second print behind, for depth */}
+          <motion.div
+            aria-hidden="true"
+            className="absolute left-1/2 top-1/2 h-[78%] w-[62%] -translate-x-1/2 -translate-y-1/2 rounded-sm bg-[#8b78d8]/80 shadow-2xl"
+            initial={reduce ? false : { opacity: 0, rotate: 0 }}
+            animate={{ opacity: 1, rotate: 9 }}
+            transition={{ duration: 1, delay: 0.5, ease: EASE }}
+          />
+
+          {/* The print: drag it and it springs back */}
+          <motion.figure
+            className="absolute left-1/2 top-1/2 m-0 w-[62%] -translate-x-1/2 -translate-y-1/2 cursor-grab"
+            drag={!reduce}
+            dragSnapToOrigin
+            dragElastic={0.25}
+            whileDrag={{ scale: 1.04, cursor: "grabbing" }}
+            initial={reduce ? false : { opacity: 0, y: 70, rotate: 10 }}
+            animate={{ opacity: 1, y: 0, rotate: -4 }}
+            transition={{ duration: 1.1, delay: 0.3, ease: EASE }}
           >
-            {/* Violet backdrop with a faint grid */}
-            <div aria-hidden="true" className="absolute inset-0" style={{ background: "radial-gradient(80% 60% at 50% 35%, rgba(124,92,214,0.55), transparent 70%), linear-gradient(to bottom, #1c1928, #0f0d17)" }} />
-            <div
-              aria-hidden="true"
-              className="absolute inset-0 opacity-[0.12]"
-              style={{ backgroundImage: "linear-gradient(to right, #fff 1px, transparent 1px), linear-gradient(to bottom, #fff 1px, transparent 1px)", backgroundSize: "32px 32px" }}
-            />
-
-            {/* The dim picture, then the same picture in full colour, only under the spotlight */}
-            <img
-              src={heroPhoto}
-              alt="Saviyo George"
-              width="768"
-              height="1024"
-              loading="eager"
-              className="absolute inset-x-0 bottom-0 h-[92%] w-full select-none object-cover object-top"
-              style={{ filter: reduce ? "none" : "grayscale(0.7) brightness(0.55)", transform: "translate(calc(var(--tx) * 6px), calc(var(--ty) * 4px))", transition: "transform 0.25s ease-out" }}
-            />
-            {!reduce && (
-              <img
-                src={heroPhoto}
-                alt=""
-                aria-hidden="true"
-                width="768"
-                height="1024"
-                className="absolute inset-x-0 bottom-0 h-[92%] w-full select-none object-cover object-top"
-                style={{ maskImage: spotMask, WebkitMaskImage: spotMask, transform: "translate(calc(var(--tx) * 6px), calc(var(--ty) * 4px))", transition: "transform 0.25s ease-out" }}
-              />
-            )}
-
-            {/* A soft ring of light at the spotlight */}
-            {!reduce && (
-              <div
-                aria-hidden="true"
-                className="pointer-events-none absolute h-[30rem] w-[30rem] -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/10"
-                style={{ left: "var(--mx, 50%)", top: "var(--my, 42%)" }}
-              />
-            )}
-
-            {/* Card details */}
-            <p className="absolute left-5 top-4 m-0 font-mono text-[11px] uppercase tracking-[0.25em] text-white/60">01 / Portrait</p>
-            <span className="absolute right-5 top-4 inline-flex items-center gap-2 rounded-full bg-black/40 px-3 py-1.5 text-xs text-white/85">
-              <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
-              </span>
-              <RotatingStatus />
-            </span>
-            <div className="absolute inset-x-0 bottom-0 flex items-end justify-between bg-gradient-to-t from-black/70 to-transparent p-5 pt-16">
-              <div>
-                <p className="m-0 text-xl font-extrabold text-white">Saviyo George</p>
-                <p className="m-0 mt-0.5 flex items-center gap-1.5 text-sm text-white/70">
-                  <FiMapPin aria-hidden="true" style={{ color: ACCENT }} /> Kerala, India
-                </p>
+            <div className="rounded-sm bg-[#f4f0ff] p-3 pb-4 shadow-[0_30px_70px_rgba(0,0,0,0.55)]">
+              {/* A piece of tape */}
+              <span aria-hidden="true" className="absolute -top-3 left-1/2 h-6 w-20 -translate-x-1/2 rotate-2 bg-[#c4b5fd]/80" />
+              <div className="relative aspect-[4/5] overflow-hidden bg-gradient-to-b from-[#7c5cd6] to-[#2a1d55]">
+                <img
+                  src={heroPhoto}
+                  alt="Saviyo George"
+                  width="768"
+                  height="1024"
+                  loading="eager"
+                  draggable="false"
+                  className="absolute inset-x-0 bottom-0 h-[94%] w-full select-none object-cover object-top"
+                />
               </div>
-              <p className="m-0 font-mono text-xs uppercase tracking-[0.2em] text-white/60">Full-stack</p>
+              <figcaption className="mt-3 flex items-center justify-between px-1 text-[#1a1030]">
+                <span className="serif-accent text-2xl leading-none" style={{ color: "#1a1030" }}>
+                  Saviyo, Kerala
+                </span>
+                <span className="font-mono text-xs tabular-nums opacity-70">{time}</span>
+              </figcaption>
             </div>
-          </div>
-        </motion.div>
+          </motion.figure>
+
+          {/* Sticky notes: drag them anywhere on the table */}
+          {NOTES.map((n, i) => (
+            <motion.span
+              key={n.text}
+              className={`absolute z-10 cursor-grab select-none rounded-lg px-4 py-2 text-base font-bold shadow-xl ${n.pos}`}
+              style={{ background: n.bg, color: n.fg }}
+              drag={!reduce}
+              dragConstraints={stageRef}
+              dragElastic={0.2}
+              dragMomentum={false}
+              whileDrag={{ scale: 1.12, rotate: 0, cursor: "grabbing", zIndex: 30 }}
+              initial={reduce ? false : { opacity: 0, scale: 0.4, rotate: n.rot * 3 }}
+              animate={{ opacity: 1, scale: 1, rotate: n.rot }}
+              transition={{ type: "spring", stiffness: 240, damping: 14, delay: 1 + i * 0.12 }}
+            >
+              {n.text}
+            </motion.span>
+          ))}
+
+          <motion.p {...fade(1.8)} className="absolute -bottom-2 left-1/2 m-0 -translate-x-1/2 font-mono text-[11px] uppercase tracking-[0.25em] text-[var(--text-dim)]">
+            Drag the notes and the photo
+          </motion.p>
+        </div>
       </div>
     </section>
   );
