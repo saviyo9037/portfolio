@@ -255,125 +255,121 @@ function Showcase({ featured, onOpen }) {
   );
 }
 
-/* ---------- All projects as flip tiles: each tile turns over to show its details ---------- */
-function FlipTile({ project: p, index, cols, onOpen, reduce }) {
-  const [flipped, setFlipped] = useState(false);
-  const ref = useRef(null);
-
-  // A light that follows the mouse across the front of the tile
-  const glare = (e) => {
-    const el = ref.current;
-    if (!el) return;
-    const r = el.getBoundingClientRect();
-    el.style.setProperty("--gx", `${(((e.clientX - r.left) / r.width) * 100).toFixed(1)}%`);
-    el.style.setProperty("--gy", `${(((e.clientY - r.top) / r.height) * 100).toFixed(1)}%`);
-  };
-
-  // The tiles stand up one diagonal at a time
-  const wave = ((index % cols) + Math.floor(index / cols)) * 0.09;
-
+/* ---------- All projects as a journey: a glowing zigzag line draws down the page and bends at every project ---------- */
+function JourneyCard({ project: p, index, left, reduce, onOpen }) {
   return (
-    <motion.li
-      initial={reduce ? false : { opacity: 0, rotateX: -80, y: 40 }}
-      whileInView={{ opacity: 1, rotateX: 0, y: 0 }}
-      viewport={{ once: true, margin: "-40px" }}
-      transition={{ duration: 0.8, delay: wave, ease: [0.16, 1, 0.3, 1] }}
-      className="min-w-0 list-none"
-      style={{ perspective: "1200px", transformOrigin: "50% 100%" }}
+    <motion.article
+      initial={reduce ? false : { opacity: 0, x: left ? -60 : 60 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      viewport={{ once: false, margin: "-12% 0px" }}
+      transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+      className={`w-full lg:w-[calc(50%-4.5rem)] ${left ? "lg:mr-auto" : "lg:ml-auto"}`}
     >
       <button
-        ref={ref}
         type="button"
-        onMouseEnter={() => window.matchMedia("(hover: hover)").matches && setFlipped(true)}
-        onMouseLeave={() => setFlipped(false)}
-        onMouseMove={glare}
-        onFocus={() => setFlipped(true)}
-        onBlur={() => setFlipped(false)}
-        onClick={() => (flipped ? onOpen(p) : setFlipped(true))}
+        onClick={() => onOpen(p)}
         aria-label={`Open ${p.title}`}
-        className="relative block aspect-[4/3] w-full rounded-2xl text-left outline-none focus-visible:ring-2 focus-visible:ring-white/70"
-        style={{ perspective: "1200px" }}
+        className="group block w-full overflow-hidden rounded-2xl border border-white/15 bg-[#26262a]/90 text-left outline-none transition-colors hover:border-[#ffc933] focus-visible:ring-2 focus-visible:ring-white/70 sm:flex"
       >
-        {/* The button itself never moves, so the mouse cannot flicker between "inside" and "outside" as the tile turns */}
-        <span
-          className="absolute inset-0 block"
-          style={{ transformStyle: "preserve-3d", transform: `rotateY(${flipped ? 180 : 0}deg)`, transition: reduce ? "none" : "transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)", willChange: "transform" }}
-        >
-        {/* Front: the screenshot */}
-        <span className="absolute inset-0 block overflow-hidden rounded-2xl border border-white/15 bg-[#1f1f23]" style={{ backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden" }}>
-          <Cover project={p} className="object-top" />
-          <span aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/10 to-transparent" />
-          <span aria-hidden="true" className="absolute inset-0" style={{ background: "radial-gradient(260px circle at var(--gx,50%) var(--gy,50%), rgba(255,255,255,0.16), transparent 60%)" }} />
+        <span className="relative block aspect-[16/8] w-full overflow-hidden bg-[#1f1f23] sm:aspect-auto sm:min-h-[10.5rem] sm:w-[38%] sm:shrink-0">
+          <Cover project={p} className="object-top transition-transform duration-700 ease-out group-hover:scale-[1.05] motion-reduce:transition-none" />
           {p.featured && (
-            <span className="absolute right-3 top-3 rounded-full px-2.5 py-1 text-[11px] font-bold text-black" style={{ backgroundColor: ACCENT }}>
+            <span className="absolute right-2.5 top-2.5 rounded-full px-2.5 py-1 text-[11px] font-bold text-black" style={{ backgroundColor: ACCENT }}>
               Featured
             </span>
           )}
-          <span className="absolute inset-x-4 bottom-3 block">
-            <span className="block font-mono text-[10px] uppercase tracking-[0.2em] text-white/65">
-              {kind(p)} · {yearOf(p)}
-            </span>
-            <span className="mt-1 block truncate text-xl font-black uppercase leading-tight tracking-tight text-white" style={heading}>
-              {p.title}
-            </span>
-          </span>
         </span>
-
-        {/* Back: the details */}
-        <span
-          className="absolute inset-0 flex flex-col justify-between overflow-hidden rounded-2xl p-5 text-[#1a1a1a]"
-          style={{ backgroundColor: ACCENT, transform: "rotateY(180deg)", backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden" }}
-        >
-          <span className="block">
-            <span className="block font-mono text-[10px] uppercase tracking-[0.2em] text-black/60">
-              {String(index + 1).padStart(2, "0")} · {kind(p)} · {yearOf(p)}
-            </span>
-            <span className="mt-2 block text-xl font-black uppercase leading-tight tracking-tight" style={heading}>
-              {p.title}
-            </span>
-            <span className="mt-2 line-clamp-4 block text-[14px] leading-relaxed text-black/75">{p.description}</span>
+        <span className="block p-4 sm:flex-1 sm:p-5">
+          {/* The year, big, like a milestone */}
+          <span className="block text-4xl font-black leading-none tracking-tight sm:text-5xl" style={{ ...heading, color: ACCENT }}>
+            {yearOf(p)}
           </span>
-          <span className="flex flex-wrap items-center gap-1.5">
+          <span className="mt-1.5 block font-mono text-[10px] uppercase tracking-[0.2em] text-white/50">
+            {String(index + 1).padStart(2, "0")} · {kind(p)}
+          </span>
+          <span className="mt-2 block text-lg font-black uppercase leading-tight tracking-tight text-white sm:text-xl" style={heading}>
+            {p.title}
+          </span>
+          <span className="mt-2 line-clamp-2 block text-sm leading-relaxed text-white/65">{p.description}</span>
+          <span className="mt-3 flex flex-wrap items-center gap-1.5">
             {tagsOf(p, 3).map((t) => (
-              <span key={t} className="rounded-full bg-black/10 px-2.5 py-1 text-xs text-black/80">
+              <span key={t} className="rounded-full border border-white/15 px-2.5 py-0.5 text-xs text-white/70">
                 {t}
               </span>
             ))}
-            <span className="ml-auto inline-flex h-9 items-center gap-1.5 rounded-full bg-[#1a1a1a] px-4 text-xs font-bold text-white">
-              Open <FiArrowUpRight aria-hidden="true" />
+            <span className="ml-auto inline-flex items-center gap-1.5 text-sm font-semibold" style={{ color: ACCENT }}>
+              Open <FiArrowUpRight aria-hidden="true" className="transition-transform duration-300 group-hover:rotate-45" />
             </span>
           </span>
         </span>
-        </span>
       </button>
-    </motion.li>
+    </motion.article>
   );
 }
 
-function ProjectFlip({ projects, onOpen }) {
+function ProjectJourney({ projects, onOpen }) {
   const reduce = useReducedMotion();
-  const gridRef = useRef(null);
-  const [cols, setCols] = useState(3);
+  const ref = useRef(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start 70%", "end 55%"] });
+  const grow = useTransform(scrollYProgress, [0, 1], [0, 1]);
+  const reveal = useTransform(grow, (v) => `inset(-20px -20px ${((1 - v) * 100).toFixed(2)}% -20px)`);
+  const n = projects.length;
 
-  // Columns, for timing the wave
-  useEffect(() => {
-    const el = gridRef.current;
-    if (!el) return undefined;
-    const measure = () => setCols(el.clientWidth >= 1100 ? 3 : el.clientWidth >= 640 ? 2 : 1);
-    measure();
-    const ro = new ResizeObserver(measure);
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, []);
+  // The zigzag: it starts and ends in the middle and bends in toward each card
+  const xs = projects.map((_, i) => (i % 2 === 0 ? 47 : 53));
+  const ys = projects.map((_, i) => ((i + 0.5) / n) * 100);
+  const d = `M 50 0 ${xs.map((x, i) => `L ${x} ${ys[i]}`).join(" ")} L 50 100`;
 
   return (
-    <div className="mt-10">
-      <p className="m-0 mb-4 font-mono text-[11px] uppercase tracking-[0.25em] text-white/40">Hover or tap a tile to turn it over · click again to open the project</p>
-      <ul ref={gridRef} className="m-0 grid list-none grid-cols-1 gap-6 p-0 sm:grid-cols-2 xl:grid-cols-3">
-        {projects.map((p, i) => (
-          <FlipTile key={p.id} project={p} index={i} cols={cols} onOpen={onOpen} reduce={reduce} />
-        ))}
-      </ul>
+    <div ref={ref} className="relative mt-12">
+      {/* Phones and tablets: a straight line down the left edge */}
+      <div aria-hidden="true" className="absolute bottom-0 left-4 top-0 w-px bg-white/15 lg:hidden" />
+      <motion.div
+        aria-hidden="true"
+        className="absolute bottom-0 left-4 top-0 w-[3px] origin-top -translate-x-[1px] rounded-full lg:hidden"
+        style={{ backgroundColor: ACCENT, scaleY: reduce ? 1 : grow, boxShadow: "0 0 14px rgba(255,201,51,0.6)" }}
+      />
+
+      {/* Wide screens: the glowing zigzag. It is drawn once; scrolling only uncovers it from the top, which is cheap. */}
+      <svg aria-hidden="true" viewBox="0 0 100 100" preserveAspectRatio="none" className="pointer-events-none absolute inset-0 hidden h-full w-full overflow-visible lg:block">
+        <path d={d} fill="none" stroke="rgba(255,255,255,0.14)" strokeWidth="1.5" vectorEffect="non-scaling-stroke" />
+      </svg>
+      <motion.div aria-hidden="true" className="pointer-events-none absolute inset-0 hidden lg:block" style={{ clipPath: reduce ? "none" : reveal, willChange: "clip-path", transform: "translateZ(0)" }}>
+        <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="h-full w-full overflow-visible">
+          {/* a wide soft stroke under the bright one gives the neon glow without a costly filter */}
+          <path d={d} fill="none" stroke="rgba(255,201,51,0.28)" strokeWidth="12" strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
+          <path d={d} fill="none" stroke={ACCENT} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
+        </svg>
+      </motion.div>
+
+      <ol className="m-0 list-none p-0">
+        {projects.map((p, i) => {
+          const left = i % 2 === 0;
+          return (
+            <li
+              key={p.id}
+              className="relative pb-7 pl-12 last:pb-0 lg:flex lg:h-[15.5rem] lg:items-center lg:pb-0 lg:pl-0"
+              style={{ contentVisibility: "auto", containIntrinsicSize: "auto 250px" }}
+            >
+              {/* Mobile stop on the line */}
+              <span aria-hidden="true" className="absolute left-4 top-4 z-10 flex h-8 w-8 -translate-x-1/2 items-center justify-center rounded-full border-2 bg-[#222] font-mono text-[11px] font-bold lg:hidden" style={{ borderColor: ACCENT, color: ACCENT }}>
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              {/* Wide-screen stop: sits on the bend of the zigzag */}
+              <motion.span
+                aria-hidden="true"
+                className="absolute top-1/2 z-10 hidden h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-[3px] border-white lg:block"
+                style={{ left: `${xs[i]}%`, backgroundColor: ACCENT, boxShadow: "0 0 0 6px rgba(255,201,51,0.22), 0 0 22px rgba(255,201,51,0.95)" }}
+                initial={reduce ? false : { scale: 0 }}
+                whileInView={{ scale: 1 }}
+                viewport={{ once: false, margin: "-15% 0px" }}
+                transition={{ type: "spring", stiffness: 380, damping: 16 }}
+              />
+              <JourneyCard project={p} index={i} left={left} reduce={reduce} onOpen={onOpen} />
+            </li>
+          );
+        })}
+      </ol>
     </div>
   );
 }
@@ -454,7 +450,7 @@ function Browser({ list, onOpen }) {
           </button>
         </div>
       ) : (
-        <ProjectFlip key={shown.map((x) => x.id).join("|")} projects={shown} onOpen={onOpen} />
+        <ProjectJourney key={shown.map((x) => x.id).join("|")} projects={shown} onOpen={onOpen} />
       )}
 
       {!showAll && !filtering && matches.length > PAGE && (

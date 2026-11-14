@@ -1,183 +1,76 @@
-import React, { useEffect, useState, useRef, useCallback } from "react";
-import { motion, useSpring, useMotionValue, useTransform, AnimatePresence } from "framer-motion";
+import React, { useEffect, useState } from "react";
+import { motion, useMotionValue, useSpring } from "framer-motion";
 
+const INTERACTIVE = "a, button, .group, input, textarea, select, [role='button'], [data-cursor-label]";
+
+// A light cursor: one dot that follows the mouse and grows over links and buttons.
+// It only exists on screens with a real mouse, and it does no work while the mouse is still.
 function CustomCursor() {
-  const [isHovered, setIsHovered] = useState(false);
-  const [isVisible, setIsVisible] = useState(false);
-  const [cursorLabel, setCursorLabel] = useState("");
-  const trailRefs = useRef([]);
-  const trailPositions = useRef(Array.from({ length: 5 }, () => ({ x: 0, y: 0 })));
-  const rafId = useRef(null);
+  const [fine, setFine] = useState(false);
+  const [visible, setVisible] = useState(false);
+  const [hovered, setHovered] = useState(false);
+  const [label, setLabel] = useState("");
 
-  // Ultra-responsive springs for cursor position (eliminates mouse lag)
-  const cursorX = useSpring(0, { stiffness: 1800, damping: 65 });
-  const cursorY = useSpring(0, { stiffness: 1800, damping: 65 });
-
-  // Velocity for deformation
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-  const velocityX = useMotionValue(0);
-  const velocityY = useMotionValue(0);
-  const prevPos = useRef({ x: 0, y: 0, time: Date.now() });
-
-  // Deformation transforms based on velocity
-  const skewX = useTransform(velocityX, [-1000, 0, 1000], [-12, 0, 12]);
-  const skewY = useTransform(velocityY, [-1000, 0, 1000], [-12, 0, 12]);
-  const scaleX = useTransform(velocityX, [-1500, 0, 1500], [0.7, 1, 0.7]);
-
-  const updateTrail = useCallback(() => {
-    for (let i = trailPositions.current.length - 1; i > 0; i--) {
-      trailPositions.current[i].x += (trailPositions.current[i - 1].x - trailPositions.current[i].x) * 0.3;
-      trailPositions.current[i].y += (trailPositions.current[i - 1].y - trailPositions.current[i].y) * 0.3;
-    }
-    trailPositions.current[0].x = mouseX.get();
-    trailPositions.current[0].y = mouseY.get();
-
-    trailRefs.current.forEach((el, i) => {
-      if (el) {
-        el.style.transform = `translate(${trailPositions.current[i].x - 3}px, ${trailPositions.current[i].y - 3}px)`;
-        el.style.opacity = `${0.2 - i * 0.035}`;
-      }
-    });
-
-    rafId.current = requestAnimationFrame(updateTrail);
-  }, [mouseX, mouseY]);
+  const x = useMotionValue(-100);
+  const y = useMotionValue(-100);
+  const sx = useSpring(x, { stiffness: 900, damping: 55, mass: 0.4 });
+  const sy = useSpring(y, { stiffness: 900, damping: 55, mass: 0.4 });
 
   useEffect(() => {
-    const handleMouseMove = (e) => {
-      if (!isVisible) setIsVisible(true);
-
-      const now = Date.now();
-      const dt = Math.max(now - prevPos.current.time, 1);
-      const vx = ((e.clientX - prevPos.current.x) / dt) * 1000;
-      const vy = ((e.clientY - prevPos.current.y) / dt) * 1000;
-
-      velocityX.set(vx);
-      velocityY.set(vy);
-      prevPos.current = { x: e.clientX, y: e.clientY, time: now };
-
-      mouseX.set(e.clientX);
-      mouseY.set(e.clientY);
-      cursorX.set(e.clientX);
-      cursorY.set(e.clientY);
-    };
-
-    const handleMouseLeave = () => setIsVisible(false);
-    const handleMouseEnter = () => setIsVisible(true);
-    
-    // Hide when mouse leaves the html document
-    const handleDocumentLeave = (e) => {
-      if (e.clientY <= 0 || e.clientX <= 0 || (e.clientX >= window.innerWidth || e.clientY >= window.innerHeight)) {
-        setIsVisible(false);
-      }
-    };
-
-    window.addEventListener("mousemove", handleMouseMove);
-    document.addEventListener("mouseleave", handleMouseLeave);
-    document.documentElement.addEventListener("mouseleave", handleDocumentLeave);
-    document.addEventListener("mouseenter", handleMouseEnter);
-
-    // Start trail animation loop
-    rafId.current = requestAnimationFrame(updateTrail);
-
-    return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseleave", handleMouseLeave);
-      document.documentElement.removeEventListener("mouseleave", handleDocumentLeave);
-      document.removeEventListener("mouseenter", handleMouseEnter);
-      if (rafId.current) cancelAnimationFrame(rafId.current);
-    };
-  }, [cursorX, cursorY, isVisible, mouseX, mouseY, velocityX, velocityY, updateTrail]);
-
-  // Hover detection with labels
-  useEffect(() => {
-    const handleElementHover = (e) => {
-      setIsHovered(true);
-      const target = e.currentTarget;
-      // Check for data-cursor-label attribute
-      const label = target.getAttribute("data-cursor-label");
-      if (label) {
-        setCursorLabel(label);
-      }
-    };
-    const handleElementLeave = () => {
-      setIsHovered(false);
-      setCursorLabel("");
-    };
-
-    const addHoverListeners = () => {
-      const interactables = document.querySelectorAll("a, button, .group, input, textarea, [data-cursor-label]");
-      interactables.forEach((el) => {
-        el.addEventListener("mouseenter", handleElementHover);
-        el.addEventListener("mouseleave", handleElementLeave);
-      });
-    };
-
-    addHoverListeners();
-    const timeout = setTimeout(addHoverListeners, 1000);
-    const timeout2 = setTimeout(addHoverListeners, 3000);
-
-    return () => {
-      clearTimeout(timeout);
-      clearTimeout(timeout2);
-      const interactables = document.querySelectorAll("a, button, .group, input, textarea, [data-cursor-label]");
-      interactables.forEach((el) => {
-        el.removeEventListener("mouseenter", handleElementHover);
-        el.removeEventListener("mouseleave", handleElementLeave);
-      });
-    };
+    const mq = window.matchMedia("(hover: hover) and (pointer: fine)");
+    const update = () => setFine(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
   }, []);
+
+  useEffect(() => {
+    if (!fine) return undefined;
+
+    const onMove = (e) => {
+      x.set(e.clientX);
+      y.set(e.clientY);
+      setVisible(true);
+    };
+    // One listener for the whole page, instead of one per link and button
+    const onOver = (e) => {
+      const el = e.target instanceof Element ? e.target.closest(INTERACTIVE) : null;
+      setHovered(Boolean(el));
+      setLabel(el?.getAttribute("data-cursor-label") || "");
+    };
+    const onLeave = () => setVisible(false);
+
+    window.addEventListener("mousemove", onMove, { passive: true });
+    document.addEventListener("mouseover", onOver, { passive: true });
+    document.documentElement.addEventListener("mouseleave", onLeave);
+    return () => {
+      window.removeEventListener("mousemove", onMove);
+      document.removeEventListener("mouseover", onOver);
+      document.documentElement.removeEventListener("mouseleave", onLeave);
+    };
+  }, [fine, x, y]);
+
+  if (!fine) return null;
 
   return (
     <>
-      {/* Trail dots */}
-      {Array.from({ length: 5 }).map((_, i) => (
-        <div
-          key={`trail-${i}`}
-          ref={(el) => (trailRefs.current[i] = el)}
-          className="cursor-trail-dot hidden md:block"
-          style={{ opacity: 0 }}
-        />
-      ))}
-
-      {/* Main cursor */}
+      {/* The dot. Its size changes with a transform, so nothing has to be laid out again. */}
       <motion.div
-        className="pointer-events-none fixed top-0 left-0 z-[9999] rounded-full mix-blend-difference hidden md:flex items-center justify-center"
-        style={{
-          x: cursorX,
-          y: cursorY,
-          translateX: "-50%",
-          translateY: "-50%",
-          skewX,
-          scaleX,
-        }}
-        initial={{ opacity: 0, width: 16, height: 16, backgroundColor: "#FFF" }}
-        animate={{
-          opacity: isVisible ? 1 : 0,
-          width: cursorLabel ? 100 : isHovered ? 64 : 16,
-          height: cursorLabel ? 100 : isHovered ? 64 : 16,
-          backgroundColor: "#FFF",
-        }}
-        transition={{
-          width: { type: "spring", stiffness: 300, damping: 20 },
-          height: { type: "spring", stiffness: 300, damping: 20 },
-          opacity: { duration: 0.2 },
-        }}
-      >
-        {/* Cursor label text */}
-        <AnimatePresence>
-          {cursorLabel && (
-            <motion.span
-              initial={{ opacity: 0, scale: 0.5 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.5 }}
-              className="text-[10px] font-bold uppercase tracking-widest text-black mix-blend-normal pointer-events-none select-none"
-            >
-              {cursorLabel}
-            </motion.span>
-          )}
-        </AnimatePresence>
-      </motion.div>
+        aria-hidden="true"
+        className="pointer-events-none fixed left-0 top-0 z-[9999] h-4 w-4 rounded-full border border-black/50 bg-white"
+        style={{ x: sx, y: sy, translateX: "-50%", translateY: "-50%", willChange: "transform" }}
+        animate={{ opacity: visible ? 1 : 0, scale: label ? 6 : hovered ? 3.5 : 1 }}
+        transition={{ scale: { type: "spring", stiffness: 320, damping: 24 }, opacity: { duration: 0.2 } }}
+      />
+      {label && (
+        <motion.span
+          aria-hidden="true"
+          className="pointer-events-none fixed left-0 top-0 z-[10000] select-none text-[10px] font-bold uppercase tracking-widest text-black"
+          style={{ x: sx, y: sy, translateX: "-50%", translateY: "-50%" }}
+        >
+          {label}
+        </motion.span>
+      )}
     </>
   );
 }

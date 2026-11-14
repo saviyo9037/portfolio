@@ -76,10 +76,11 @@ function App() {
   useEffect(() => {
     if (isLoading) return
 
+    // Smoothing by easing toward the target (lerp) feels steadier than a fixed duration
     const lenis = new Lenis({
-      duration: 0.7,
-      wheelMultiplier: 1.6,
-      touchMultiplier: 2.0,
+      lerp: 0.11,
+      wheelMultiplier: 1,
+      touchMultiplier: 1.6,
       smoothWheel: true,
     })
     window.__lenis = lenis
