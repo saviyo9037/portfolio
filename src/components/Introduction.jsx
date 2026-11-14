@@ -1,42 +1,18 @@
 import React, { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { FiArrowRight, FiDownload, FiMapPin } from "react-icons/fi";
-import { SiTypescript } from "react-icons/si";
-import heroScene from "../assets/hero-scene.webp";
+import heroPhoto from "../assets/saviyo-cutout.png";
 import { scrollToId } from "../lib/scroll";
-import { TECHNOLOGIES } from "../data/technologies";
-import { FALLBACK_ICON, TECH_ICONS } from "./tech/techIcons";
 import { CountUp, Magnetic } from "./motion/effects";
 
 const ACCENT = "#ff4d00";
 const EASE = [0.16, 1, 0.3, 1];
 
 const STATS = [
-  { value: "4+", label: "Projects" },
+  { value: "4+", label: "Projects shipped" },
   { value: "1.5+ Years", label: "Experience" },
   { value: "MERN Stack", label: "Specialization" },
 ];
-
-// The profile as code, typed out in the code tile
-const CODE = [
-  ["k", "const "], ["p", "saviyo"], ["d", " = {\n"],
-  ["d", "  "], ["p", "role"], ["d", ": "], ["s", '"Full-Stack Developer"'], ["d", ",\n"],
-  ["d", "  "], ["p", "stack"], ["d", ": ["], ["s", '"MongoDB"'], ["d", ", "], ["s", '"Express"'], ["d", ", "], ["s", '"React"'], ["d", ", "], ["s", '"Node"'], ["d", "],\n"],
-  ["d", "  "], ["p", "builds"], ["d", ": ["], ["s", '"ERP"'], ["d", ", "], ["s", '"POS"'], ["d", ", "], ["s", '"CRM/LMS"'], ["d", "],\n"],
-  ["d", "  "], ["p", "openToWork"], ["d", ": "], ["n", "true"], ["d", ",\n};"],
-];
-const CODE_COLORS = { k: ACCENT, p: "#c4c4c4", s: "#ffb08a", n: "#f5f5f5", d: "#8e8e8e" };
-const CODE_LENGTH = CODE.reduce((n, [, t]) => n + t.length, 0);
-// Where each piece starts in the full text, so we can reveal the first N characters
-const CODE_STARTS = CODE.map((_, i) => CODE.slice(0, i).reduce((n, [, t]) => n + t.length, 0));
-
-const MARQUEE_IDS = ["react", "nextjs", "typescript", "nodejs", "express", "mongodb", "mysql", "postgresql", "tailwind", "redux", "docker", "git", "vercel", "python", "flutter"];
-const MARQUEE = MARQUEE_IDS.map((id) => {
-  if (id === "typescript") return { id, name: "TypeScript", Icon: SiTypescript, color: "#3178C6" };
-  const tech = TECHNOLOGIES[id];
-  const { Icon, color } = TECH_ICONS[tech?.icon] ?? FALLBACK_ICON;
-  return { id, name: tech?.name ?? id, Icon, color: color ?? "#f5f5f5" };
-});
 
 const STATUS_LINES = ["Open to new opportunities", "Building ERP & POS systems", "Shipping MERN apps"];
 const ROLES = ["Full-Stack Developer", "ERP & POS Engineer", "API Designer", "MERN Specialist"];
@@ -45,108 +21,6 @@ const INTRO_TEXT =
 
 const focusRing =
   "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#ff4d00]";
-
-// A tile that tilts a few degrees toward the pointer, with a soft light that follows it
-function Tile({ className = "", children, delay = 0, depth = 4 }) {
-  const reduce = useReducedMotion();
-  const ref = useRef(null);
-
-  const move = (e) => {
-    const el = ref.current;
-    if (!el || !window.matchMedia("(pointer: fine)").matches) return;
-    const r = el.getBoundingClientRect();
-    const x = (e.clientX - r.left) / r.width;
-    const y = (e.clientY - r.top) / r.height;
-    el.style.setProperty("--mx", `${(x * 100).toFixed(1)}%`);
-    el.style.setProperty("--my", `${(y * 100).toFixed(1)}%`);
-    el.style.setProperty("--spot", "1");
-    el.style.transform = `perspective(900px) rotateX(${((0.5 - y) * depth).toFixed(2)}deg) rotateY(${((x - 0.5) * depth).toFixed(2)}deg)`;
-  };
-  const leave = () => {
-    const el = ref.current;
-    if (!el) return;
-    el.style.setProperty("--spot", "0");
-    el.style.transform = "";
-  };
-
-  return (
-    <motion.div
-      initial={reduce ? false : { opacity: 0, y: 36, scale: 0.96 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ duration: 0.85, delay, ease: EASE }}
-      className={className}
-    >
-      <div
-        ref={ref}
-        onPointerMove={move}
-        onPointerLeave={leave}
-        className="relative h-full overflow-hidden rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] transition-[transform,border-color] duration-200 ease-out hover:border-white/25"
-      >
-        {children}
-        {/* Light that follows the pointer */}
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0 opacity-[var(--spot,0)] transition-opacity duration-300"
-          style={{ background: "radial-gradient(360px circle at var(--mx,50%) var(--my,50%), rgba(255,255,255,0.08), transparent 60%)" }}
-        />
-      </div>
-    </motion.div>
-  );
-}
-
-// Types the profile code a few characters at a time
-function CodeTile() {
-  const reduce = useReducedMotion();
-  const [count, setCount] = useState(reduce ? CODE_LENGTH : 0);
-
-  useEffect(() => {
-    if (reduce) return undefined;
-    let timer = 0;
-    const start = window.setTimeout(() => {
-      timer = window.setInterval(() => {
-        setCount((c) => {
-          if (c >= CODE_LENGTH) {
-            window.clearInterval(timer);
-            return c;
-          }
-          return c + 2;
-        });
-      }, 28);
-    }, 900);
-    return () => {
-      window.clearTimeout(start);
-      window.clearInterval(timer);
-    };
-  }, [reduce]);
-
-  return (
-    <div className="flex h-full flex-col">
-      <div className="flex items-center gap-2 border-b border-[var(--border-subtle)] bg-[var(--bg-elevated)] px-4 py-2.5">
-        <span className="flex gap-1.5" aria-hidden="true">
-          <span className="h-2.5 w-2.5 rounded-full bg-[#ff5f56]" />
-          <span className="h-2.5 w-2.5 rounded-full bg-[#ffbd2e]" />
-          <span className="h-2.5 w-2.5 rounded-full bg-[#27c93f]" />
-        </span>
-        <span className="font-mono text-xs text-[var(--text-dim)]">saviyo.js</span>
-        <span className="ml-auto flex items-center gap-1.5 font-mono text-[10px] text-[var(--text-dim)]">
-          <span className={`h-1.5 w-1.5 rounded-full ${count < CODE_LENGTH ? "animate-pulse bg-[#ffbd2e]" : "bg-[#27c93f]"}`} />
-          {count < CODE_LENGTH ? "typing" : "ready"}
-        </span>
-      </div>
-      <pre className="m-0 flex-1 whitespace-pre-wrap p-4 font-mono text-[12px] leading-6 sm:text-[13px]" aria-label="Profile written as code">
-        {CODE.map(([kind, text], i) => {
-          const shown = text.slice(0, Math.max(0, count - CODE_STARTS[i]));
-          return shown ? (
-            <span key={i} style={{ color: CODE_COLORS[kind] }}>
-              {shown}
-            </span>
-          ) : null;
-        })}
-        <span className="ml-0.5 inline-block h-4 w-[7px] translate-y-0.5 animate-pulse" style={{ backgroundColor: ACCENT }} />
-      </pre>
-    </div>
-  );
-}
 
 // Local time in Kerala, updated every second
 function useKeralaTime() {
@@ -244,28 +118,35 @@ function WordsFade({ text, delay = 0, className = "" }) {
   );
 }
 
-// One headline word that rises out of a mask
-function Word({ children, i, reduce, className = "" }) {
-  return (
-    <span className={`inline-block overflow-hidden pb-[0.08em] align-bottom ${className}`}>
-      <motion.span
-        className="inline-block"
-        initial={reduce ? false : { y: "110%" }}
-        animate={{ y: "0%" }}
-        transition={{ duration: 0.8, delay: 0.15 + i * 0.07, ease: EASE }}
-      >
-        {children}
-      </motion.span>
-    </span>
-  );
-}
+const LINES = ["Full-stack", "developer", "& MERN."];
 
 export default function Introduction() {
   const reduce = useReducedMotion();
   const time = useKeralaTime();
+  const cardRef = useRef(null);
   const goTo = (id) => (e) => {
     e.preventDefault();
     scrollToId(id);
+  };
+
+  // A spotlight on the portrait follows the pointer; the rest of the picture stays dim.
+  // Written straight to the element, so moving the mouse never re-renders anything.
+  const spot = (e) => {
+    const el = cardRef.current;
+    if (!el || reduce || !window.matchMedia("(pointer: fine)").matches) return;
+    const r = el.getBoundingClientRect();
+    el.style.setProperty("--mx", `${(((e.clientX - r.left) / r.width) * 100).toFixed(1)}%`);
+    el.style.setProperty("--my", `${(((e.clientY - r.top) / r.height) * 100).toFixed(1)}%`);
+    el.style.setProperty("--tx", (((e.clientX - r.left) / r.width - 0.5) * 2).toFixed(3));
+    el.style.setProperty("--ty", (((e.clientY - r.top) / r.height - 0.5) * 2).toFixed(3));
+  };
+  const spotOff = () => {
+    const el = cardRef.current;
+    if (!el) return;
+    el.style.setProperty("--mx", "50%");
+    el.style.setProperty("--my", "42%");
+    el.style.setProperty("--tx", "0");
+    el.style.setProperty("--ty", "0");
   };
 
   const fade = (delay) => ({
@@ -274,23 +155,14 @@ export default function Introduction() {
     transition: { duration: 0.8, delay, ease: EASE },
   });
 
-  const words = ["Building", "real-world", "solutions", "with"];
+  const spotMask = "radial-gradient(circle 15rem at var(--mx, 50%) var(--my, 42%), #000 0%, #000 35%, transparent 100%)";
 
   return (
-    <section
-      className="relative w-full overflow-hidden px-5 pb-20 pt-28 sm:px-8 lg:pb-24 lg:pt-32"
-      onPointerMove={(e) => {
-        if (!window.matchMedia("(pointer: fine)").matches) return;
-        const r = e.currentTarget.getBoundingClientRect();
-        e.currentTarget.style.setProperty("--hx", `${e.clientX - r.left}px`);
-        e.currentTarget.style.setProperty("--hy", `${e.clientY - r.top}px`);
-      }}
-    >
-      {/* Background: a light that follows the mouse, two slow lights and a faint grid */}
+    <section className="relative flex min-h-[100svh] w-full flex-col overflow-hidden px-5 pb-12 pt-28 sm:px-8 lg:pt-24">
+      {/* Background: two slow violet lights and a faint grid */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0">
-        <div className="absolute inset-0" style={{ background: "radial-gradient(420px circle at var(--hx, 30%) var(--hy, 30%), rgba(255, 77, 0,0.10), transparent 65%)" }} />
-        <div className="absolute -left-24 top-10 h-[34rem] w-[34rem] rounded-full bg-[radial-gradient(circle,rgba(255, 77, 0,0.13),transparent_65%)] [animation:hero-drift-a_14s_ease-in-out_infinite]" />
-        <div className="absolute -right-16 bottom-0 h-[30rem] w-[30rem] rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.07),transparent_65%)] [animation:hero-drift-b_17s_ease-in-out_infinite]" />
+        <div className="absolute -left-32 top-10 h-[36rem] w-[36rem] rounded-full bg-[radial-gradient(circle,rgba(98,64,181,0.32),transparent_65%)] [animation:hero-drift-a_14s_ease-in-out_infinite]" />
+        <div className="absolute -right-24 bottom-0 h-[34rem] w-[34rem] rounded-full bg-[radial-gradient(circle,rgba(124,92,214,0.22),transparent_65%)] [animation:hero-drift-b_17s_ease-in-out_infinite]" />
         <div
           className="absolute inset-0 opacity-[0.05]"
           style={{
@@ -302,46 +174,40 @@ export default function Introduction() {
         />
       </div>
 
-      <div className="relative mx-auto grid w-full max-w-[1500px] items-center gap-10 lg:grid-cols-12 lg:gap-12">
-        {/* Left: the message */}
-        <div className="lg:col-span-5">
-          <motion.span {...fade(0.05)} className="inline-flex items-center gap-2.5 rounded-full border border-[var(--border-subtle)] bg-[var(--bg-surface)] py-2 pl-3 pr-4 text-sm text-[var(--text-muted)]">
-            <span className="relative flex h-2.5 w-2.5">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-              <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-500" />
-            </span>
-            <RotatingStatus />
-          </motion.span>
+      <div className="relative mx-auto grid w-full max-w-[1400px] flex-1 items-center gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16">
+        {/* Left: the message, one line at a time out of a mask */}
+        <div className="order-2 lg:order-1">
+          <motion.p {...fade(0.05)} className="m-0 flex items-center gap-3 font-mono text-xs uppercase tracking-[0.28em] text-[var(--text-dim)]">
+            <span className="h-px w-10 bg-[var(--text-dim)]" /> Portfolio · Kerala, India · {time}
+          </motion.p>
 
           <h1
-            className="m-0 mt-7 font-black leading-[1.04] text-[var(--text-main)]"
-            style={{ fontFamily: "'Inter', sans-serif", textTransform: "none", letterSpacing: "-0.035em", fontSize: "clamp(2.6rem, 5.2vw, 5rem)" }}
+            className="m-0 mt-6 font-black uppercase leading-[0.92] text-[var(--text-main)]"
+            style={{ fontFamily: "'Inter', sans-serif", letterSpacing: "-0.045em", fontSize: "clamp(3.2rem, 8.4vw, 8rem)" }}
+            aria-label="Full-stack developer and MERN"
           >
-            {words.map((w, i) => (
-              <React.Fragment key={w}>
-                <Word i={i} reduce={reduce}>
-                  {w}
-                </Word>{" "}
-              </React.Fragment>
+            {LINES.map((line, i) => (
+              <span key={line} aria-hidden="true" className="block overflow-hidden pb-[0.06em]">
+                <motion.span
+                  className={`block ${i === 1 ? "text-transparent" : ""} ${i === 2 ? "serif-accent normal-case" : ""}`}
+                  style={i === 1 ? { WebkitTextStroke: "2px #c4b5fd" } : undefined}
+                  initial={reduce ? false : { y: "110%" }}
+                  animate={{ y: "0%" }}
+                  transition={{ duration: 0.9, delay: 0.15 + i * 0.12, ease: EASE }}
+                >
+                  {line}
+                </motion.span>
+              </span>
             ))}
-            {/* MERN: the one word set in the italic serif, in orange */}
-            <span className="serif-accent pr-[0.08em]">
-              <Word i={4} reduce={reduce}>
-                MERN
-              </Word>
-            </span>{" "}
-            <Word i={5} reduce={reduce}>
-              stack.
-            </Word>
           </h1>
 
-          <WordsFade delay={0.6} text={INTRO_TEXT} className="m-0 mt-7 max-w-[46ch] text-lg leading-relaxed text-[var(--text-muted)]" />
+          <WordsFade delay={0.8} text={INTRO_TEXT} className="m-0 mt-7 max-w-[48ch] text-lg leading-relaxed text-[var(--text-muted)]" />
 
-          <motion.div {...fade(1.2)}>
+          <motion.div {...fade(1.3)}>
             <TypedRole />
           </motion.div>
 
-          <motion.div {...fade(1.3)} className="mt-8 flex flex-wrap items-center gap-3">
+          <motion.div {...fade(1.4)} className="mt-8 flex flex-wrap items-center gap-3">
             <Magnetic>
               <a
                 href="#projects"
@@ -362,88 +228,93 @@ export default function Introduction() {
               </a>
             </Magnetic>
           </motion.div>
+
+          <motion.ul {...fade(1.55)} className="m-0 mt-10 grid max-w-xl list-none grid-cols-3 gap-2 p-0">
+            {STATS.map((s, i) => (
+              <li key={s.label} className={i > 0 ? "border-l border-[var(--border-subtle)] pl-4 sm:pl-6" : ""}>
+                <p className="m-0 text-xl font-extrabold text-[var(--text-main)] sm:text-2xl">
+                  <CountUp value={s.value} delay={1.6 + i * 0.15} />
+                </p>
+                <p className="m-0 mt-0.5 text-xs text-[var(--text-dim)] sm:text-sm">{s.label}</p>
+              </li>
+            ))}
+          </motion.ul>
         </div>
 
-        {/* Right: a bento of tiles */}
-        <div className="grid grid-cols-6 gap-3 sm:gap-4 lg:col-span-7">
-          <Tile delay={0.2} className="col-span-6 h-72 sm:h-80 xl:col-span-3 xl:row-span-2 xl:h-auto xl:min-h-[26rem]">
-            <motion.img
-              src={heroScene}
-              alt="Saviyo George at a laptop, with a code card and tech logos"
-              className="absolute inset-0 h-full w-full select-none object-cover object-[78%_20%] xl:object-[72%_20%]"
-              loading="eager"
-              animate={reduce ? undefined : { scale: [1, 1.06, 1] }}
-              transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }}
+        {/* Right: a portrait card lit by a spotlight that follows the pointer */}
+        <motion.div
+          className="order-1 mx-auto w-full max-w-[26rem] lg:order-2 lg:max-w-[32rem]"
+          initial={reduce ? false : { opacity: 0, y: 60, rotate: 3 }}
+          animate={{ opacity: 1, y: 0, rotate: 0 }}
+          transition={{ duration: 1.1, delay: 0.3, ease: EASE }}
+        >
+          <div
+            ref={cardRef}
+            onPointerMove={spot}
+            onPointerLeave={spotOff}
+            className="relative aspect-[4/5] w-full overflow-hidden rounded-[2rem] border border-white/15 bg-[#14121d] shadow-[0_30px_90px_rgba(40,24,90,0.55)]"
+            style={{ "--mx": "50%", "--my": "42%", "--tx": 0, "--ty": 0 }}
+          >
+            {/* Violet backdrop with a faint grid */}
+            <div aria-hidden="true" className="absolute inset-0" style={{ background: "radial-gradient(80% 60% at 50% 35%, rgba(124,92,214,0.55), transparent 70%), linear-gradient(to bottom, #1c1928, #0f0d17)" }} />
+            <div
+              aria-hidden="true"
+              className="absolute inset-0 opacity-[0.12]"
+              style={{ backgroundImage: "linear-gradient(to right, #fff 1px, transparent 1px), linear-gradient(to bottom, #fff 1px, transparent 1px)", backgroundSize: "32px 32px" }}
             />
-            <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-black/65 via-transparent to-transparent" />
-            <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between">
-              <p className="m-0 text-sm font-semibold text-white">Saviyo George</p>
-              <span className="rounded-full bg-black/60 px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider text-white/80">MERN</span>
-            </div>
-          </Tile>
 
-          <Tile delay={0.3} className="col-span-6 sm:col-span-3">
-            <CodeTile />
-          </Tile>
+            {/* The dim picture, then the same picture in full colour, only under the spotlight */}
+            <img
+              src={heroPhoto}
+              alt="Saviyo George"
+              width="768"
+              height="1024"
+              loading="eager"
+              className="absolute inset-x-0 bottom-0 h-[92%] w-full select-none object-cover object-top"
+              style={{ filter: reduce ? "none" : "grayscale(0.7) brightness(0.55)", transform: "translate(calc(var(--tx) * 6px), calc(var(--ty) * 4px))", transition: "transform 0.25s ease-out" }}
+            />
+            {!reduce && (
+              <img
+                src={heroPhoto}
+                alt=""
+                aria-hidden="true"
+                width="768"
+                height="1024"
+                className="absolute inset-x-0 bottom-0 h-[92%] w-full select-none object-cover object-top"
+                style={{ maskImage: spotMask, WebkitMaskImage: spotMask, transform: "translate(calc(var(--tx) * 6px), calc(var(--ty) * 4px))", transition: "transform 0.25s ease-out" }}
+              />
+            )}
 
-          <Tile delay={0.4} className="col-span-6 sm:col-span-3">
-            <div className="flex h-full items-center justify-between gap-4 p-5">
+            {/* A soft ring of light at the spotlight */}
+            {!reduce && (
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute h-[30rem] w-[30rem] -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/10"
+                style={{ left: "var(--mx, 50%)", top: "var(--my, 42%)" }}
+              />
+            )}
+
+            {/* Card details */}
+            <p className="absolute left-5 top-4 m-0 font-mono text-[11px] uppercase tracking-[0.25em] text-white/60">01 / Portrait</p>
+            <span className="absolute right-5 top-4 inline-flex items-center gap-2 rounded-full bg-black/40 px-3 py-1.5 text-xs text-white/85">
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+              </span>
+              <RotatingStatus />
+            </span>
+            <div className="absolute inset-x-0 bottom-0 flex items-end justify-between bg-gradient-to-t from-black/70 to-transparent p-5 pt-16">
               <div>
-                <p className="m-0 flex items-center gap-1.5 text-sm text-[var(--text-muted)]">
+                <p className="m-0 text-xl font-extrabold text-white">Saviyo George</p>
+                <p className="m-0 mt-0.5 flex items-center gap-1.5 text-sm text-white/70">
                   <FiMapPin aria-hidden="true" style={{ color: ACCENT }} /> Kerala, India
                 </p>
-                <p className="m-0 mt-1 text-3xl font-extrabold tabular-nums text-[var(--text-main)]">{time}</p>
               </div>
-              <span className="rounded-full border border-[var(--border-subtle)] px-3 py-1 font-mono text-[11px] uppercase tracking-wider text-[var(--text-dim)]">IST</span>
+              <p className="m-0 font-mono text-xs uppercase tracking-[0.2em] text-white/60">Full-stack</p>
             </div>
-          </Tile>
-
-          <Tile delay={0.5} className="col-span-6">
-            <ul className="m-0 grid list-none grid-cols-3 gap-2 p-5 sm:p-6">
-              {STATS.map((s, i) => (
-                <li key={s.label} className={i > 0 ? "border-l border-[var(--border-subtle)] pl-4 sm:pl-6" : ""}>
-                  <p className="m-0 text-xl font-extrabold text-[var(--text-main)] sm:text-3xl">
-                    <CountUp value={s.value} delay={0.9 + i * 0.15} />
-                  </p>
-                  <p className="m-0 mt-1 text-xs text-[var(--text-dim)] sm:text-sm">{s.label}</p>
-                </li>
-              ))}
-            </ul>
-          </Tile>
-
-          <Tile delay={0.6} className="col-span-6">
-            <div
-              className="overflow-hidden py-4"
-              aria-label="Tech stack"
-              style={{ maskImage: "linear-gradient(to right, transparent, #000 8%, #000 92%, transparent)", WebkitMaskImage: "linear-gradient(to right, transparent, #000 8%, #000 92%, transparent)" }}
-            >
-              <div className="hero-marquee flex w-max items-center gap-10 px-5">
-                {[...MARQUEE, ...MARQUEE].map((t, i) => (
-                  <span key={`${t.id}-${i}`} className="inline-flex shrink-0 items-center gap-2.5 text-[var(--text-muted)]" aria-hidden={i >= MARQUEE.length}>
-                    <t.Icon className="text-2xl" style={{ color: t.color }} />
-                    <span className="text-sm font-medium">{t.name}</span>
-                  </span>
-                ))}
-              </div>
-              <div className="hero-marquee-rev mt-3 flex w-max items-center gap-10 px-5" aria-hidden="true">
-                {[...MARQUEE].reverse().concat([...MARQUEE].reverse()).map((t, i) => (
-                  <span key={`r-${t.id}-${i}`} className="inline-flex shrink-0 items-center gap-2.5 text-[var(--text-dim)]">
-                    <t.Icon className="text-xl" style={{ color: t.color, opacity: 0.8 }} />
-                    <span className="text-xs font-medium">{t.name}</span>
-                  </span>
-                ))}
-              </div>
-            </div>
-          </Tile>
-        </div>
+          </div>
+        </motion.div>
       </div>
-
-      {/* Scroll cue */}
-      <motion.div {...fade(1.6)} aria-hidden="true" className="relative mt-12 hidden justify-center lg:flex">
-        <span className="flex h-9 w-5 items-start justify-center rounded-full border border-white/30 pt-1.5">
-          <span className="h-1.5 w-1 rounded-full bg-white/70 [animation:hero-scroll-dot_1.8s_ease-in-out_infinite]" />
-        </span>
-      </motion.div>
     </section>
   );
 }

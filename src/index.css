@@ -1174,3 +1174,22 @@ h1, h2 {
 @keyframes edu-pulse { 0% { transform: scale(0.92); opacity: 0.9; } 100% { transform: scale(1.18); opacity: 0; } }
 .edu-pulse { animation: edu-pulse 1.8s ease-out 3; }
 @media (prefers-reduced-motion: reduce) { .edu-spin, .edu-pulse { animation: none; } }
+
+/* ===== Text polish across all pages ===== */
+body {
+  font-feature-settings: "cv11", "ss01", "kern";
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+p { text-wrap: pretty; }
+h1, h2, h3 { text-wrap: balance; }
+::selection { background: #ff4d00; color: #fff; }
+/* Small all-caps labels read better with a little more air */
+.font-mono { letter-spacing: 0.02em; }
+/* Links inside running text get a thin orange underline that thickens on hover */
+p a { text-decoration: underline; text-decoration-color: rgba(255, 77, 0, 0.6); text-underline-offset: 4px; text-decoration-thickness: 1px; transition: text-decoration-thickness 0.2s, color 0.2s; }
+p a:hover { text-decoration-thickness: 2px; color: #fff; }
+
+/* Hero: spinning badge text */
+@keyframes hero-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .hero-spin { animation: none !important; } }

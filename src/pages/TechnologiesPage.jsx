@@ -68,7 +68,7 @@ export default function TechnologiesPage() {
             className="m-0 text-5xl font-extrabold leading-tight text-[var(--text-main)] md:text-7xl"
             style={{ fontFamily: "'Inter', sans-serif", textTransform: "none", letterSpacing: "-0.03em" }}
           >
-            Technologies &amp; Skills
+            Technologies &amp; <span className="serif-accent">Skills</span>
           </h1>
           <p className="mb-0 mt-5 text-lg leading-relaxed text-[var(--text-muted)]">
             The tools I build with. Next to each one is where I have used it, in a job or a project, instead of a
