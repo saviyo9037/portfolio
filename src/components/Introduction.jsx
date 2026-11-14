@@ -244,6 +244,7 @@ function FlyLetter({ ch, i, count, dir, p, rise }) {
   const opacity = useTransform(p, [0, 0.3 + t * 0.2], [1, 0]);
   return (
     <motion.span className="inline-block" style={{ x, y, rotate, opacity }}>
+      <span className="inline-block [animation:hero-bob_5s_ease-in-out_infinite]" style={{ animationDelay: `${1.6 + i * 0.28}s` }}>
       <span className="inline-block overflow-hidden pb-[0.06em] align-bottom">
         <motion.span
           className="inline-block cursor-default"
@@ -254,6 +255,7 @@ function FlyLetter({ ch, i, count, dir, p, rise }) {
         >
           {ch}
         </motion.span>
+      </span>
       </span>
     </motion.span>
   );
@@ -288,6 +290,8 @@ function Pinned({ goTo, time }) {
     if (!el || !window.matchMedia("(pointer: fine)").matches) return;
     el.style.setProperty("--tx", ((e.clientX / window.innerWidth - 0.5) * 2).toFixed(3));
     el.style.setProperty("--ty", ((e.clientY / window.innerHeight - 0.5) * 2).toFixed(3));
+    el.style.setProperty("--mx", `${e.clientX}px`);
+    el.style.setProperty("--my", `${e.clientY}px`);
   };
 
   const nameStyle = { fontFamily: "'Inter', sans-serif", letterSpacing: "-0.055em", fontSize: "clamp(4rem, 10.5vw, 12rem)" };
@@ -298,6 +302,7 @@ function Pinned({ goTo, time }) {
     <div ref={ref} className="relative -mb-[14vh] h-[240vh]">
       <motion.div ref={stageRef} onPointerMove={lean} className="sticky top-0 h-screen overflow-hidden" style={{ "--tx": 0, "--ty": 0, maskImage: sceneMask, WebkitMaskImage: sceneMask }}>
         <Glow />
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0" style={{ background: "radial-gradient(420px circle at var(--mx, 50%) var(--my, 45%), rgba(196,181,253,0.16), transparent 65%)" }} />
 
         {/* An outlined copy of the full name that keeps drifting behind everything */}
         <motion.p
@@ -364,9 +369,9 @@ function Pinned({ goTo, time }) {
         <motion.div
           className="absolute bottom-0 left-1/2 z-10 w-[min(34vw,30rem)] -translate-x-1/2"
           style={{ scale: photoScale, transformOrigin: "50% 100%" }}
-          initial={{ y: 120, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 1.2, delay: 0.4, ease: EASE }}
+          initial={{ y: 120, opacity: 0, filter: "blur(14px)" }}
+          animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
+          transition={{ duration: 1.3, delay: 0.4, ease: EASE }}
         >
           <img
             src={heroPhoto}
