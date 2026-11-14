@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { FiArrowRight, FiDownload } from "react-icons/fi";
+import { AnimatePresence, motion, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
+import { FiArrowRight, FiDownload, FiMapPin } from "react-icons/fi";
 import heroPhoto from "../assets/saviyo-cutout.png";
 import { scrollToId } from "../lib/scroll";
+import { useStaticLayout } from "../hooks/useStaticLayout";
 import { CountUp, Magnetic } from "./motion/effects";
 
 const ACCENT = "#ff4d00";
@@ -118,200 +119,220 @@ function WordsFade({ text, delay = 0, className = "" }) {
   );
 }
 
-const NOTES = [
-  { text: "MERN stack", bg: "#c4b5fd", fg: "#1a1030", rot: -7, pos: "left-[2%] top-[8%]" },
-  { text: "ERP & POS", bg: "#f4f0ff", fg: "#1a1030", rot: 6, pos: "right-[2%] top-[22%]" },
-  { text: "AI tools", bg: "#ff4d00", fg: "#ffffff", rot: -5, pos: "left-[6%] bottom-[10%]" },
-  { text: "CRM / LMS", bg: "#8b78d8", fg: "#ffffff", rot: 8, pos: "right-[6%] bottom-[6%]" },
-];
+const sideFade = "linear-gradient(to right, transparent 0%, #000 18%, #000 82%, transparent 100%)";
 
-export default function Introduction() {
-  const reduce = useReducedMotion();
-  const time = useKeralaTime();
-  const stageRef = useRef(null);
-  const goTo = (id) => (e) => {
-    e.preventDefault();
-    scrollToId(id);
-  };
+function Glow() {
+  return (
+    <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+      <div className="absolute -left-32 top-10 h-[36rem] w-[36rem] rounded-full bg-[radial-gradient(circle,rgba(98,64,181,0.32),transparent_65%)] [animation:hero-drift-a_14s_ease-in-out_infinite]" />
+      <div className="absolute -right-24 bottom-0 h-[34rem] w-[34rem] rounded-full bg-[radial-gradient(circle,rgba(124,92,214,0.24),transparent_65%)] [animation:hero-drift-b_17s_ease-in-out_infinite]" />
+      <div
+        className="absolute inset-0 opacity-[0.05]"
+        style={{
+          backgroundImage: "linear-gradient(to right, #fff 1px, transparent 1px), linear-gradient(to bottom, #fff 1px, transparent 1px)",
+          backgroundSize: "56px 56px",
+          maskImage: "radial-gradient(ellipse at 50% 40%, #000 20%, transparent 75%)",
+          WebkitMaskImage: "radial-gradient(ellipse at 50% 40%, #000 20%, transparent 75%)",
+        }}
+      />
+    </div>
+  );
+}
 
+function Buttons({ goTo }) {
+  return (
+    <div className="flex flex-wrap items-center gap-3">
+      <Magnetic>
+        <a
+          href="#projects"
+          onClick={goTo("projects")}
+          className={`hero-shine relative inline-flex h-12 items-center gap-2 overflow-hidden rounded-full px-7 text-base font-semibold text-[#0b0a12] transition-colors hover:bg-[#ff4d00] hover:text-white ${focusRing}`}
+          style={{ backgroundColor: "#f4f0ff" }}
+        >
+          View Projects <FiArrowRight aria-hidden="true" />
+        </a>
+      </Magnetic>
+      <Magnetic>
+        <a
+          href="/Saviyo_George_Resume.pdf"
+          download
+          className={`inline-flex h-12 items-center gap-2 rounded-full border border-[var(--text-dim)] px-7 text-base font-semibold text-[var(--text-main)] transition-colors hover:border-[#ff4d00] hover:text-[#ff4d00] ${focusRing}`}
+        >
+          <FiDownload aria-hidden="true" /> Download Resume
+        </a>
+      </Magnetic>
+    </div>
+  );
+}
+
+function Stats({ align = "left", delay = 0 }) {
+  return (
+    <ul className={`m-0 grid list-none gap-4 p-0 ${align === "right" ? "text-right" : "grid-cols-3 gap-2"}`}>
+      {STATS.map((s, i) => (
+        <li key={s.label} className={align === "right" ? (i > 0 ? "border-t border-[var(--border-subtle)] pt-4" : "") : i > 0 ? "border-l border-[var(--border-subtle)] pl-4 sm:pl-6" : ""}>
+          <p className="m-0 text-xl font-extrabold text-[var(--text-main)] sm:text-3xl">
+            <CountUp value={s.value} delay={delay + i * 0.15} />
+          </p>
+          <p className="m-0 mt-0.5 text-xs text-[var(--text-dim)] sm:text-sm">{s.label}</p>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+// Phones, reduced motion and short screens: everything stacked, no pinned scroll
+function Stacked({ goTo, time, reduce }) {
   const fade = (delay) => ({
     initial: reduce ? false : { opacity: 0, y: 24 },
     animate: { opacity: 1, y: 0 },
     transition: { duration: 0.8, delay, ease: EASE },
   });
-
   return (
-    <section className="relative flex min-h-[100svh] w-full flex-col overflow-hidden px-5 pb-14 pt-28 sm:px-8 lg:pt-24">
-      {/* Background: two slow violet lights and a faint grid */}
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0">
-        <div className="absolute -left-32 top-10 h-[36rem] w-[36rem] rounded-full bg-[radial-gradient(circle,rgba(98,64,181,0.32),transparent_65%)] [animation:hero-drift-a_14s_ease-in-out_infinite]" />
-        <div className="absolute -right-24 bottom-0 h-[34rem] w-[34rem] rounded-full bg-[radial-gradient(circle,rgba(124,92,214,0.22),transparent_65%)] [animation:hero-drift-b_17s_ease-in-out_infinite]" />
-        <div
-          className="absolute inset-0 opacity-[0.05]"
-          style={{
-            backgroundImage: "linear-gradient(to right, #fff 1px, transparent 1px), linear-gradient(to bottom, #fff 1px, transparent 1px)",
-            backgroundSize: "56px 56px",
-            maskImage: "radial-gradient(ellipse at 50% 40%, #000 20%, transparent 75%)",
-            WebkitMaskImage: "radial-gradient(ellipse at 50% 40%, #000 20%, transparent 75%)",
-          }}
+    <section className="relative w-full overflow-hidden px-5 pb-12 pt-28 sm:px-8">
+      <Glow />
+      <div className="relative mx-auto flex max-w-3xl flex-col items-center text-center">
+        <motion.span {...fade(0.05)} className="inline-flex items-center gap-2.5 rounded-full border border-[var(--border-subtle)] bg-[var(--bg-surface)]/80 py-2 pl-3 pr-4 text-sm text-[var(--text-muted)]">
+          <span className="h-2.5 w-2.5 rounded-full bg-emerald-500" />
+          <RotatingStatus />
+        </motion.span>
+        <h1 className="m-0 mt-6 font-black uppercase leading-[0.9] text-[var(--text-main)]" style={{ fontFamily: "'Inter', sans-serif", letterSpacing: "-0.05em", fontSize: "clamp(3.4rem, 17vw, 8rem)" }}>
+          <span className="block">Saviyo</span>
+          <span className="serif-accent block normal-case">George</span>
+        </h1>
+        <motion.img
+          {...fade(0.3)}
+          src={heroPhoto}
+          alt="Saviyo George"
+          width="768"
+          height="1024"
+          loading="eager"
+          className="mt-4 block h-auto w-full max-w-[22rem] select-none"
+          style={{ maskImage: sideFade, WebkitMaskImage: sideFade }}
         />
-      </div>
-
-      <div className="relative mx-auto grid w-full max-w-[1400px] flex-1 items-center gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:gap-14">
-        {/* Left: a friendly hello with a hand-drawn underline */}
-        <div className="order-2 lg:order-1">
-          <motion.p {...fade(0.05)} className="m-0 flex items-center gap-2.5 text-base text-[var(--text-muted)]">
-            <motion.span
-              className="inline-block origin-[70%_70%] text-2xl"
-              aria-hidden="true"
-              animate={reduce ? undefined : { rotate: [0, 16, -8, 16, 0] }}
-              transition={{ duration: 1.6, delay: 0.8, repeat: Infinity, repeatDelay: 2.4 }}
-            >
-              👋
-            </motion.span>
-            Hi there, I&apos;m
-          </motion.p>
-
-          <h1
-            className="m-0 mt-3 font-black leading-[0.95] text-[var(--text-main)]"
-            style={{ fontFamily: "'Inter', sans-serif", letterSpacing: "-0.045em", fontSize: "clamp(3.2rem, 8vw, 7.4rem)" }}
-          >
-            {["Saviyo", "George"].map((w, i) => (
-              <span key={w} className="block overflow-hidden pb-[0.08em]">
-                <motion.span
-                  className={`inline-block ${i === 1 ? "serif-accent pr-[0.06em]" : ""}`}
-                  initial={reduce ? false : { y: "110%" }}
-                  animate={{ y: "0%" }}
-                  transition={{ duration: 0.9, delay: 0.15 + i * 0.12, ease: EASE }}
-                >
-                  {w}
-                </motion.span>
-              </span>
-            ))}
-          </h1>
-
-          {/* Scribble that draws itself under the name */}
-          <svg viewBox="0 0 320 18" className="mt-1 h-4 w-60 sm:w-72" fill="none" aria-hidden="true">
-            <motion.path
-              d="M3 12 C 50 3, 90 16, 140 8 S 240 4, 316 10"
-              stroke="#c4b5fd"
-              strokeWidth="4"
-              strokeLinecap="round"
-              initial={reduce ? false : { pathLength: 0 }}
-              animate={{ pathLength: 1 }}
-              transition={{ duration: 1, delay: 0.9, ease: "easeOut" }}
-            />
-          </svg>
-
-          <motion.div {...fade(0.7)}>
-            <TypedRole />
-          </motion.div>
-
-          <WordsFade delay={0.9} text={INTRO_TEXT} className="m-0 mt-5 max-w-[48ch] text-lg leading-relaxed text-[var(--text-muted)]" />
-
-          <motion.div {...fade(1.3)} className="mt-8 flex flex-wrap items-center gap-3">
-            <Magnetic>
-              <a
-                href="#projects"
-                onClick={goTo("projects")}
-                className={`hero-shine relative inline-flex h-12 items-center gap-2 overflow-hidden rounded-full px-7 text-base font-semibold text-[#0b0a12] transition-colors hover:bg-[#ff4d00] hover:text-white ${focusRing}`}
-                style={{ backgroundColor: "#f4f0ff" }}
-              >
-                View Projects <FiArrowRight aria-hidden="true" />
-              </a>
-            </Magnetic>
-            <Magnetic>
-              <a
-                href="/Saviyo_George_Resume.pdf"
-                download
-                className={`inline-flex h-12 items-center gap-2 rounded-full border border-[var(--text-dim)] px-7 text-base font-semibold text-[var(--text-main)] transition-colors hover:border-[#ff4d00] hover:text-[#ff4d00] ${focusRing}`}
-              >
-                <FiDownload aria-hidden="true" /> Download Resume
-              </a>
-            </Magnetic>
-          </motion.div>
-
-          <motion.ul {...fade(1.5)} className="m-0 mt-10 grid max-w-xl list-none grid-cols-3 gap-2 p-0">
-            {STATS.map((s, i) => (
-              <li key={s.label} className={i > 0 ? "border-l border-[var(--border-subtle)] pl-4 sm:pl-6" : ""}>
-                <p className="m-0 text-xl font-extrabold text-[var(--text-main)] sm:text-2xl">
-                  <CountUp value={s.value} delay={1.6 + i * 0.15} />
-                </p>
-                <p className="m-0 mt-0.5 text-xs text-[var(--text-dim)] sm:text-sm">{s.label}</p>
-              </li>
-            ))}
-          </motion.ul>
-        </div>
-
-        {/* Right: a photo print on a table with notes you can drag around */}
-        <div ref={stageRef} className="relative order-1 mx-auto h-[30rem] w-full max-w-[34rem] sm:h-[36rem] lg:order-2 lg:h-[40rem]">
-          {/* A second print behind, for depth */}
-          <motion.div
-            aria-hidden="true"
-            className="absolute left-1/2 top-1/2 h-[78%] w-[62%] -translate-x-1/2 -translate-y-1/2 rounded-sm bg-[#8b78d8]/80 shadow-2xl"
-            initial={reduce ? false : { opacity: 0, rotate: 0 }}
-            animate={{ opacity: 1, rotate: 9 }}
-            transition={{ duration: 1, delay: 0.5, ease: EASE }}
-          />
-
-          {/* The print: drag it and it springs back */}
-          <motion.figure
-            className="absolute left-1/2 top-1/2 m-0 w-[62%] -translate-x-1/2 -translate-y-1/2 cursor-grab"
-            drag={!reduce}
-            dragSnapToOrigin
-            dragElastic={0.25}
-            whileDrag={{ scale: 1.04, cursor: "grabbing" }}
-            initial={reduce ? false : { opacity: 0, y: 70, rotate: 10 }}
-            animate={{ opacity: 1, y: 0, rotate: -4 }}
-            transition={{ duration: 1.1, delay: 0.3, ease: EASE }}
-          >
-            <div className="rounded-sm bg-[#f4f0ff] p-3 pb-4 shadow-[0_30px_70px_rgba(0,0,0,0.55)]">
-              {/* A piece of tape */}
-              <span aria-hidden="true" className="absolute -top-3 left-1/2 h-6 w-20 -translate-x-1/2 rotate-2 bg-[#c4b5fd]/80" />
-              <div className="relative aspect-[4/5] overflow-hidden bg-gradient-to-b from-[#7c5cd6] to-[#2a1d55]">
-                <img
-                  src={heroPhoto}
-                  alt="Saviyo George"
-                  width="768"
-                  height="1024"
-                  loading="eager"
-                  draggable="false"
-                  className="absolute inset-x-0 bottom-0 h-[94%] w-full select-none object-cover object-top"
-                />
-              </div>
-              <figcaption className="mt-3 flex items-center justify-between px-1 text-[#1a1030]">
-                <span className="serif-accent text-2xl leading-none" style={{ color: "#1a1030" }}>
-                  Saviyo, Kerala
-                </span>
-                <span className="font-mono text-xs tabular-nums opacity-70">{time}</span>
-              </figcaption>
-            </div>
-          </motion.figure>
-
-          {/* Sticky notes: drag them anywhere on the table */}
-          {NOTES.map((n, i) => (
-            <motion.span
-              key={n.text}
-              className={`absolute z-10 cursor-grab select-none rounded-lg px-4 py-2 text-base font-bold shadow-xl ${n.pos}`}
-              style={{ background: n.bg, color: n.fg }}
-              drag={!reduce}
-              dragConstraints={stageRef}
-              dragElastic={0.2}
-              dragMomentum={false}
-              whileDrag={{ scale: 1.12, rotate: 0, cursor: "grabbing", zIndex: 30 }}
-              initial={reduce ? false : { opacity: 0, scale: 0.4, rotate: n.rot * 3 }}
-              animate={{ opacity: 1, scale: 1, rotate: n.rot }}
-              transition={{ type: "spring", stiffness: 240, damping: 14, delay: 1 + i * 0.12 }}
-            >
-              {n.text}
-            </motion.span>
-          ))}
-
-          <motion.p {...fade(1.8)} className="absolute -bottom-2 left-1/2 m-0 -translate-x-1/2 font-mono text-[11px] uppercase tracking-[0.25em] text-[var(--text-dim)]">
-            Drag the notes and the photo
-          </motion.p>
-        </div>
+        <WordsFade delay={0.5} text={INTRO_TEXT} className="m-0 mt-6 max-w-[46ch] text-base leading-relaxed text-[var(--text-muted)] sm:text-lg" />
+        <TypedRole />
+        <motion.div {...fade(0.9)} className="mt-8">
+          <Buttons goTo={goTo} />
+        </motion.div>
+        <motion.div {...fade(1)} className="mt-10 w-full max-w-md">
+          <Stats />
+        </motion.div>
+        <p className="m-0 mt-8 flex items-center gap-1.5 text-sm text-[var(--text-muted)]">
+          <FiMapPin aria-hidden="true" style={{ color: ACCENT }} /> Kerala · <span className="font-semibold tabular-nums text-[var(--text-main)]">{time}</span>
+        </p>
       </div>
     </section>
+  );
+}
+
+// Wide screens: the section is pinned. As you scroll, the two halves of the name slide apart,
+// the portrait grows, and the intro and numbers move in where the name was.
+function Pinned({ goTo, time }) {
+  const ref = useRef(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
+  const p = useSpring(scrollYProgress, { stiffness: 120, damping: 30, mass: 0.4 });
+
+  const leftX = useTransform(p, [0, 0.6], ["0vw", "-46vw"]);
+  const rightX = useTransform(p, [0, 0.6], ["0vw", "46vw"]);
+  const wordOpacity = useTransform(p, [0, 0.5], [1, 0]);
+  const photoScale = useTransform(p, [0, 1], [1, 1.2]);
+  const infoOpacity = useTransform(p, [0.35, 0.7], [0, 1]);
+  const infoY = useTransform(p, [0.35, 0.7], [40, 0]);
+
+  const nameStyle = { fontFamily: "'Inter', sans-serif", letterSpacing: "-0.055em", fontSize: "clamp(4rem, 10.5vw, 12rem)" };
+
+  const rise = (delay) => ({
+    initial: { y: "110%" },
+    animate: { y: "0%" },
+    transition: { duration: 0.9, delay, ease: EASE },
+  });
+
+  return (
+    <div ref={ref} className="relative h-[230vh]">
+      <div className="sticky top-0 h-screen overflow-hidden">
+        <Glow />
+
+        {/* Status line at the top */}
+        <motion.div initial={{ opacity: 0, y: -16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.1, ease: EASE }} className="absolute inset-x-0 top-24 z-20 flex justify-center">
+          <span className="inline-flex items-center gap-2.5 rounded-full border border-[var(--border-subtle)] bg-[var(--bg-surface)]/80 py-2 pl-3 pr-4 text-sm text-[var(--text-muted)]">
+            <span className="relative flex h-2.5 w-2.5">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+              <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-500" />
+            </span>
+            <RotatingStatus />
+          </span>
+        </motion.div>
+
+        {/* The name, in two halves either side of the portrait */}
+        <h1 className="m-0" aria-label="Saviyo George">
+          <motion.span aria-hidden="true" className="absolute left-[3vw] top-[24%] z-0 block font-black uppercase leading-none text-[var(--text-main)]" style={{ ...nameStyle, x: leftX, opacity: wordOpacity }}>
+            <span className="block overflow-hidden pb-[0.06em]">
+              <motion.span className="block" {...rise(0.2)}>
+                Saviyo
+              </motion.span>
+            </span>
+          </motion.span>
+          <motion.span aria-hidden="true" className="serif-accent absolute right-[3vw] top-[24%] z-0 block font-black leading-none" style={{ ...nameStyle, x: rightX, opacity: wordOpacity }}>
+            <span className="block overflow-hidden pb-[0.06em]">
+              <motion.span className="block" {...rise(0.35)}>
+                George
+              </motion.span>
+            </span>
+          </motion.span>
+        </h1>
+
+        {/* The portrait, anchored to the bottom and growing as you scroll */}
+        <motion.div
+          className="absolute bottom-0 left-1/2 z-10 w-[min(34vw,30rem)] -translate-x-1/2"
+          style={{ scale: photoScale, transformOrigin: "50% 100%" }}
+          initial={{ y: 120, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 1.2, delay: 0.4, ease: EASE }}
+        >
+          <img src={heroPhoto} alt="Saviyo George" width="768" height="1024" loading="eager" className="block h-auto w-full select-none" style={{ maskImage: sideFade, WebkitMaskImage: sideFade }} />
+        </motion.div>
+
+        {/* Intro and role move in on the left as the name leaves */}
+        <motion.div className="absolute left-[4vw] top-[30%] z-20 max-w-[23rem]" style={{ opacity: infoOpacity, y: infoY }}>
+          <WordsFade delay={0.5} text={INTRO_TEXT} className="m-0 text-lg leading-relaxed text-[var(--text-muted)]" />
+          <TypedRole />
+        </motion.div>
+
+        {/* Numbers on the right */}
+        <motion.div className="absolute right-[4vw] top-[30%] z-20 w-[16rem]" style={{ opacity: infoOpacity, y: infoY }}>
+          <Stats align="right" delay={0.9} />
+        </motion.div>
+
+        {/* Always there: the two buttons and the place */}
+        <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 1.1, ease: EASE }} className="absolute bottom-[7%] left-[4vw] z-20">
+          <Buttons goTo={goTo} />
+        </motion.div>
+        <p className="absolute bottom-[7%] right-[4vw] z-20 m-0 flex items-center gap-1.5 text-sm text-[var(--text-muted)]">
+          <FiMapPin aria-hidden="true" style={{ color: ACCENT }} /> Kerala · <span className="font-semibold tabular-nums text-[var(--text-main)]">{time}</span>
+        </p>
+      </div>
+    </div>
+  );
+}
+
+export default function Introduction() {
+  const reduce = useReducedMotion();
+  const plain = useStaticLayout();
+  const time = useKeralaTime();
+  const goTo = (id) => (e) => {
+    e.preventDefault();
+    scrollToId(id);
+  };
+
+  if (plain) return <Stacked goTo={goTo} time={time} reduce={reduce} />;
+  return (
+    <>
+      <div className="lg:hidden">
+        <Stacked goTo={goTo} time={time} reduce={reduce} />
+      </div>
+      <div className="hidden lg:block">
+        <Pinned goTo={goTo} time={time} />
+      </div>
+    </>
   );
 }
