@@ -8,7 +8,7 @@ import { TECHNOLOGIES } from "../data/technologies";
 import { FALLBACK_ICON, TECH_ICONS } from "./tech/techIcons";
 import { CountUp, Magnetic } from "./motion/effects";
 
-const ACCENT = "#ffc933";
+const ACCENT = "#ff4d00";
 const EASE = [0.16, 1, 0.3, 1];
 
 const STATS = [
@@ -25,7 +25,7 @@ const CODE = [
   ["d", "  "], ["p", "builds"], ["d", ": ["], ["s", '"ERP"'], ["d", ", "], ["s", '"POS"'], ["d", ", "], ["s", '"CRM/LMS"'], ["d", "],\n"],
   ["d", "  "], ["p", "openToWork"], ["d", ": "], ["n", "true"], ["d", ",\n};"],
 ];
-const CODE_COLORS = { k: ACCENT, p: "#c4c4c4", s: "#ffdf80", n: "#f5f5f5", d: "#8e8e8e" };
+const CODE_COLORS = { k: ACCENT, p: "#c4c4c4", s: "#ffb08a", n: "#f5f5f5", d: "#8e8e8e" };
 const CODE_LENGTH = CODE.reduce((n, [, t]) => n + t.length, 0);
 // Where each piece starts in the full text, so we can reveal the first N characters
 const CODE_STARTS = CODE.map((_, i) => CODE.slice(0, i).reduce((n, [, t]) => n + t.length, 0));
@@ -44,7 +44,7 @@ const INTRO_TEXT =
   "I design and develop production-ready web applications, ERP & POS systems, CRM/LMS platforms and AI-powered tools that solve real business problems.";
 
 const focusRing =
-  "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#ffc933]";
+  "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#ff4d00]";
 
 // A tile that tilts a few degrees toward the pointer, with a soft light that follows it
 function Tile({ className = "", children, delay = 0, depth = 4 }) {
@@ -288,8 +288,8 @@ export default function Introduction() {
     >
       {/* Background: a light that follows the mouse, two slow lights and a faint grid */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0">
-        <div className="absolute inset-0" style={{ background: "radial-gradient(420px circle at var(--hx, 30%) var(--hy, 30%), rgba(255,201,51,0.10), transparent 65%)" }} />
-        <div className="absolute -left-24 top-10 h-[34rem] w-[34rem] rounded-full bg-[radial-gradient(circle,rgba(255,201,51,0.13),transparent_65%)] [animation:hero-drift-a_14s_ease-in-out_infinite]" />
+        <div className="absolute inset-0" style={{ background: "radial-gradient(420px circle at var(--hx, 30%) var(--hy, 30%), rgba(255, 77, 0,0.10), transparent 65%)" }} />
+        <div className="absolute -left-24 top-10 h-[34rem] w-[34rem] rounded-full bg-[radial-gradient(circle,rgba(255, 77, 0,0.13),transparent_65%)] [animation:hero-drift-a_14s_ease-in-out_infinite]" />
         <div className="absolute -right-16 bottom-0 h-[30rem] w-[30rem] rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.07),transparent_65%)] [animation:hero-drift-b_17s_ease-in-out_infinite]" />
         <div
           className="absolute inset-0 opacity-[0.05]"
@@ -324,29 +324,11 @@ export default function Introduction() {
                 </Word>{" "}
               </React.Fragment>
             ))}
-            {/* MERN: the yellow box wipes in from the left, then the word turns dark */}
-            <span className="relative inline-block align-bottom">
-              <motion.span
-                aria-hidden="true"
-                className="absolute inset-x-0 inset-y-[0.04em] origin-left -rotate-1 rounded-xl"
-                style={{ backgroundColor: ACCENT }}
-                initial={reduce ? false : { scaleX: 0 }}
-                animate={reduce ? { scaleX: 1 } : { scaleX: 1, rotate: [-1, 0.6, -1] }}
-                transition={{
-                  scaleX: { duration: 0.7, delay: 0.75, ease: EASE },
-                  rotate: { duration: 5, delay: 2, repeat: Infinity, ease: "easeInOut" },
-                }}
-              />
-              <motion.span
-                className="relative inline-block px-3"
-                initial={reduce ? false : { color: "#f5f5f5" }}
-                animate={{ color: "#000000" }}
-                transition={{ duration: 0.3, delay: 0.95 }}
-              >
-                <Word i={4} reduce={reduce}>
-                  MERN
-                </Word>
-              </motion.span>
+            {/* MERN: the one word set in the italic serif, in orange */}
+            <span className="serif-accent pr-[0.08em]">
+              <Word i={4} reduce={reduce}>
+                MERN
+              </Word>
             </span>{" "}
             <Word i={5} reduce={reduce}>
               stack.
@@ -364,8 +346,8 @@ export default function Introduction() {
               <a
                 href="#projects"
                 onClick={goTo("projects")}
-                className={`hero-shine relative inline-flex h-12 items-center gap-2 overflow-hidden rounded-full px-7 text-base font-bold text-black transition-colors hover:bg-white ${focusRing}`}
-                style={{ backgroundColor: ACCENT }}
+                className={`hero-shine relative inline-flex h-12 items-center gap-2 overflow-hidden rounded-full px-7 text-base font-semibold text-[#0b0a12] transition-colors hover:bg-[#ff4d00] hover:text-white ${focusRing}`}
+                style={{ backgroundColor: "#f4f0ff" }}
               >
                 View Projects <FiArrowRight aria-hidden="true" />
               </a>
@@ -374,7 +356,7 @@ export default function Introduction() {
               <a
                 href="/Saviyo_George_Resume.pdf"
                 download
-                className={`inline-flex h-12 items-center gap-2 rounded-full border border-[var(--text-dim)] px-7 text-base font-semibold text-[var(--text-main)] transition-colors hover:border-[#ffc933] hover:text-[#ffc933] ${focusRing}`}
+                className={`inline-flex h-12 items-center gap-2 rounded-full border border-[var(--text-dim)] px-7 text-base font-semibold text-[var(--text-main)] transition-colors hover:border-[#ff4d00] hover:text-[#ff4d00] ${focusRing}`}
               >
                 <FiDownload aria-hidden="true" /> Download Resume
               </a>

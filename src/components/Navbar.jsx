@@ -3,7 +3,7 @@ import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { FiArrowRight, FiArrowUpRight, FiCpu } from "react-icons/fi";
 import { useLocation, useNavigate } from "react-router-dom";
 
-const ACCENT = "#ffc933";
+const ACCENT = "#ff4d00";
 const EASE = [0.22, 1, 0.36, 1];
 
 // Section ids on the home page. "technologies" is its own page at /skills.
@@ -111,7 +111,7 @@ export default function Navbar() {
     <>
       <motion.header
         className={`fixed inset-x-0 top-0 z-[100] transition-[background-color,border-color,backdrop-filter] duration-300 ${
-          scrolled ? "border-b border-white/10 bg-[#222222]/90 backdrop-blur-md" : "border-b border-transparent bg-transparent"
+          scrolled ? "border-b border-white/10 bg-[#0b0a12]/90 backdrop-blur-md" : "border-b border-transparent bg-transparent"
         }`}
         initial={{ y: -90 }}
         animate={{ y: hide ? -96 : 0 }}
@@ -137,8 +137,8 @@ export default function Navbar() {
                     type="button"
                     onClick={() => go(item.id)}
                     aria-current={isActive ? "page" : undefined}
-                    className={`relative inline-flex items-center gap-1.5 whitespace-nowrap px-3 py-2 text-sm font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ffc933] ${
-                      isActive ? "text-[var(--text-main)]" : special ? "text-[#ffc933] hover:text-white" : "text-[var(--text-muted)] hover:text-[var(--text-main)]"
+                    className={`relative inline-flex items-center gap-1.5 whitespace-nowrap px-3 py-2 text-sm font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ff4d00] ${
+                      isActive ? "text-[var(--text-main)]" : special ? "text-[#ff4d00] hover:text-white" : "text-[var(--text-muted)] hover:text-[var(--text-main)]"
                     }`}
                   >
                     {special && <FiCpu aria-hidden="true" />}
@@ -162,8 +162,8 @@ export default function Navbar() {
             <button
               type="button"
               onClick={() => go("contact")}
-              className="group hidden h-11 items-center gap-2 rounded-full px-5 text-sm font-bold text-black transition-colors hover:bg-white md:inline-flex"
-              style={{ backgroundColor: ACCENT }}
+              className="group hidden h-11 items-center gap-2 rounded-full px-5 text-sm font-semibold text-[#0b0a12] transition-colors hover:bg-[#ff4d00] hover:text-white md:inline-flex"
+              style={{ backgroundColor: "#f4f0ff" }}
             >
               Let&apos;s Connect <FiArrowRight aria-hidden="true" className="transition-transform duration-200 group-hover:translate-x-0.5" />
             </button>
@@ -185,7 +185,7 @@ export default function Navbar() {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            className="fixed inset-0 z-[120] flex flex-col overflow-y-auto bg-[#181818] px-6 pb-10 pt-24"
+            className="fixed inset-0 z-[120] flex flex-col overflow-y-auto bg-[#0e0c16] px-6 pb-10 pt-24"
             initial={{ clipPath: "circle(0% at calc(100% - 2.75rem) 2.25rem)" }}
             animate={{ clipPath: "circle(150% at calc(100% - 2.75rem) 2.25rem)" }}
             exit={{ clipPath: "circle(0% at calc(100% - 2.75rem) 2.25rem)" }}
@@ -221,7 +221,7 @@ export default function Navbar() {
                           {item.label}
                         </span>
                       </span>
-                      <FiArrowUpRight aria-hidden="true" className={isActive ? "text-[#ffc933]" : "text-[var(--text-dim)]"} />
+                      <FiArrowUpRight aria-hidden="true" className={isActive ? "text-[#ff4d00]" : "text-[var(--text-dim)]"} />
                     </button>
                   </motion.li>
                 );

@@ -2,7 +2,7 @@ import React from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { experience } from "../data/experience";
 
-const ACCENT = "#ffc933";
+const ACCENT = "#ff4d00";
 
 const jobs = experience.filter((item) => item.type === "work");
 
@@ -23,7 +23,7 @@ export default function Experiences() {
             >
               Where I
               <br />
-              have worked<span style={{ color: ACCENT }}>.</span>
+              have <span className="serif-accent">worked</span>.
             </h2>
             <p className="mb-0 mt-6 max-w-[34ch] text-[var(--text-muted)]">
               {jobs.length} roles building enterprise software, from internships to a full-time role.

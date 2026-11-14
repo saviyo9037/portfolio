@@ -7,7 +7,7 @@ import { imageSrc, tagsOf, useAllProjects, yearOf } from "../hooks/useAllProject
 import ProjectControls from "./ProjectControls";
 import { useStaticLayout } from "../hooks/useStaticLayout";
 
-const ACCENT = "#ffc933";
+const ACCENT = "#ff4d00";
 const FEATURED_MAX = 6;
 const PAGE = 9;
 const heading = { fontFamily: "'Inter', sans-serif" };
@@ -65,9 +65,9 @@ function Details({ project: p, onClose }) {
         aria-modal="true"
         aria-label={p.title}
         onClick={(e) => e.stopPropagation()}
-        className="max-h-[92vh] w-full max-w-3xl overflow-y-auto rounded-t-xl border border-white/15 bg-[#17171a] sm:rounded-xl"
+        className="max-h-[92vh] w-full max-w-3xl overflow-y-auto rounded-t-xl border border-white/15 bg-[#14121d] sm:rounded-xl"
       >
-        <div className="relative aspect-[16/10] w-full overflow-hidden border-b border-white/10 bg-[#1f1f23]">
+        <div className="relative aspect-[16/10] w-full overflow-hidden border-b border-white/10 bg-[#161320]">
           <Cover project={p} className="object-top" />
           <button
             ref={closeRef}
@@ -226,7 +226,7 @@ function Showcase({ featured, onOpen }) {
           Selected projects
         </p>
         <h2 className="m-0 mt-2 text-4xl font-black leading-[0.95] tracking-tight text-white lg:text-6xl" style={heading}>
-          Featured work
+          Featured <span className="serif-accent">work</span>
         </h2>
 
         {stacked ? (
@@ -307,9 +307,9 @@ function JourneyCard({ project: p, index, left, reduce, onOpen }) {
         onMouseMove={tilt}
         onMouseLeave={untilt}
         aria-label={`Open ${p.title}`}
-        className="group block w-full overflow-hidden rounded-2xl border border-white/15 bg-[#26262a]/90 text-left outline-none transition-[transform,border-color] duration-200 ease-out hover:border-[#ffc933] focus-visible:ring-2 focus-visible:ring-white/70 sm:flex"
+        className="group block w-full overflow-hidden rounded-2xl border border-white/15 bg-[#1a1726]/90 text-left outline-none transition-[transform,border-color] duration-200 ease-out hover:border-[#ff4d00] focus-visible:ring-2 focus-visible:ring-white/70 sm:flex"
       >
-        <motion.span variants={wipe} className="relative block aspect-[16/8] w-full overflow-hidden bg-[#1f1f23] sm:aspect-auto sm:min-h-[10.5rem] sm:w-[38%] sm:shrink-0">
+        <motion.span variants={wipe} className="relative block aspect-[16/8] w-full overflow-hidden bg-[#161320] sm:aspect-auto sm:min-h-[10.5rem] sm:w-[38%] sm:shrink-0">
           <motion.span className="absolute inset-0 block scale-[1.2]" style={{ y: drift }}>
             <Cover project={p} className="object-top" />
           </motion.span>
@@ -376,7 +376,7 @@ function ProjectJourney({ projects, onOpen }) {
       <motion.div
         aria-hidden="true"
         className="absolute bottom-0 left-4 top-0 w-[3px] origin-top -translate-x-[1px] rounded-full lg:hidden"
-        style={{ backgroundColor: ACCENT, scaleY: reduce ? 1 : grow, boxShadow: "0 0 14px rgba(255,201,51,0.6)" }}
+        style={{ backgroundColor: ACCENT, scaleY: reduce ? 1 : grow, boxShadow: "0 0 14px rgba(255, 77, 0,0.6)" }}
       />
 
       {/* Wide screens: the glowing zigzag. It is drawn once; scrolling only uncovers it from the top, which is cheap. */}
@@ -386,7 +386,7 @@ function ProjectJourney({ projects, onOpen }) {
       <motion.div aria-hidden="true" className="pointer-events-none absolute inset-0 hidden lg:block" style={{ clipPath: reduce ? "none" : reveal, willChange: "clip-path", transform: "translateZ(0)" }}>
         <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="h-full w-full overflow-visible">
           {/* a wide soft stroke under the bright one gives the neon glow without a costly filter */}
-          <path d={d} fill="none" stroke="rgba(255,201,51,0.28)" strokeWidth="12" strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
+          <path d={d} fill="none" stroke="rgba(255, 77, 0,0.28)" strokeWidth="12" strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
           <path d={d} fill="none" stroke={ACCENT} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
         </svg>
       </motion.div>
@@ -408,13 +408,13 @@ function ProjectJourney({ projects, onOpen }) {
               <motion.span
                 aria-hidden="true"
                 className="absolute top-1/2 z-10 hidden h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-[3px] border-white lg:block"
-                style={{ left: `${xs[i]}%`, backgroundColor: ACCENT, boxShadow: "0 0 0 6px rgba(255,201,51,0.22), 0 0 22px rgba(255,201,51,0.95)" }}
+                style={{ left: `${xs[i]}%`, backgroundColor: ACCENT, boxShadow: "0 0 0 6px rgba(255, 77, 0,0.22), 0 0 22px rgba(255, 77, 0,0.95)" }}
                 initial={reduce ? false : { scale: 0 }}
                 whileInView={{ scale: 1 }}
                 viewport={{ once: false, margin: "-15% 0px" }}
                 transition={{ type: "spring", stiffness: 380, damping: 16 }}
               >
-                {!reduce && <span className="journey-ping absolute -inset-[3px] rounded-full border-2 border-[#ffc933]" />}
+                {!reduce && <span className="journey-ping absolute -inset-[3px] rounded-full border-2 border-[#ff4d00]" />}
               </motion.span>
               <JourneyCard project={p} index={i} left={left} reduce={reduce} onOpen={onOpen} />
             </li>
@@ -448,7 +448,7 @@ function Browser({ list, onOpen }) {
       <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
         <div>
           <h2 className="m-0 text-3xl font-black tracking-tight text-white sm:text-4xl" style={heading}>
-            All projects
+            All <span className="serif-accent">projects</span>
           </h2>
           <p className="m-0 mt-2 text-sm text-white/55">
             {matches.length} {matches.length === 1 ? "project" : "projects"}
@@ -468,7 +468,7 @@ function Browser({ list, onOpen }) {
                   setCategory(f.key);
                   setShowAll(false);
                 }}
-                className={`relative rounded-lg px-4 py-2 text-sm font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ffc933] ${on ? "text-black" : "text-white/65 hover:text-white"}`}
+                className={`relative rounded-lg px-4 py-2 text-sm font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ff4d00] ${on ? "text-black" : "text-white/65 hover:text-white"}`}
               >
                 {on && (
                   <motion.span layoutId="projects-filter-thumb" className="absolute inset-0 rounded-lg" style={{ backgroundColor: ACCENT }} transition={{ type: "spring", stiffness: 450, damping: 36 }} />
@@ -509,7 +509,7 @@ function Browser({ list, onOpen }) {
           <button
             type="button"
             onClick={() => setShowAll(true)}
-            className="inline-flex items-center gap-2 rounded-full border border-white/25 px-7 py-3 text-sm font-semibold text-white transition-colors hover:border-[#ffc933] hover:text-[#ffc933]"
+            className="inline-flex items-center gap-2 rounded-full border border-white/25 px-7 py-3 text-sm font-semibold text-white transition-colors hover:border-[#ff4d00] hover:text-[#ff4d00]"
           >
             Show all {matches.length} projects <FiArrowUpRight aria-hidden="true" />
           </button>

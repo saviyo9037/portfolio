@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Magnetic } from "./motion/effects";
 import { FiArrowUpRight, FiCopy, FiCheck, FiGithub, FiLinkedin, FiMail, FiPhone } from "react-icons/fi";
 
-const ACCENT = "#ffc933";
+const ACCENT = "#ff4d00";
 const EMAIL = "saviyogeorge903734@gmail.com";
 const PHONE = "+91 9037 348 073";
 
@@ -25,7 +25,7 @@ function CopyPill(props) {
       type="button"
       onClick={copy}
       aria-label={`Copy ${label}`}
-      className="inline-flex items-center gap-2 rounded-full border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-5 py-3 text-sm font-semibold text-[var(--text-main)] transition-colors hover:border-[#ffc933]"
+      className="inline-flex items-center gap-2 rounded-full border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-5 py-3 text-sm font-semibold text-[var(--text-main)] transition-colors hover:border-[#ff4d00]"
     >
       {copied ? <FiCheck aria-hidden="true" style={{ color: ACCENT }} /> : <props.pill.Icon aria-hidden="true" />}
       {copied ? "Copied" : `Copy ${label}`}
@@ -54,7 +54,7 @@ export default function Contact() {
         className="mb-0 mt-8 text-[clamp(3.5rem,11vw,9rem)] font-black leading-[0.9] tracking-tighter text-[var(--text-main)]"
         style={{ fontFamily: "'Inter', sans-serif", textTransform: "none" }}
       >
-        Let's talk<span style={{ color: ACCENT }}>.</span>
+        Let's <span className="serif-accent">talk</span>.
       </h2>
 
       <p className="mx-auto mb-0 mt-6 max-w-[48ch] text-lg leading-relaxed text-[var(--text-muted)]">

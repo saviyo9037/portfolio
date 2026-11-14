@@ -3,7 +3,7 @@ import { motion, useInView, useReducedMotion } from "framer-motion";
 import { FiAward, FiMapPin } from "react-icons/fi";
 import { experience } from "../data/experience";
 
-const ACCENT = "#ffc933";
+const ACCENT = "#ff4d00";
 const EASE = [0.16, 1, 0.3, 1];
 const GLYPHS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#%&*+<>";
 
@@ -99,7 +99,7 @@ export default function Education() {
           Education
         </p>
         <h2 className="mb-0 mt-3 text-3xl font-extrabold tracking-tight text-[var(--text-main)] md:text-4xl" style={{ fontFamily: "'Inter', sans-serif", textTransform: "none" }}>
-          Academic Background
+          Academic <span className="serif-accent">Background</span>
         </h2>
       </div>
 
