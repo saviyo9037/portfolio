@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
+import { AnimatePresence, motion, useMotionTemplate, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
 import { FiArrowRight, FiDownload, FiMapPin } from "react-icons/fi";
 import heroPhoto from "../assets/saviyo-cutout.png";
 import { scrollToId } from "../lib/scroll";
@@ -188,7 +188,7 @@ function Stacked({ goTo, time, reduce }) {
     transition: { duration: 0.8, delay, ease: EASE },
   });
   return (
-    <section className="relative w-full overflow-hidden px-5 pb-12 pt-28 sm:px-8">
+    <section className="relative w-full overflow-hidden px-5 pb-12 pt-28 sm:px-8" style={{ maskImage: "linear-gradient(to bottom, #000 88%, transparent 100%)", WebkitMaskImage: "linear-gradient(to bottom, #000 88%, transparent 100%)" }}>
       <Glow />
       <div className="relative mx-auto flex max-w-3xl flex-col items-center text-center">
         <motion.span {...fade(0.05)} className="inline-flex items-center gap-2.5 rounded-full border border-[var(--border-subtle)] bg-[var(--bg-surface)]/80 py-2 pl-3 pr-4 text-sm text-[var(--text-muted)]">
@@ -225,32 +225,88 @@ function Stacked({ goTo, time, reduce }) {
   );
 }
 
-// Wide screens: the section is pinned. As you scroll, the two halves of the name slide apart,
-// the portrait grows, and the intro and numbers move in where the name was.
+const SPARKS = [
+  { left: "8%", size: 4, dur: 7, delay: 0 },
+  { left: "20%", size: 3, dur: 9, delay: 2 },
+  { left: "33%", size: 5, dur: 8, delay: 4 },
+  { left: "47%", size: 3, dur: 10, delay: 1 },
+  { left: "61%", size: 4, dur: 7.5, delay: 3 },
+  { left: "74%", size: 5, dur: 9, delay: 5 },
+  { left: "88%", size: 3, dur: 8, delay: 2.5 },
+];
+
+// One letter of the big name: rises in on load, then flies outward and tilts away as you scroll
+function FlyLetter({ ch, i, count, dir, p, rise }) {
+  const t = i / Math.max(1, count - 1);
+  const x = useTransform(p, [0, 0.65], ["0vw", `${dir * (18 + t * 26)}vw`]);
+  const rotate = useTransform(p, [0, 0.65], [0, dir * (6 + t * 14)]);
+  const y = useTransform(p, [0, 0.65], ["0vh", `${-4 - t * 10}vh`]);
+  const opacity = useTransform(p, [0, 0.3 + t * 0.2], [1, 0]);
+  return (
+    <motion.span className="inline-block" style={{ x, y, rotate, opacity }}>
+      <span className="inline-block overflow-hidden pb-[0.06em] align-bottom">
+        <motion.span
+          className="inline-block cursor-default"
+          initial={{ y: "110%" }}
+          animate={{ y: "0%" }}
+          whileHover={{ y: "-6%", scale: 1.08, color: "#ff4d00", transition: { type: "spring", stiffness: 400, damping: 14 } }}
+          transition={{ duration: 0.9, delay: rise + i * 0.06, ease: EASE }}
+        >
+          {ch}
+        </motion.span>
+      </span>
+    </motion.span>
+  );
+}
+
+// Wide screens: the section is pinned. As you scroll, the letters of the name fly apart,
+// the portrait grows inside a turning ring, and the intro and numbers move in where the name was.
 function Pinned({ goTo, time }) {
   const ref = useRef(null);
+  const stageRef = useRef(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
   const p = useSpring(scrollYProgress, { stiffness: 120, damping: 30, mass: 0.4 });
 
-  const leftX = useTransform(p, [0, 0.6], ["0vw", "-46vw"]);
-  const rightX = useTransform(p, [0, 0.6], ["0vw", "46vw"]);
-  const wordOpacity = useTransform(p, [0, 0.5], [1, 0]);
-  const photoScale = useTransform(p, [0, 1], [1, 1.2]);
-  const infoOpacity = useTransform(p, [0.35, 0.7], [0, 1]);
-  const infoY = useTransform(p, [0.35, 0.7], [40, 0]);
+  const photoScale = useTransform(p, [0, 1], [1, 1.18]);
+  const ringScale = useTransform(p, [0, 1], [0.82, 1.3]);
+  const ringRotate = useTransform(p, [0, 1], [0, 140]);
+  const ringRotateBack = useTransform(p, [0, 1], [0, -220]);
+  const echoX = useTransform(p, [0, 1], ["6vw", "-30vw"]);
+  const echoOpacity = useTransform(p, [0, 0.4, 1], [0.35, 1, 1]);
+  const leftCardX = useTransform(p, [0.3, 0.7], [-60, 0]);
+  const rightCardX = useTransform(p, [0.3, 0.7], [60, 0]);
+  const cardOpacity = useTransform(p, [0.3, 0.65], [0, 1]);
+  const hintOpacity = useTransform(p, [0, 0.2], [1, 0]);
+  const railFill = useTransform(p, [0, 1], [0, 1]);
+  // Near the end of the pin the whole scene melts into the page instead of ending on a hard edge
+  const fadeStop = useTransform(p, [0.8, 1], [100, 62]);
+  const sceneMask = useMotionTemplate`linear-gradient(to bottom, #000 ${fadeStop}%, transparent 100%)`;
+
+  // The portrait and the ring lean toward the pointer (written straight to the DOM, no re-render)
+  const lean = (e) => {
+    const el = stageRef.current;
+    if (!el || !window.matchMedia("(pointer: fine)").matches) return;
+    el.style.setProperty("--tx", ((e.clientX / window.innerWidth - 0.5) * 2).toFixed(3));
+    el.style.setProperty("--ty", ((e.clientY / window.innerHeight - 0.5) * 2).toFixed(3));
+  };
 
   const nameStyle = { fontFamily: "'Inter', sans-serif", letterSpacing: "-0.055em", fontSize: "clamp(4rem, 10.5vw, 12rem)" };
-
-  const rise = (delay) => ({
-    initial: { y: "110%" },
-    animate: { y: "0%" },
-    transition: { duration: 0.9, delay, ease: EASE },
-  });
+  const FIRST = "SAVIYO".split("");
+  const LAST = "George".split("");
 
   return (
-    <div ref={ref} className="relative h-[230vh]">
-      <div className="sticky top-0 h-screen overflow-hidden">
+    <div ref={ref} className="relative -mb-[14vh] h-[240vh]">
+      <motion.div ref={stageRef} onPointerMove={lean} className="sticky top-0 h-screen overflow-hidden" style={{ "--tx": 0, "--ty": 0, maskImage: sceneMask, WebkitMaskImage: sceneMask }}>
         <Glow />
+
+        {/* An outlined copy of the full name that keeps drifting behind everything */}
+        <motion.p
+          aria-hidden="true"
+          className="pointer-events-none absolute left-0 top-[16%] z-0 m-0 select-none whitespace-nowrap font-black uppercase leading-none"
+          style={{ x: echoX, opacity: echoOpacity, fontFamily: "'Inter', sans-serif", fontSize: "clamp(8rem, 24vw, 26rem)", letterSpacing: "-0.06em", color: "transparent", WebkitTextStroke: "1.5px rgba(196,181,253,0.16)" }}
+        >
+          Saviyo George · Saviyo George
+        </motion.p>
 
         {/* Status line at the top */}
         <motion.div initial={{ opacity: 0, y: -16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.1, ease: EASE }} className="absolute inset-x-0 top-24 z-20 flex justify-center">
@@ -263,25 +319,48 @@ function Pinned({ goTo, time }) {
           </span>
         </motion.div>
 
-        {/* The name, in two halves either side of the portrait */}
+        {/* A dashed ring that turns as you scroll, with a dot riding on it */}
+        <motion.div
+          aria-hidden="true"
+          className="pointer-events-none absolute left-1/2 top-[56%] z-0 aspect-square w-[44vw] max-w-[42rem] -translate-x-1/2 -translate-y-1/2"
+          style={{ scale: ringScale, rotate: ringRotate }}
+        >
+          <div className="h-full w-full rounded-full border border-dashed border-white/20" />
+          <span className="absolute left-1/2 top-0 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#ff4d00] shadow-[0_0_18px_#ff4d00]" />
+        </motion.div>
+        <motion.div
+          aria-hidden="true"
+          className="pointer-events-none absolute left-1/2 top-[58%] z-0 aspect-square w-[30vw] max-w-[30rem] -translate-x-1/2 -translate-y-1/2"
+          style={{ scale: ringScale, rotate: ringRotateBack }}
+        >
+          <div className="h-full w-full rounded-full border border-white/10" />
+          <span className="absolute bottom-0 left-1/2 h-2 w-2 -translate-x-1/2 translate-y-1/2 rounded-full bg-[#c4b5fd] shadow-[0_0_14px_#c4b5fd]" />
+        </motion.div>
+        {SPARKS.map((sp) => (
+          <span
+            key={sp.left}
+            aria-hidden="true"
+            className="pointer-events-none absolute bottom-0 z-0 rounded-full bg-[#c4b5fd]"
+            style={{ left: sp.left, width: sp.size, height: sp.size, opacity: 0, animation: `hero-rise ${sp.dur}s ease-in ${sp.delay}s infinite` }}
+          />
+        ))}
+        <motion.div aria-hidden="true" className="pointer-events-none absolute left-1/2 top-[60%] z-0 h-[40vw] w-[40vw] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(124,92,214,0.4),transparent_65%)]" animate={{ scale: [1, 1.1, 1], opacity: [0.8, 1, 0.8] }} transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }} />
+
+        {/* The name, letter by letter, either side of the portrait */}
         <h1 className="m-0" aria-label="Saviyo George">
-          <motion.span aria-hidden="true" className="absolute left-[3vw] top-[24%] z-0 block font-black uppercase leading-none text-[var(--text-main)]" style={{ ...nameStyle, x: leftX, opacity: wordOpacity }}>
-            <span className="block overflow-hidden pb-[0.06em]">
-              <motion.span className="block" {...rise(0.2)}>
-                Saviyo
-              </motion.span>
-            </span>
-          </motion.span>
-          <motion.span aria-hidden="true" className="serif-accent absolute right-[3vw] top-[24%] z-0 block font-black leading-none" style={{ ...nameStyle, x: rightX, opacity: wordOpacity }}>
-            <span className="block overflow-hidden pb-[0.06em]">
-              <motion.span className="block" {...rise(0.35)}>
-                George
-              </motion.span>
-            </span>
-          </motion.span>
+          <span aria-hidden="true" className="absolute left-[3vw] top-[24%] z-0 flex font-black uppercase leading-none text-[var(--text-main)]" style={nameStyle}>
+            {FIRST.map((ch, i) => (
+              <FlyLetter key={i} ch={ch} i={i} count={FIRST.length} dir={-1} p={p} rise={0.2} />
+            ))}
+          </span>
+          <span aria-hidden="true" className="serif-accent absolute right-[3vw] top-[24%] z-0 flex font-black leading-none" style={nameStyle}>
+            {LAST.map((ch, i) => (
+              <FlyLetter key={i} ch={ch} i={LAST.length - 1 - i} count={LAST.length} dir={1} p={p} rise={0.35} />
+            ))}
+          </span>
         </h1>
 
-        {/* The portrait, anchored to the bottom and growing as you scroll */}
+        {/* The portrait, anchored to the bottom, growing as you scroll and leaning with the pointer */}
         <motion.div
           className="absolute bottom-0 left-1/2 z-10 w-[min(34vw,30rem)] -translate-x-1/2"
           style={{ scale: photoScale, transformOrigin: "50% 100%" }}
@@ -289,17 +368,28 @@ function Pinned({ goTo, time }) {
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 1.2, delay: 0.4, ease: EASE }}
         >
-          <img src={heroPhoto} alt="Saviyo George" width="768" height="1024" loading="eager" className="block h-auto w-full select-none" style={{ maskImage: sideFade, WebkitMaskImage: sideFade }} />
+          <img
+            src={heroPhoto}
+            alt="Saviyo George"
+            width="768"
+            height="1024"
+            loading="eager"
+            className="block h-auto w-full select-none"
+            style={{ maskImage: sideFade, WebkitMaskImage: sideFade, transform: "translate(calc(var(--tx) * 12px), calc(var(--ty) * 6px))", transition: "transform 0.25s ease-out" }}
+          />
         </motion.div>
 
-        {/* Intro and role move in on the left as the name leaves */}
-        <motion.div className="absolute left-[4vw] top-[30%] z-20 max-w-[23rem]" style={{ opacity: infoOpacity, y: infoY }}>
-          <WordsFade delay={0.5} text={INTRO_TEXT} className="m-0 text-lg leading-relaxed text-[var(--text-muted)]" />
+        {/* Cards that slide in from the sides as the name leaves */}
+        <motion.div className="absolute left-[4vw] top-[28%] z-20 w-[min(24rem,26vw)] overflow-hidden rounded-3xl border border-white/12 bg-[#14121d]/85 p-6 shadow-2xl" style={{ opacity: cardOpacity, x: leftCardX }}>
+          <span aria-hidden="true" className="absolute inset-x-6 top-0 h-px overflow-hidden"><span className="block h-full w-1/3 [animation:hero-sweep_3.2s_ease-in-out_infinite]" style={{ background: "linear-gradient(to right, transparent, #c4b5fd, transparent)" }} /></span>
+          <p className="m-0 font-mono text-[11px] uppercase tracking-[0.25em] text-[var(--text-dim)]">About me</p>
+          <WordsFade delay={0.2} text={INTRO_TEXT} className="m-0 mt-3 text-base leading-relaxed text-[var(--text-muted)]" />
           <TypedRole />
         </motion.div>
 
-        {/* Numbers on the right */}
-        <motion.div className="absolute right-[4vw] top-[30%] z-20 w-[16rem]" style={{ opacity: infoOpacity, y: infoY }}>
+        <motion.div className="absolute right-[4vw] top-[28%] z-20 w-[min(16rem,20vw)] overflow-hidden rounded-3xl border border-white/12 bg-[#14121d]/85 p-6 shadow-2xl" style={{ opacity: cardOpacity, x: rightCardX }}>
+          <span aria-hidden="true" className="absolute inset-x-6 top-0 h-px overflow-hidden"><span className="block h-full w-1/3 [animation:hero-sweep_3.2s_ease-in-out_infinite]" style={{ background: "linear-gradient(to right, transparent, #c4b5fd, transparent)" }} /></span>
+          <p className="m-0 mb-4 text-right font-mono text-[11px] uppercase tracking-[0.25em] text-[var(--text-dim)]">In numbers</p>
           <Stats align="right" delay={0.9} />
         </motion.div>
 
@@ -307,10 +397,20 @@ function Pinned({ goTo, time }) {
         <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 1.1, ease: EASE }} className="absolute bottom-[7%] left-[4vw] z-20">
           <Buttons goTo={goTo} />
         </motion.div>
-        <p className="absolute bottom-[7%] right-[4vw] z-20 m-0 flex items-center gap-1.5 text-sm text-[var(--text-muted)]">
+        <p className="absolute bottom-[7%] right-[5.5vw] z-20 m-0 flex items-center gap-1.5 text-sm text-[var(--text-muted)]">
           <FiMapPin aria-hidden="true" style={{ color: ACCENT }} /> Kerala · <span className="font-semibold tabular-nums text-[var(--text-main)]">{time}</span>
         </p>
-      </div>
+
+        {/* A rail on the right edge that fills as you scroll through the hero */}
+        <div aria-hidden="true" className="absolute right-4 top-1/2 z-20 flex -translate-y-1/2 flex-col items-center gap-3">
+          <motion.span className="font-mono text-[10px] uppercase tracking-[0.3em] text-[var(--text-dim)] [writing-mode:vertical-rl]" style={{ opacity: hintOpacity }}>
+            Scroll
+          </motion.span>
+          <span className="relative h-24 w-px bg-white/15">
+            <motion.span className="absolute inset-x-0 top-0 h-full origin-top bg-[#c4b5fd]" style={{ scaleY: railFill }} />
+          </span>
+        </div>
+      </motion.div>
     </div>
   );
 }
