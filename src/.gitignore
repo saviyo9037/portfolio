@@ -1,19 +1,2 @@
-# Ignore everything in src
-*
-
-# Include required folders
-!components/
-!pages/
-!assets/
-!data/
-!context/
-
-# Include all files inside them
-!components/**
-!pages/**
-!assets/**
-!data/**
-!context/**
-
-# Include this gitignore file
-!.gitignore
+# Keep everything in src under version control (Vercel builds from the repository,
+# so every folder the code imports must be committed).
