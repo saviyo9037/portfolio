@@ -1214,3 +1214,7 @@ p a:hover { text-decoration-thickness: 2px; color: #fff; }
 /* Hero: letters drift up and down on their own */
 @keyframes hero-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-1.4%); } }
 @media (prefers-reduced-motion: reduce) { [class*="hero-bob"] { animation: none !important; } }
+
+/* Hero: a ring that spreads from a click */
+@keyframes hero-ripple { from { transform: translate(-50%, -50%) scale(0.1); opacity: 0.8; } to { transform: translate(-50%, -50%) scale(1.6); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { [class*="hero-ripple"], [class*="hero-spin_40s"] { animation: none !important; } }

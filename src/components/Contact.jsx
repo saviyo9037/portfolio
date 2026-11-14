@@ -159,25 +159,11 @@ function ContactForm({ reduce }) {
   );
 }
 
-const MARQUEE_WORDS = ["Let's work together", "Let's build something", "Say hello"];
-
 export default function Contact() {
   const reduce = useReducedMotion();
 
   return (
     <section id="contact" className="relative w-full overflow-hidden py-16 md:py-28">
-      {/* A huge line of text sliding across the top */}
-      <div aria-hidden="true" className="mb-14 overflow-hidden whitespace-nowrap md:mb-20" style={{ maskImage: "linear-gradient(to right, transparent, #000 10%, #000 90%, transparent)", WebkitMaskImage: "linear-gradient(to right, transparent, #000 10%, #000 90%, transparent)" }}>
-        <div className="hero-marquee flex w-max items-center gap-10" style={{ animationDuration: "46s" }}>
-          {[...MARQUEE_WORDS, ...MARQUEE_WORDS, ...MARQUEE_WORDS, ...MARQUEE_WORDS].map((w, i) => (
-            <span key={i} className="inline-flex items-center gap-10 text-[clamp(3rem,9vw,8rem)] leading-none" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 600, letterSpacing: "-0.05em", color: i % 2 ? "transparent" : "var(--text-main)", WebkitTextStroke: i % 2 ? "1.5px rgba(244,240,255,0.5)" : undefined }}>
-              {w}
-              <span className="serif-accent text-[0.8em]">✦</span>
-            </span>
-          ))}
-        </div>
-      </div>
-
       <div className="mx-auto grid w-full max-w-[1500px] gap-12 px-5 md:px-8 lg:grid-cols-2 lg:gap-16">
         {/* Left: the message and every way to reach me */}
         <div>

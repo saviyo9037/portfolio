@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion, useMotionTemplate, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
+import { AnimatePresence, motion, useMotionTemplate, useMotionValueEvent, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
 import { FiArrowRight, FiDownload, FiMapPin } from "react-icons/fi";
 import heroPhoto from "../assets/saviyo-cutout.png";
 import { scrollToId } from "../lib/scroll";
@@ -225,6 +225,62 @@ function Stacked({ goTo, time, reduce }) {
   );
 }
 
+const SCRAMBLE_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789<>/{}#";
+const KEYWORDS = ["production-ready", "ERP", "POS", "CRM/LMS", "AI-powered"];
+
+// A label that decodes itself: random characters settle into the real letters, left to right
+function Scramble({ text, run, className = "" }) {
+  const [out, setOut] = useState(text);
+  useEffect(() => {
+    if (!run) return undefined;
+    let step = 0;
+    const id = window.setInterval(() => {
+      step += 1;
+      const settled = step / 2;
+      if (settled >= text.length) {
+        window.clearInterval(id);
+        setOut(text);
+        return;
+      }
+      setOut(text.split("").map((ch, i) => (ch === " " || i < settled ? ch : SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)])).join(""));
+    }, 45);
+    return () => window.clearInterval(id);
+  }, [run, text]);
+  return (
+    <span className={className} aria-label={text}>
+      <span aria-hidden="true">{out}</span>
+    </span>
+  );
+}
+
+// The intro sentence: words fade in, and the key terms get an orange line drawn under them
+function Highlighted({ text, run, className = "" }) {
+  return (
+    <p className={className}>
+      {text.split(" ").map((w, i) => {
+        const key = KEYWORDS.some((k) => w.replace(/[,.]$/, "") === k);
+        return (
+          <motion.span
+            key={i}
+            className="inline-block"
+            initial={{ opacity: 0, y: 10 }}
+            animate={run ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
+            transition={{ duration: 0.5, delay: 0.1 + i * 0.03, ease: EASE }}
+          >
+            <span
+              className={key ? "text-[var(--text-main)]" : ""}
+              style={key ? { backgroundImage: "linear-gradient(#ff4d00, #ff4d00)", backgroundRepeat: "no-repeat", backgroundPosition: "0 100%", backgroundSize: run ? "100% 2px" : "0% 2px", transition: `background-size 0.7s ease ${0.6 + i * 0.03}s` } : undefined}
+            >
+              {w}
+            </span>
+            &nbsp;
+          </motion.span>
+        );
+      })}
+    </p>
+  );
+}
+
 const SPARKS = [
   { left: "8%", size: 4, dur: 7, delay: 0 },
   { left: "20%", size: 3, dur: 9, delay: 2 },
@@ -266,6 +322,13 @@ function FlyLetter({ ch, i, count, dir, p, rise }) {
 function Pinned({ goTo, time }) {
   const ref = useRef(null);
   const stageRef = useRef(null);
+  const [ripples, setRipples] = useState([]);
+  const nextRipple = useRef(0);
+  // A ring spreads out from wherever you click
+  const ripple = (e) => {
+    const id = (nextRipple.current += 1);
+    setRipples((r) => [...r.slice(-4), { id, x: e.clientX, y: e.clientY }]);
+  };
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
   const p = useSpring(scrollYProgress, { stiffness: 120, damping: 30, mass: 0.4 });
 
@@ -278,6 +341,11 @@ function Pinned({ goTo, time }) {
   const leftCardX = useTransform(p, [0.3, 0.7], [-60, 0]);
   const rightCardX = useTransform(p, [0.3, 0.7], [60, 0]);
   const cardOpacity = useTransform(p, [0.3, 0.65], [0, 1]);
+  // The cards' text starts animating once they have appeared
+  const [shown, setShown] = useState(false);
+  useMotionValueEvent(p, "change", (v) => {
+    if (v > 0.45) setShown((x) => x || true);
+  });
   const hintOpacity = useTransform(p, [0, 0.2], [1, 0]);
   const railFill = useTransform(p, [0, 1], [0, 1]);
   // Near the end of the pin the whole scene melts into the page instead of ending on a hard edge
@@ -300,7 +368,7 @@ function Pinned({ goTo, time }) {
 
   return (
     <div ref={ref} className="relative -mb-[14vh] h-[240vh]">
-      <motion.div ref={stageRef} onPointerMove={lean} className="sticky top-0 h-screen overflow-hidden" style={{ "--tx": 0, "--ty": 0, maskImage: sceneMask, WebkitMaskImage: sceneMask }}>
+      <motion.div ref={stageRef} onPointerMove={lean} onPointerDown={ripple} className="sticky top-0 h-screen overflow-hidden" style={{ "--tx": 0, "--ty": 0, maskImage: sceneMask, WebkitMaskImage: sceneMask }}>
         <Glow />
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0" style={{ background: "radial-gradient(420px circle at var(--mx, 50%) var(--my, 45%), rgba(196,181,253,0.16), transparent 65%)" }} />
 
@@ -351,6 +419,17 @@ function Pinned({ goTo, time }) {
         ))}
         <motion.div aria-hidden="true" className="pointer-events-none absolute left-1/2 top-[60%] z-0 h-[40vw] w-[40vw] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(124,92,214,0.4),transparent_65%)]" animate={{ scale: [1, 1.1, 1], opacity: [0.8, 1, 0.8] }} transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }} />
 
+        {/* Click ripples */}
+        {ripples.map((r) => (
+          <span
+            key={r.id}
+            aria-hidden="true"
+            className="pointer-events-none absolute z-30 h-24 w-24 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-[#c4b5fd] [animation:hero-ripple_0.9s_ease-out_forwards]"
+            style={{ left: r.x, top: r.y }}
+            onAnimationEnd={() => setRipples((list) => list.filter((x) => x.id !== r.id))}
+          />
+        ))}
+
         {/* The name, letter by letter, either side of the portrait */}
         <h1 className="m-0" aria-label="Saviyo George">
           <span aria-hidden="true" className="absolute left-[3vw] top-[24%] z-0 flex font-black uppercase leading-none text-[var(--text-main)]" style={nameStyle}>
@@ -387,14 +466,14 @@ function Pinned({ goTo, time }) {
         {/* Cards that slide in from the sides as the name leaves */}
         <motion.div className="absolute left-[4vw] top-[28%] z-20 w-[min(24rem,26vw)] overflow-hidden rounded-3xl border border-white/12 bg-[#14121d]/85 p-6 shadow-2xl" style={{ opacity: cardOpacity, x: leftCardX }}>
           <span aria-hidden="true" className="absolute inset-x-6 top-0 h-px overflow-hidden"><span className="block h-full w-1/3 [animation:hero-sweep_3.2s_ease-in-out_infinite]" style={{ background: "linear-gradient(to right, transparent, #c4b5fd, transparent)" }} /></span>
-          <p className="m-0 font-mono text-[11px] uppercase tracking-[0.25em] text-[var(--text-dim)]">About me</p>
-          <WordsFade delay={0.2} text={INTRO_TEXT} className="m-0 mt-3 text-base leading-relaxed text-[var(--text-muted)]" />
+          <p className="m-0 font-mono text-[11px] uppercase tracking-[0.25em] text-[var(--text-dim)]"><Scramble text="About me" run={shown} /></p>
+          <Highlighted text={INTRO_TEXT} run={shown} className="m-0 mt-3 text-base leading-relaxed text-[var(--text-muted)]" />
           <TypedRole />
         </motion.div>
 
         <motion.div className="absolute right-[4vw] top-[28%] z-20 w-[min(16rem,20vw)] overflow-hidden rounded-3xl border border-white/12 bg-[#14121d]/85 p-6 shadow-2xl" style={{ opacity: cardOpacity, x: rightCardX }}>
           <span aria-hidden="true" className="absolute inset-x-6 top-0 h-px overflow-hidden"><span className="block h-full w-1/3 [animation:hero-sweep_3.2s_ease-in-out_infinite]" style={{ background: "linear-gradient(to right, transparent, #c4b5fd, transparent)" }} /></span>
-          <p className="m-0 mb-4 text-right font-mono text-[11px] uppercase tracking-[0.25em] text-[var(--text-dim)]">In numbers</p>
+          <p className="m-0 mb-4 text-right font-mono text-[11px] uppercase tracking-[0.25em] text-[var(--text-dim)]"><Scramble text="In numbers" run={shown} /></p>
           <Stats align="right" delay={0.9} />
         </motion.div>
 
