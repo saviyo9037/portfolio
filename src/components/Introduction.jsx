@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion, useMotionTemplate, useMotionValueEvent, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
+import { AnimatePresence, motion, useMotionValueEvent, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
 import { FiArrowRight, FiDownload, FiMapPin } from "react-icons/fi";
-import heroPhoto from "../assets/saviyo-cutout.png";
+import heroPhoto from "../assets/saviyo-cutout.webp";
 import { scrollToId } from "../lib/scroll";
 import { useStaticLayout } from "../hooks/useStaticLayout";
 import { CountUp, Magnetic } from "./motion/effects";
@@ -108,8 +108,8 @@ function WordsFade({ text, delay = 0, className = "" }) {
         <motion.span
           key={i}
           className="inline-block"
-          initial={reduce ? false : { opacity: 0, y: 12, filter: "blur(6px)" }}
-          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+          initial={reduce ? false : { opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: delay + i * 0.035, ease: EASE }}
         >
           {w}&nbsp;
@@ -349,8 +349,7 @@ function Pinned({ goTo, time }) {
   const hintOpacity = useTransform(p, [0, 0.2], [1, 0]);
   const railFill = useTransform(p, [0, 1], [0, 1]);
   // Near the end of the pin the whole scene melts into the page instead of ending on a hard edge
-  const fadeStop = useTransform(p, [0.8, 1], [100, 62]);
-  const sceneMask = useMotionTemplate`linear-gradient(to bottom, #000 ${fadeStop}%, transparent 100%)`;
+  const sceneOpacity = useTransform(p, [0.82, 1], [1, 0]);
 
   // The portrait and the ring lean toward the pointer (written straight to the DOM, no re-render)
   const lean = (e) => {
@@ -368,7 +367,7 @@ function Pinned({ goTo, time }) {
 
   return (
     <div ref={ref} className="relative -mb-[14vh] h-[240vh]">
-      <motion.div ref={stageRef} onPointerMove={lean} onPointerDown={ripple} className="sticky top-0 h-screen overflow-hidden" style={{ "--tx": 0, "--ty": 0, maskImage: sceneMask, WebkitMaskImage: sceneMask }}>
+      <motion.div ref={stageRef} onPointerMove={lean} onPointerDown={ripple} className="sticky top-0 h-screen overflow-hidden" style={{ "--tx": 0, "--ty": 0, opacity: sceneOpacity }}>
         <Glow />
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0" style={{ background: "radial-gradient(420px circle at var(--mx, 50%) var(--my, 45%), rgba(196,181,253,0.16), transparent 65%)" }} />
 
@@ -448,12 +447,14 @@ function Pinned({ goTo, time }) {
         <motion.div
           className="absolute bottom-0 left-1/2 z-10 w-[min(34vw,30rem)] -translate-x-1/2"
           style={{ scale: photoScale, transformOrigin: "50% 100%" }}
-          initial={{ y: 120, opacity: 0, filter: "blur(14px)" }}
-          animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
+          initial={{ y: 120, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 1.3, delay: 0.4, ease: EASE }}
         >
           <img
             src={heroPhoto}
+            fetchPriority="high"
+            decoding="async"
             alt="Saviyo George"
             width="768"
             height="1024"

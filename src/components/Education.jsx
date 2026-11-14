@@ -55,7 +55,7 @@ export default function Education() {
     if (reduce) return;
     // Complete once the whole section is on screen, and rounded so the page only re-renders when something visibly changes
     const raw = Math.min(1, Math.max(0, v / 0.93));
-    const next = raw > 0.985 ? 1 : Math.round(raw * 200) / 200;
+    const next = raw > 0.985 ? 1 : Math.round(raw * 100) / 100;
     setP((prev) => (prev === next ? prev : next));
   });
 

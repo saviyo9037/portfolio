@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import avatar from "../assets/saviyo-cutout.png";
+import avatar from "../assets/saviyo-avatar.webp";
 import { FiArrowUpRight, FiCheck, FiCopy, FiGithub, FiLinkedin, FiMail, FiMapPin, FiPhone, FiSend } from "react-icons/fi";
 
 const ACCENT = "#ff4d00";
@@ -364,7 +364,7 @@ export default function Contact() {
   const reduce = useReducedMotion();
 
   return (
-    <section id="contact" className="relative w-full overflow-hidden py-12 md:py-28">
+    <section id="contact" className="relative w-full overflow-hidden py-12 md:py-28" style={{ contentVisibility: "auto", containIntrinsicSize: "auto 900px" }}>
       <MobileContact reduce={reduce} />
 
       <div className="mx-auto hidden w-full max-w-[1500px] gap-10 px-5 md:grid md:gap-12 md:px-8 lg:grid-cols-2 lg:gap-16">
