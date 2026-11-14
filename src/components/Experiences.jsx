@@ -75,7 +75,7 @@ function PhoneDeck({ jobs: list }) {
   const dots = useTransform(smooth, [0, 1], [0, 1]);
 
   return (
-    <div ref={ref} className="relative mt-8" style={{ height: `${(n - 1) * 55 + 100}svh`, "--deck-card": "min(22rem, 58svh)" }}>
+    <div ref={ref} className="relative mt-8" style={{ height: `${(n - 1) * 38 + 100}svh`, "--deck-card": "min(22rem, 58svh)" }}>
       <div className="sticky top-24" style={{ height: `calc(var(--deck-card) + ${(n - 1) * 0.9}rem)` }}>
         {list.map((job, i) => (
           <DeckCard key={`${job.company}-${job.period}`} job={job} index={i} count={n} progress={smooth} />

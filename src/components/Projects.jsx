@@ -280,7 +280,7 @@ function PhoneTrack({ featured, onOpen }) {
   const x = useTransform(smooth, [0, 1], [0, -(count - 1) * (cardPx + gapPx)]);
 
   return (
-    <div ref={ref} className="relative mt-6 -mx-5" style={{ height: `${(count - 1) * 55 + 100}svh` }}>
+    <div ref={ref} className="relative mt-6 -mx-5" style={{ height: `${(count - 1) * 38 + 100}svh` }}>
       {/* An invisible element exactly 100svh tall, only to measure the screen */}
       <div ref={probeRef} aria-hidden="true" className="pointer-events-none invisible absolute left-0 top-0 w-px" style={{ height: "100svh" }} />
       <div className="sticky overflow-hidden" style={{ top: TOP_OFFSET, height: `calc(100svh - ${TOP_OFFSET}px)` }}>

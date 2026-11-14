@@ -188,7 +188,7 @@ function Stacked({ goTo, time, reduce }) {
     transition: { duration: 0.8, delay, ease: EASE },
   });
   return (
-    <section className="relative w-full overflow-hidden px-5 pb-12 pt-28 sm:px-8" style={{ maskImage: "linear-gradient(to bottom, #000 88%, transparent 100%)", WebkitMaskImage: "linear-gradient(to bottom, #000 88%, transparent 100%)" }}>
+    <section className="relative w-full overflow-hidden px-5 pb-8 pt-24 sm:px-8" style={{ maskImage: "linear-gradient(to bottom, #000 88%, transparent 100%)", WebkitMaskImage: "linear-gradient(to bottom, #000 88%, transparent 100%)" }}>
       <Glow />
       <div className="relative mx-auto flex max-w-3xl flex-col items-center text-center">
         <motion.span {...fade(0.05)} className="inline-flex items-center gap-2.5 rounded-full border border-[var(--border-subtle)] bg-[var(--bg-surface)]/80 py-2 pl-3 pr-4 text-sm text-[var(--text-muted)]">
@@ -214,10 +214,10 @@ function Stacked({ goTo, time, reduce }) {
         <motion.div {...fade(0.9)} className="mt-8">
           <Buttons goTo={goTo} />
         </motion.div>
-        <motion.div {...fade(1)} className="mt-10 w-full max-w-md">
+        <motion.div {...fade(1)} className="mt-8 w-full max-w-md">
           <Stats />
         </motion.div>
-        <p className="m-0 mt-8 flex items-center gap-1.5 text-sm text-[var(--text-muted)]">
+        <p className="m-0 mt-6 flex items-center gap-1.5 text-sm text-[var(--text-muted)]">
           <FiMapPin aria-hidden="true" style={{ color: ACCENT }} /> Kerala · <span className="font-semibold tabular-nums text-[var(--text-main)]">{time}</span>
         </p>
       </div>
