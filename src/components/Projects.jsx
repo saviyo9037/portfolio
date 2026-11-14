@@ -212,19 +212,23 @@ function StackCard({ project: p, index, count, progress, onOpen }) {
   );
 }
 
-// Phones: the section is pinned and your vertical scroll slides the cards sideways, left to right.
-// Scrolling back up slides them back. Each card grows as it arrives in the middle.
+// Phones: the section is pinned and your vertical scroll slides the cards sideways, left to right (and back when you scroll up).
+// The cards size themselves to the phone: the stage is measured against the screen's smallest height (browser bars showing),
+// and the whole row is scaled down just enough that the tallest card fits, so no card is ever cut off.
 const PHONE_CARD_VW = 82;
 const PHONE_GAP_VW = 5;
+const TOP_OFFSET = 80; // the space the page's own top bar takes (px)
+const FOOT_ROOM = 56; // room for the progress bar and hint under the cards (px)
 
 function PhoneCard({ project: p, index, count, progress, onOpen }) {
   const tone = CARD_TONES[index % CARD_TONES.length];
-  const scale = useTransform(progress, (v) => 1 - Math.min(1, Math.abs(v * (count - 1) - index)) * 0.08);
+  const scale = useTransform(progress, (v) => 1 - Math.min(1, Math.abs(v * (count - 1) - index)) * 0.06);
   const opacity = useTransform(progress, (v) => 1 - Math.min(1, Math.abs(v * (count - 1) - index)) * 0.45);
   return (
     <motion.article
-      className="w-[82vw] shrink-0 self-start overflow-hidden rounded-[1.75rem] text-[#1a1a1a]"
-      style={{ backgroundColor: tone.bg, scale, opacity, transformOrigin: "50% 0%" }}
+      data-phone-card=""
+      className="shrink-0 self-start overflow-hidden rounded-[1.75rem] text-[#1a1a1a]"
+      style={{ width: `${PHONE_CARD_VW}vw`, backgroundColor: tone.bg, scale, opacity, transformOrigin: "50% 0%" }}
     >
       <CardBody project={p} index={index} tone={tone} onOpen={onOpen} />
     </motion.article>
@@ -233,29 +237,70 @@ function PhoneCard({ project: p, index, count, progress, onOpen }) {
 
 function PhoneTrack({ featured, onOpen }) {
   const ref = useRef(null);
+  const trackRef = useRef(null);
+  const probeRef = useRef(null);
   const count = featured.length;
+  const [fit, setFit] = useState(1);
+  const [vw, setVw] = useState(() => (typeof window !== "undefined" ? window.innerWidth : 390));
+
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
   const smooth = useSpring(scrollYProgress, { stiffness: 140, damping: 30, mass: 0.4 });
-  const step = PHONE_CARD_VW + PHONE_GAP_VW;
-  const x = useTransform(smooth, [0, 1], ["0vw", `-${(count - 1) * step}vw`]);
   const bar = useTransform(smooth, [0, 1], [1 / count, 1]);
+
+  // Measure the screen and the tallest card, then work out how much the row has to shrink to fit
+  useEffect(() => {
+    const measure = () => {
+      const track = trackRef.current;
+      const probe = probeRef.current;
+      if (!track || !probe) return;
+      const screenW = document.documentElement.clientWidth;
+      const smallestH = probe.offsetHeight; // a 100svh element: the height with the browser bars showing, which stays put while you scroll
+      const tallest = Math.max(...Array.from(track.querySelectorAll("[data-phone-card]")).map((c) => c.offsetHeight), 1);
+      const room = smallestH - TOP_OFFSET - FOOT_ROOM;
+      const next = Math.max(0.5, Math.min(1, room / tallest));
+      setFit((f) => (Math.abs(f - next) < 0.005 ? f : next));
+      setVw((w) => (w === screenW ? w : screenW));
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    if (trackRef.current) ro.observe(trackRef.current);
+    window.addEventListener("resize", measure);
+    window.addEventListener("orientationchange", measure);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", measure);
+      window.removeEventListener("orientationchange", measure);
+    };
+  }, [count]);
+
+  // Lengths below are in the row's own (unscaled) units; the row is then scaled by `fit` from its top-left corner
+  const cardPx = (PHONE_CARD_VW / 100) * vw;
+  const gapPx = (PHONE_GAP_VW / 100) * vw;
+  const lead = Math.max(0, (vw / fit - cardPx) / 2); // so the first card starts centred once scaled
+  const x = useTransform(smooth, [0, 1], [0, -(count - 1) * (cardPx + gapPx)]);
 
   return (
     <div ref={ref} className="relative mt-6 -mx-5" style={{ height: `${(count - 1) * 70 + 100}svh` }}>
-      <div className="sticky top-20 flex h-[calc(100svh-6rem)] flex-col justify-center overflow-hidden">
-        <motion.div className="flex w-max items-start" style={{ x, gap: `${PHONE_GAP_VW}vw`, paddingLeft: `${(100 - PHONE_CARD_VW) / 2}vw` }}>
-          {featured.map((p, i) => (
-            <PhoneCard key={p.id} project={p} index={i} count={count} progress={smooth} onOpen={onOpen} />
-          ))}
-        </motion.div>
+      {/* An invisible element exactly 100svh tall, only to measure the screen */}
+      <div ref={probeRef} aria-hidden="true" className="pointer-events-none invisible absolute left-0 top-0 w-px" style={{ height: "100svh" }} />
+      <div className="sticky overflow-hidden" style={{ top: TOP_OFFSET, height: `calc(100svh - ${TOP_OFFSET}px)` }}>
+        <div style={{ width: `${100 / fit}%`, transform: `scale(${fit})`, transformOrigin: "0 0" }}>
+          <motion.div ref={trackRef} className="flex w-max items-start" style={{ x, gap: gapPx, paddingLeft: lead }}>
+            {featured.map((p, i) => (
+              <PhoneCard key={p.id} project={p} index={i} count={count} progress={smooth} onOpen={onOpen} />
+            ))}
+          </motion.div>
+        </div>
 
         {/* How far along you are */}
-        <div aria-hidden="true" className="mx-auto mt-5 h-[3px] w-[60%] overflow-hidden rounded-full bg-white/15">
-          <motion.span className="block h-full origin-left rounded-full" style={{ scaleX: bar, backgroundColor: ACCENT }} />
+        <div className="absolute inset-x-0 bottom-3 flex flex-col items-center">
+          <div aria-hidden="true" className="h-[3px] w-[60%] overflow-hidden rounded-full bg-white/15">
+            <motion.span className="block h-full origin-left rounded-full" style={{ scaleX: bar, backgroundColor: ACCENT }} />
+          </div>
+          <p aria-hidden="true" className="m-0 mt-2 font-mono text-[10px] uppercase tracking-[0.3em] text-white/45">
+            Scroll to slide
+          </p>
         </div>
-        <p aria-hidden="true" className="m-0 mt-2 text-center font-mono text-[10px] uppercase tracking-[0.3em] text-white/45">
-          Scroll to slide
-        </p>
       </div>
     </div>
   );
