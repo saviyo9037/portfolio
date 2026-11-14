@@ -1,11 +1,12 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
+import { motion, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
 import { FiArrowUpRight, FiX } from "react-icons/fi";
 import { PROJECT_CATEGORIES } from "../data/projects";
 import { applyControls, demoUrl, languagesOf, repoUrl } from "../lib/mergeProjects";
 import { imageSrc, tagsOf, useAllProjects, yearOf } from "../hooks/useAllProjects";
 import ProjectControls from "./ProjectControls";
 import { useStaticLayout } from "../hooks/useStaticLayout";
+import { useIsPhone } from "../hooks/useIsPhone";
 
 const ACCENT = "#ff4d00";
 const FEATURED_MAX = 6;
@@ -211,13 +212,64 @@ function StackCard({ project: p, index, count, progress, onOpen }) {
   );
 }
 
+// Phones: the section is pinned and your vertical scroll slides the cards sideways, left to right.
+// Scrolling back up slides them back. Each card grows as it arrives in the middle.
+const PHONE_CARD_VW = 82;
+const PHONE_GAP_VW = 5;
+
+function PhoneCard({ project: p, index, count, progress, onOpen }) {
+  const tone = CARD_TONES[index % CARD_TONES.length];
+  const scale = useTransform(progress, (v) => 1 - Math.min(1, Math.abs(v * (count - 1) - index)) * 0.08);
+  const opacity = useTransform(progress, (v) => 1 - Math.min(1, Math.abs(v * (count - 1) - index)) * 0.45);
+  return (
+    <motion.article
+      className="w-[82vw] shrink-0 self-start overflow-hidden rounded-[1.75rem] text-[#1a1a1a]"
+      style={{ backgroundColor: tone.bg, scale, opacity, transformOrigin: "50% 0%" }}
+    >
+      <CardBody project={p} index={index} tone={tone} onOpen={onOpen} />
+    </motion.article>
+  );
+}
+
+function PhoneTrack({ featured, onOpen }) {
+  const ref = useRef(null);
+  const count = featured.length;
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
+  const smooth = useSpring(scrollYProgress, { stiffness: 140, damping: 30, mass: 0.4 });
+  const step = PHONE_CARD_VW + PHONE_GAP_VW;
+  const x = useTransform(smooth, [0, 1], ["0vw", `-${(count - 1) * step}vw`]);
+  const bar = useTransform(smooth, [0, 1], [1 / count, 1]);
+
+  return (
+    <div ref={ref} className="relative mt-6 -mx-5" style={{ height: `${(count - 1) * 70 + 100}svh` }}>
+      <div className="sticky top-20 flex h-[calc(100svh-6rem)] flex-col justify-center overflow-hidden">
+        <motion.div className="flex w-max items-start" style={{ x, gap: `${PHONE_GAP_VW}vw`, paddingLeft: `${(100 - PHONE_CARD_VW) / 2}vw` }}>
+          {featured.map((p, i) => (
+            <PhoneCard key={p.id} project={p} index={i} count={count} progress={smooth} onOpen={onOpen} />
+          ))}
+        </motion.div>
+
+        {/* How far along you are */}
+        <div aria-hidden="true" className="mx-auto mt-5 h-[3px] w-[60%] overflow-hidden rounded-full bg-white/15">
+          <motion.span className="block h-full origin-left rounded-full" style={{ scaleX: bar, backgroundColor: ACCENT }} />
+        </div>
+        <p aria-hidden="true" className="m-0 mt-2 text-center font-mono text-[10px] uppercase tracking-[0.3em] text-white/45">
+          Scroll to slide
+        </p>
+      </div>
+    </div>
+  );
+}
+
 function Showcase({ featured, onOpen }) {
   const plain = useStaticLayout();
+  const phone = useIsPhone();
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
   const count = featured.length;
   if (!count) return null;
-  const stacked = !plain && count > 1;
+  const stacked = !plain && !phone && count > 1;
+  const slider = !plain && phone && count > 1;
 
   return (
     <div className="px-5 pb-10 pt-10 sm:px-10">
@@ -229,7 +281,9 @@ function Showcase({ featured, onOpen }) {
           Featured <span className="serif-accent">work</span>
         </h2>
 
-        {stacked ? (
+        {slider ? (
+          <PhoneTrack featured={featured} onOpen={onOpen} />
+        ) : stacked ? (
           // The section is tall; the stage stays pinned while you scroll through it
           <div ref={ref} className="relative mt-8" style={{ height: `${count * 100}svh` }}>
             <div className="sticky top-24 h-[calc(100svh-7rem)]">
