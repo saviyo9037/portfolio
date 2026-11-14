@@ -76,7 +76,84 @@ export default function Education() {
         </h2>
       </div>
 
-      <div className="grid items-center gap-12 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-20">
+      <>
+      {/* Phones: minimal. One big year, a hairline that fills as you scroll, and three plain rows that light up in turn. */}
+      <div className="md:hidden">
+        <p className="m-0 font-mono text-[11px] uppercase tracking-[0.3em] text-[var(--text-dim)]">{done ? "Graduated" : `Year ${Math.min(3, Math.floor(p * 3) + 1)} of 3`}</p>
+
+        {/* The year, one digit at a time out of a mask, with a hairline under it */}
+        <div className="relative mt-2 h-[6.2rem] overflow-hidden">
+          <AnimatePresence mode="popLayout" initial={false}>
+            <motion.p
+              key={year}
+              className="m-0 tabular-nums text-[var(--text-main)]"
+              style={{ fontFamily: "'Inter', sans-serif", fontWeight: 300, fontSize: "6.2rem", letterSpacing: "-0.06em", lineHeight: 1 }}
+              initial={reduce ? false : { y: "100%", opacity: 0 }}
+              animate={{ y: "0%", opacity: 1 }}
+              exit={{ y: "-100%", opacity: 0 }}
+              transition={{ duration: 0.5, ease: EASE }}
+            >
+              {year}
+            </motion.p>
+          </AnimatePresence>
+        </div>
+        <div aria-hidden="true" className="relative mt-3 h-px w-full bg-white/15">
+          <span className="absolute inset-y-0 left-0 block h-px origin-left" style={{ width: `${p * 100}%`, backgroundColor: ACCENT, transition: "width 0.12s linear" }} />
+          <span className="absolute top-1/2 h-1.5 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full" style={{ left: `${p * 100}%`, backgroundColor: ACCENT }} />
+        </div>
+        <div className="mt-2 flex justify-between font-mono text-[10px] text-[var(--text-dim)]">
+          <span>Sep 2021</span>
+          <span>Mar 2024</span>
+        </div>
+
+        <p className="m-0 mt-8 text-xl text-[var(--text-main)]" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 600, letterSpacing: "-0.02em" }}>
+          Bachelor of Computer Applications
+        </p>
+        <p className="m-0 mt-1 text-sm text-[var(--text-muted)]">Sree Sabareesa College · MG University, Kerala</p>
+
+        {/* Three plain rows */}
+        <ol className="m-0 mt-8 list-none p-0">
+          {STAGES.map((s, i) => {
+            const lit = reduce || (i / stageCount <= p && p > 0);
+            return (
+              <motion.li
+                key={s.label}
+                className="border-t border-white/12 py-5"
+                initial={reduce ? false : { opacity: 0, y: 22 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: false, margin: "-8% 0px" }}
+                transition={{ duration: 0.6, ease: EASE }}
+              >
+                <div className="flex gap-5">
+                  <span className="w-7 shrink-0 pt-0.5 font-mono text-sm transition-colors duration-500" style={{ color: lit ? ACCENT : "var(--text-dim)" }}>
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <div className="min-w-0 flex-1" style={{ opacity: lit ? 1 : 0.4, transition: "opacity 0.5s" }}>
+                    <p className="m-0 text-lg font-semibold text-[var(--text-main)]">{s.label}</p>
+                    <p className="m-0 mt-1 text-sm leading-relaxed text-[var(--text-muted)]">{s.desc}</p>
+                  </div>
+                </div>
+                {/* A short line that draws under the row once it is lit */}
+                <span aria-hidden="true" className="mt-4 ml-12 block h-px origin-left transition-transform duration-700" style={{ width: "3rem", backgroundColor: ACCENT, transform: lit ? "scaleX(1)" : "scaleX(0)" }} />
+              </motion.li>
+            );
+          })}
+        </ol>
+
+        <motion.p
+          className="m-0 flex items-center gap-2 border-t border-white/12 pt-5 text-sm text-[var(--text-main)]"
+          initial={false}
+          animate={{ opacity: done || reduce ? 1 : 0.35 }}
+          transition={{ duration: 0.5 }}
+        >
+          <span aria-hidden="true" className="h-2 w-2 rounded-full transition-colors duration-500" style={{ backgroundColor: done || reduce ? ACCENT : "rgba(255,255,255,0.3)" }} />
+          First Class Distinction · 2021 — 2024
+        </motion.p>
+
+        {study?.coursework && <p className="m-0 mt-4 font-mono text-[11px] leading-loose text-[var(--text-dim)]">{study.coursework.join("  /  ")}</p>}
+      </div>
+
+      <div className="hidden items-center gap-12 md:grid lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-20">
         {/* The dial */}
         <motion.div
           initial={reduce ? false : { opacity: 0, scale: 0.88 }}
@@ -238,6 +315,7 @@ export default function Education() {
           )}
         </div>
       </div>
+      </>
     </section>
   );
 }
