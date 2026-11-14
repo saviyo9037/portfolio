@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { GITHUB } from "../config/github";
 import { fetchRepos, buildProjects } from "../lib/github";
 
-const CACHE_KEY = "portfolio:github-projects:v1";
+const CACHE_KEY = "portfolio:github-projects:v2";
 const TTL_MS = GITHUB.cacheMinutes * 60 * 1000;
 
 function readCache() {

@@ -55,7 +55,11 @@ export const repoUrl = (p) =>
  * match a repo (date, language, links) and adds every repo that has no manual
  * entry, so new repositories appear without touching the code.
  */
-export function mergeProjects(manualProjects, githubProjects = []) {
+export function mergeProjects(manualProjects, allGithubProjects = []) {
+  // Hidden repos are dropped here too, so an older cached or server copy of the list cannot bring them back
+  const githubProjects = allGithubProjects.filter(
+    (g) => !GITHUB.exclude.some((n) => n.toLowerCase() === String(g.repo).toLowerCase())
+  );
   const matched = new Set();
 
   const fromManual = manualProjects.map((m) => {
