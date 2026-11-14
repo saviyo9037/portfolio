@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { motion, useMotionValueEvent, useScroll } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { FiArrowUpRight, FiX } from "react-icons/fi";
 import { PROJECT_CATEGORIES } from "../data/projects";
 import { applyControls, demoUrl, languagesOf, repoUrl } from "../lib/mergeProjects";
@@ -113,95 +113,99 @@ function Details({ project: p, onClose }) {
   );
 }
 
-/* ---------- Showcase: one big project at a time while you scroll ---------- */
-function Showcase({ featured, onOpen }) {
-  const reduce = useStaticLayout();
-  const n = Math.max(featured.length, 1);
-  const ref = useRef(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
-  const [index, setIndex] = useState(0);
-  const [pan, setPan] = useState(0);
+/* ---------- Showcase: cards stack on top of each other as you scroll ---------- */
+// Soft card colours, each with a darker tone for the small heading. Text on them is always dark.
+const CARD_TONES = [
+  { bg: "#ffb59a", ink: "#6b4de6" },
+  { bg: "#cfc9f5", ink: "#4b3bb5" },
+  { bg: "#b7dcc2", ink: "#166a3d" },
+  { bg: "#f3e3a2", ink: "#8a5a00" },
+  { bg: "#a9d0ee", ink: "#1b5a96" },
+  { bg: "#efbad6", ink: "#a02266" },
+];
 
-  // Which project is showing, and how far through it the scroll is (the screenshot pans with it)
-  useMotionValueEvent(scrollYProgress, "change", (v) => {
-    const f = Math.min(0.9999, Math.max(0, v)) * n;
-    setIndex(Math.floor(f));
-    setPan(f - Math.floor(f));
-  });
-
-  const p = featured[index];
-  if (!p) return null;
+function StackCard({ project: p, index, count, progress, onOpen, stacked }) {
+  const tone = CARD_TONES[index % CARD_TONES.length];
+  // Each card shrinks and dims a little as the next one slides over it
+  const scale = useTransform(progress, [index / count, 1], [1, stacked ? 1 - (count - index) * 0.03 : 1]);
+  const shade = useTransform(progress, [index / count, 1], [0, stacked ? Math.min(0.45, (count - index) * 0.09) : 0]);
 
   return (
-    <div ref={ref} className="relative" style={{ height: reduce ? "auto" : `${(n + 1) * 100}vh` }}>
-      <div className={reduce ? "px-5 py-16 sm:px-10" : "sticky top-0 flex h-[100svh] w-full items-center px-5 pb-6 pt-28 sm:px-10"}>
-        <div className="mx-auto grid w-full max-w-[1500px] items-center gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,3.2fr)] lg:gap-12">
-          <div>
-            <p className="m-0 text-sm font-medium" style={{ color: ACCENT }}>
-              Selected projects
+    <div className={stacked ? "h-[92svh]" : ""} style={stacked && index === count - 1 ? { height: "auto" } : undefined}>
+      <motion.article
+        style={{ scale, backgroundColor: tone.bg, top: stacked ? `calc(5.5rem + ${index} * 1.1rem)` : undefined, transformOrigin: "50% 0%" }}
+        className={`relative overflow-hidden rounded-[2rem] text-[#1a1a1a] shadow-[0_-24px_50px_-28px_rgba(0,0,0,0.8)] sm:rounded-[2.5rem] ${stacked ? "sticky" : ""}`}
+      >
+        <div className="grid gap-8 p-6 sm:p-10 lg:min-h-[30rem] lg:grid-cols-2 lg:gap-12">
+          <div className="flex flex-col">
+            <div className="flex items-center justify-between gap-4 text-sm text-black/60">
+              <span>{String(index + 1).padStart(2, "0")}</span>
+              <span>{yearOf(p)}</span>
+            </div>
+
+            <h3 className="m-0 mt-6 text-3xl font-black uppercase leading-[0.95] tracking-tight sm:text-5xl lg:text-6xl" style={heading}>
+              {p.title}
+            </h3>
+            <p className="m-0 mt-3 text-lg font-medium sm:text-xl" style={{ color: tone.ink }}>
+              {kind(p)}
             </p>
-            <h2 className="m-0 mt-2 text-4xl font-black leading-[0.95] tracking-tight text-white lg:text-5xl" style={heading}>
-              Featured
-              <br />
-              work
-            </h2>
-            <ol className="m-0 mt-7 hidden list-none flex-col gap-1 p-0 lg:flex">
-              {featured.map((f, i) => (
-                <li key={f.id}>
-                  <button
-                    type="button"
-                    onClick={() => onOpen(f)}
-                    className={`flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left transition-colors hover:bg-white/5 ${i === index ? "bg-white/[0.07]" : ""}`}
-                  >
-                    <span className={`font-mono text-xs ${i === index ? "text-[#ffc933]" : "text-white/40"}`}>{String(i + 1).padStart(2, "0")}</span>
-                    <span className={`truncate text-sm font-semibold ${i === index ? "text-white" : "text-white/50"}`}>{f.title}</span>
-                  </button>
-                </li>
-              ))}
-            </ol>
+            <p className="m-0 mt-5 line-clamp-5 max-w-[46ch] text-[15px] leading-relaxed text-black/70 sm:text-base">{p.description}</p>
+
+            <div className="mt-auto pt-8">
+              <ul className="m-0 flex list-none flex-wrap gap-2 p-0">
+                {tagsOf(p, 4).map((t) => (
+                  <li key={t} className="rounded-full bg-white/55 px-4 py-1.5 text-sm text-black/80">
+                    {t}
+                  </li>
+                ))}
+              </ul>
+              <button
+                type="button"
+                onClick={() => onOpen(p)}
+                className="mt-5 inline-flex h-11 items-center gap-2 rounded-full bg-[#1a1a1a] px-6 text-sm font-bold text-white transition-transform hover:scale-[1.03]"
+              >
+                Open project <FiArrowUpRight aria-hidden="true" />
+              </button>
+            </div>
           </div>
 
           <button
             type="button"
             onClick={() => onOpen(p)}
             aria-label={`Open ${p.title}`}
-            className="group flex w-full cursor-pointer flex-col overflow-hidden rounded-xl border border-white/15 bg-[#17171a] text-left outline-none focus-visible:ring-2 focus-visible:ring-white/50 lg:h-[calc(100svh-10rem)]"
+            className="group relative block aspect-[16/10] w-full self-center overflow-hidden rounded-3xl bg-black/10 shadow-xl outline-none focus-visible:ring-2 focus-visible:ring-black/60"
           >
-            {/* Screenshot on its own: no text over it */}
-            <div className="relative aspect-[16/10] w-full overflow-hidden bg-[#1f1f23] lg:aspect-auto lg:min-h-0 lg:flex-1">
-              {featured.map((f, i) => (
-                <div key={f.id} className="absolute inset-0 transition-opacity duration-500" style={{ opacity: i === index ? 1 : 0 }}>
-                  <Cover project={f} style={{ objectPosition: `50% ${i === index ? pan * 100 : 0}%` }} />
-                </div>
-              ))}
-              <span className="absolute left-4 top-4 rounded-full bg-black/75 px-3 py-1 font-mono text-xs text-white">
-                {String(index + 1).padStart(2, "0")} / {String(n).padStart(2, "0")}
-              </span>
-            </div>
-
-            {/* Details on a solid panel, so every line is easy to read */}
-            <div className="flex shrink-0 flex-col gap-3 border-t border-white/10 bg-[#17171a] p-5 sm:p-6 lg:flex-row lg:items-center lg:justify-between lg:gap-8">
-              <div className="min-w-0">
-                <p className="m-0 text-sm text-white/55">{kind(p)} · {yearOf(p)}</p>
-                <h3 className="m-0 mt-1 text-xl font-black leading-tight tracking-tight text-white sm:text-2xl" style={heading}>
-                  {p.title}
-                </h3>
-                <p className="m-0 mt-2 line-clamp-2 max-w-2xl text-[15px] leading-relaxed text-white/70">{p.description}</p>
-              </div>
-              <div className="flex shrink-0 flex-col items-start gap-3 lg:items-end">
-                <ul className="m-0 flex list-none flex-wrap gap-1.5 p-0 lg:justify-end">
-                  {tagsOf(p, 4).map((t) => (
-                    <li key={t} className="rounded-full border border-white/20 px-3 py-1 text-xs text-white/80">
-                      {t}
-                    </li>
-                  ))}
-                </ul>
-                <span className="inline-flex items-center gap-1.5 text-sm font-semibold" style={{ color: ACCENT }}>
-                  Open project <FiArrowUpRight aria-hidden="true" />
-                </span>
-              </div>
-            </div>
+            <Cover project={p} className="object-top transition-transform duration-700 ease-out group-hover:scale-[1.04] motion-reduce:transition-none" />
           </button>
+        </div>
+        {/* Dims as later cards cover this one */}
+        <motion.div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-black" style={{ opacity: shade }} />
+      </motion.article>
+    </div>
+  );
+}
+
+function Showcase({ featured, onOpen }) {
+  const plain = useStaticLayout();
+  const ref = useRef(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
+  const count = featured.length;
+  if (!count) return null;
+
+  return (
+    <div className="px-5 pb-10 pt-10 sm:px-10">
+      <div className="mx-auto max-w-[1500px]">
+        <p className="m-0 text-sm font-medium" style={{ color: ACCENT }}>
+          Selected projects
+        </p>
+        <h2 className="m-0 mt-2 text-4xl font-black leading-[0.95] tracking-tight text-white lg:text-6xl" style={heading}>
+          Featured work
+        </h2>
+
+        <div ref={ref} className={`mt-10 ${plain ? "flex flex-col gap-8" : ""}`}>
+          {featured.map((p, i) => (
+            <StackCard key={p.id} project={p} index={i} count={count} progress={scrollYProgress} onOpen={onOpen} stacked={!plain} />
+          ))}
         </div>
       </div>
     </div>
