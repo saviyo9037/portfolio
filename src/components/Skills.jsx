@@ -1,5 +1,6 @@
 import React, { useRef } from "react";
-import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useStaticLayout } from "../hooks/useStaticLayout";
 import { SiTypescript } from "react-icons/si";
 import { TECHNOLOGIES } from "../data/technologies";
 import { FALLBACK_ICON, TECH_ICONS } from "./tech/techIcons";
@@ -69,7 +70,7 @@ const GRID = "m-0 grid w-full max-w-4xl list-none grid-cols-4 gap-2 p-0 sm:grid-
 
 export default function Skills() {
   const ref = useRef(null);
-  const reduce = useReducedMotion();
+  const reduce = useStaticLayout();
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
 
   const heading = (

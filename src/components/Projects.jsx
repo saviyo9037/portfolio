@@ -1,10 +1,11 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { motion, useMotionValueEvent, useReducedMotion, useScroll } from "framer-motion";
+import { motion, useMotionValueEvent, useScroll } from "framer-motion";
 import { FiArrowUpRight, FiX } from "react-icons/fi";
 import { PROJECT_CATEGORIES } from "../data/projects";
 import { applyControls, demoUrl, languagesOf, repoUrl } from "../lib/mergeProjects";
 import { imageSrc, tagsOf, useAllProjects, yearOf } from "../hooks/useAllProjects";
 import ProjectControls from "./ProjectControls";
+import { useStaticLayout } from "../hooks/useStaticLayout";
 
 const ACCENT = "#ffc933";
 const FEATURED_MAX = 6;
@@ -114,7 +115,7 @@ function Details({ project: p, onClose }) {
 
 /* ---------- Showcase: one big project at a time while you scroll ---------- */
 function Showcase({ featured, onOpen }) {
-  const reduce = useReducedMotion();
+  const reduce = useStaticLayout();
   const n = Math.max(featured.length, 1);
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });

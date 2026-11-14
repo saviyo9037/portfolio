@@ -1,5 +1,6 @@
 import React, { useRef } from "react";
-import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useStaticLayout } from "../hooks/useStaticLayout";
 
 const HEADING = "Engineering reliable full-stack realities.";
 const BODY =
@@ -31,7 +32,7 @@ function Words({ text, progress, from, to, bold = [], className = "" }) {
 
 export default function About() {
   const ref = useRef(null);
-  const reduce = useReducedMotion();
+  const reduce = useStaticLayout();
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
 
   // Reduced motion: the same text, plain, with no pinned scroll

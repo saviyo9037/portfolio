@@ -384,11 +384,11 @@ export default function Introduction() {
 
         {/* Right: a bento of tiles */}
         <div className="grid grid-cols-6 gap-3 sm:gap-4 lg:col-span-7">
-          <Tile delay={0.2} className="col-span-6 min-h-[18rem] sm:col-span-3 sm:row-span-2 sm:min-h-[26rem]">
+          <Tile delay={0.2} className="col-span-6 h-72 sm:h-80 xl:col-span-3 xl:row-span-2 xl:h-auto xl:min-h-[26rem]">
             <motion.img
               src={heroScene}
               alt="Saviyo George at a laptop, with a code card and tech logos"
-              className="absolute inset-0 h-full w-full select-none object-cover object-[72%_20%]"
+              className="absolute inset-0 h-full w-full select-none object-cover object-[78%_20%] xl:object-[72%_20%]"
               loading="eager"
               animate={reduce ? undefined : { scale: [1, 1.06, 1] }}
               transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }}

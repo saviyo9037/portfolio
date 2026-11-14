@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { FiX, FiMenu, FiArrowRight, FiCpu } from "react-icons/fi";
+import React, { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { FiArrowRight, FiArrowUpRight, FiCpu } from "react-icons/fi";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const ACCENT = "#ffc933";
+const EASE = [0.22, 1, 0.36, 1];
 
 // Section ids on the home page. "technologies" is its own page at /skills.
 const NAV_ITEMS = [
@@ -19,9 +20,23 @@ const NAV_ITEMS = [
 
 const SECTION_IDS = ["introduction", "about", "experience", "skills", "projects", "education", "contact"];
 
+// Two lines that turn into a cross
+function MenuIcon({ open }) {
+  return (
+    <span className="relative block h-3.5 w-6" aria-hidden="true">
+      <span className={`absolute left-0 h-[2px] w-6 rounded bg-current transition-all duration-300 ${open ? "top-1.5 rotate-45" : "top-0"}`} />
+      <span className={`absolute left-0 h-[2px] w-6 rounded bg-current transition-all duration-300 ${open ? "top-1.5 -rotate-45" : "top-3"}`} />
+    </span>
+  );
+}
+
 export default function Navbar() {
+  const reduce = useReducedMotion();
   const [isOpen, setIsOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("introduction");
+  const [scrolled, setScrolled] = useState(false);
+  const [hidden, setHidden] = useState(false);
+  const lastY = useRef(0);
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const onHome = pathname === "/";
@@ -45,6 +60,21 @@ export default function Navbar() {
     });
     return () => observers.forEach((o) => o?.disconnect());
   }, [onHome]);
+
+  // The bar turns solid after you scroll, hides while you scroll down and returns when you scroll up
+  useEffect(() => {
+    const onScroll = () => {
+      const y = window.scrollY;
+      setScrolled(y > 24);
+      if (y < 120) setHidden(false);
+      else if (y > lastY.current + 6) setHidden(true);
+      else if (y < lastY.current - 6) setHidden(false);
+      lastY.current = y;
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   // Lock page scroll while the mobile menu is open
   useEffect(() => {
@@ -75,80 +105,67 @@ export default function Navbar() {
     else el.scrollIntoView({ behavior: "smooth" });
   };
 
+  const hide = hidden && !isOpen;
+
   return (
     <>
-      <motion.nav
-        className="fixed left-0 right-0 top-0 z-[100] px-3 pt-3 sm:px-5 sm:pt-4"
-        initial={{ y: -80, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.6, delay: 0.05, ease: [0.22, 1, 0.36, 1] }}
+      <motion.header
+        className={`fixed inset-x-0 top-0 z-[100] transition-[background-color,border-color,backdrop-filter] duration-300 ${
+          scrolled ? "border-b border-white/10 bg-[#222222]/80 backdrop-blur-xl" : "border-b border-transparent bg-transparent"
+        }`}
+        initial={{ y: -90 }}
+        animate={{ y: hide ? -96 : 0 }}
+        transition={{ duration: reduce ? 0 : 0.45, ease: EASE }}
       >
-        <div className="relative z-10 mx-auto flex h-16 max-w-[1280px] items-center justify-between gap-3 rounded-full border border-white/10 bg-[#222222]/70 py-2 pl-3 pr-2 shadow-[0_14px_30px_-14px_rgba(0,0,0,0.9)] backdrop-blur-xl sm:pl-4">
-          {/* Brand badge */}
-          <button
-            type="button"
-            onClick={() => go("introduction")}
-            className="flex shrink-0 items-center gap-3 text-left"
-          >
-            <span
-              className="flex h-10 w-10 items-center justify-center rounded-full border-2 text-sm font-extrabold tracking-tight"
-              style={{ borderColor: ACCENT, color: ACCENT }}
-            >
-              SG
+        <nav aria-label="Main" className="mx-auto flex h-16 w-full max-w-[1500px] items-center justify-between gap-4 px-5 sm:h-[4.5rem] sm:px-8">
+          {/* Brand */}
+          <button type="button" onClick={() => go("introduction")} className="group flex shrink-0 items-baseline gap-2 text-left" aria-label="Saviyo George, go to the top">
+            <span className="text-xl font-black tracking-[-0.04em] text-[var(--text-main)] sm:text-2xl" style={{ fontFamily: "'Inter', sans-serif" }}>
+              SAVIYO<span style={{ color: ACCENT }}>.</span>
             </span>
-            <span className="hidden flex-col leading-tight xl:flex">
-              <span className="text-sm font-bold text-[var(--text-main)]">Saviyo George</span>
-              <span className="text-xs text-[var(--text-muted)]">Full-Stack Developer</span>
-            </span>
+            <span className="hidden font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--text-dim)] transition-colors group-hover:text-[var(--text-muted)] xl:inline">Full-stack dev</span>
           </button>
 
-          {/* Desktop links */}
-          <div className="hidden items-center gap-0.5 rounded-full bg-white/5 p-1 lg:flex">
+          {/* Desktop links: a yellow underline slides to the active one */}
+          <ul className="m-0 hidden list-none items-center gap-1 p-0 lg:flex">
             {NAV_ITEMS.map((item) => {
               const isActive = current === item.id;
+              const special = item.id === "technologies";
               return (
-                <button
-                  key={item.id}
-                  type="button"
-                  onClick={() => go(item.id)}
-                  className={`relative inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-3.5 py-2 text-sm transition-colors ${
-                    item.id === "technologies"
-                      ? isActive
-                        ? "border border-dashed border-transparent font-semibold text-black"
-                        : "border border-dashed border-[#ffc933] font-semibold text-[#ffc933] hover:bg-[#ffc933]/15"
-                      : isActive
-                        ? "font-semibold text-black"
-                        : "text-[var(--text-muted)] hover:text-[var(--text-main)]"
-                  }`}
-                >
-                  {isActive && (
-                    <motion.span
-                      layoutId="nav-active-pill"
-                      className="absolute inset-0 rounded-full"
-                      style={{ backgroundColor: ACCENT }}
-                      transition={{ type: "spring", stiffness: 450, damping: 36 }}
-                    />
-                  )}
-                  <span className="relative z-10 inline-flex items-center gap-1.5">
-                    {item.id === "technologies" && <FiCpu aria-hidden="true" />}
+                <li key={item.id}>
+                  <button
+                    type="button"
+                    onClick={() => go(item.id)}
+                    aria-current={isActive ? "page" : undefined}
+                    className={`relative inline-flex items-center gap-1.5 whitespace-nowrap px-3 py-2 text-sm font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ffc933] ${
+                      isActive ? "text-[var(--text-main)]" : special ? "text-[#ffc933] hover:text-white" : "text-[var(--text-muted)] hover:text-[var(--text-main)]"
+                    }`}
+                  >
+                    {special && <FiCpu aria-hidden="true" />}
                     {item.label}
-                  </span>
-                </button>
+                    {isActive && (
+                      <motion.span
+                        layoutId="nav-underline"
+                        className="absolute inset-x-3 -bottom-0.5 h-[2px] rounded-full"
+                        style={{ backgroundColor: ACCENT }}
+                        transition={{ type: "spring", stiffness: 450, damping: 36 }}
+                      />
+                    )}
+                  </button>
+                </li>
               );
             })}
-          </div>
+          </ul>
 
-          {/* Right actions */}
+          {/* Right: call to action and the menu button */}
           <div className="flex shrink-0 items-center gap-3">
             <button
               type="button"
               onClick={() => go("contact")}
-              className="hidden items-center gap-2 rounded-full border-2 px-4 py-2 text-sm font-semibold text-[var(--text-main)] transition-colors hover:text-black md:inline-flex"
-              style={{ borderColor: ACCENT }}
-              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = ACCENT)}
-              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
+              className="group hidden h-11 items-center gap-2 rounded-full px-5 text-sm font-bold text-black transition-colors hover:bg-white md:inline-flex"
+              style={{ backgroundColor: ACCENT }}
             >
-              Let's Connect <FiArrowRight aria-hidden="true" />
+              Let&apos;s Connect <FiArrowRight aria-hidden="true" className="transition-transform duration-200 group-hover:translate-x-0.5" />
             </button>
 
             <button
@@ -156,85 +173,78 @@ export default function Navbar() {
               onClick={() => setIsOpen((v) => !v)}
               aria-label={isOpen ? "Close menu" : "Open menu"}
               aria-expanded={isOpen}
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-[var(--border-subtle)] bg-[var(--bg-surface)] text-[var(--text-main)] lg:hidden"
+              className="relative z-[130] flex h-11 w-11 items-center justify-center rounded-full border border-white/15 text-[var(--text-main)] transition-colors hover:border-white/40 lg:hidden"
             >
-              {isOpen ? <FiX aria-hidden="true" /> : <FiMenu aria-hidden="true" />}
+              <MenuIcon open={isOpen} />
             </button>
           </div>
-        </div>
-      </motion.nav>
+        </nav>
+      </motion.header>
 
-      {/* Mobile menu */}
+      {/* Mobile menu: a full-screen sheet with big links */}
       <AnimatePresence>
         {isOpen && (
-          <>
-            <motion.div
-              className="fixed inset-0 z-[108] bg-black/50 backdrop-blur-sm"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setIsOpen(false)}
-            />
-            <motion.div
-              className="fixed inset-x-0 top-0 z-[109] max-h-[100dvh] overflow-y-auto border-b border-[var(--border-subtle)] bg-[var(--bg-base)] px-5 pb-8 pt-5 shadow-2xl"
-              initial={{ y: "-100%" }}
-              animate={{ y: 0 }}
-              exit={{ y: "-100%" }}
-              transition={{ duration: 0.35, ease: [0.32, 0, 0.1, 1] }}
-            >
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-bold text-[var(--text-main)]">Saviyo George</span>
-                <button
-                  type="button"
-                  onClick={() => setIsOpen(false)}
-                  aria-label="Close menu"
-                  className="flex h-10 w-10 items-center justify-center rounded-full border border-[var(--border-subtle)] text-[var(--text-main)]"
-                >
-                  <FiX aria-hidden="true" />
-                </button>
-              </div>
-
-              <nav className="mt-6 flex flex-col">
-                {NAV_ITEMS.map((item) => {
-                  const isActive = current === item.id;
-                  return (
+          <motion.div
+            className="fixed inset-0 z-[120] flex flex-col overflow-y-auto bg-[#181818] px-6 pb-10 pt-24"
+            initial={{ clipPath: "circle(0% at calc(100% - 2.75rem) 2.25rem)" }}
+            animate={{ clipPath: "circle(150% at calc(100% - 2.75rem) 2.25rem)" }}
+            exit={{ clipPath: "circle(0% at calc(100% - 2.75rem) 2.25rem)" }}
+            transition={{ duration: reduce ? 0 : 0.55, ease: EASE }}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Menu"
+          >
+            <ul className="m-0 flex list-none flex-col p-0">
+              {NAV_ITEMS.map((item, i) => {
+                const isActive = current === item.id;
+                const special = item.id === "technologies";
+                return (
+                  <motion.li
+                    key={item.id}
+                    initial={reduce ? false : { opacity: 0, y: 24 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.18 + i * 0.045, ease: EASE }}
+                    className="border-b border-white/10"
+                  >
                     <button
-                      key={item.id}
                       type="button"
                       onClick={() => go(item.id)}
-                      className={`flex items-center justify-between rounded-xl px-4 py-3.5 text-left text-base transition-colors ${
-                        item.id === "technologies"
-                          ? isActive
-                            ? "border border-dashed border-transparent font-semibold text-black"
-                            : "border border-dashed border-[#ffc933] font-semibold text-[#ffc933] hover:bg-[#ffc933]/15"
-                          : isActive
-                            ? "font-semibold text-black"
-                            : "text-[var(--text-main)] hover:bg-[var(--bg-surface)]"
-                      }`}
-                      style={isActive ? { backgroundColor: ACCENT } : undefined}
+                      className="flex w-full items-center justify-between gap-4 py-3.5 text-left"
                     >
-                      <span className="inline-flex items-center gap-2">
-                        {item.id === "technologies" && <FiCpu aria-hidden="true" />}
-                        {item.label}
+                      <span className="flex items-baseline gap-4">
+                        <span className="font-mono text-xs text-[var(--text-dim)]">{String(i + 1).padStart(2, "0")}</span>
+                        <span
+                          className="inline-flex items-center gap-2 text-[1.7rem] font-black tracking-tight"
+                          style={{ fontFamily: "'Inter', sans-serif", color: isActive || special ? ACCENT : "var(--text-main)" }}
+                        >
+                          {special && <FiCpu aria-hidden="true" className="text-xl" />}
+                          {item.label}
+                        </span>
                       </span>
-                      {isActive && <FiArrowRight aria-hidden="true" />}
+                      <FiArrowUpRight aria-hidden="true" className={isActive ? "text-[#ffc933]" : "text-[var(--text-dim)]"} />
                     </button>
-                  );
-                })}
-              </nav>
+                  </motion.li>
+                );
+              })}
+            </ul>
 
-              <div className="mt-6 flex items-center">
-                <button
-                  type="button"
-                  onClick={() => go("contact")}
-                  className="inline-flex items-center gap-2 rounded-full border-2 px-5 py-2.5 text-sm font-semibold text-[var(--text-main)]"
-                  style={{ borderColor: ACCENT }}
-                >
-                  Let's Connect <FiArrowRight aria-hidden="true" />
-                </button>
-              </div>
+            <motion.div
+              initial={reduce ? false : { opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.6, duration: 0.5 }}
+              className="mt-auto flex flex-col gap-4 pt-10"
+            >
+              <button
+                type="button"
+                onClick={() => go("contact")}
+                className="inline-flex h-12 items-center justify-center gap-2 rounded-full text-base font-bold text-black"
+                style={{ backgroundColor: ACCENT }}
+              >
+                Let&apos;s Connect <FiArrowRight aria-hidden="true" />
+              </button>
+              <p className="m-0 text-center font-mono text-[11px] uppercase tracking-[0.2em] text-[var(--text-dim)]">Saviyo George · Kerala, India</p>
             </motion.div>
-          </>
+          </motion.div>
         )}
       </AnimatePresence>
     </>

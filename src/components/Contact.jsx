@@ -64,7 +64,7 @@ export default function Contact() {
       <Magnetic strength={0.12}>
       <a
         href={`mailto:${EMAIL}`}
-        className="mx-auto mt-10 inline-flex max-w-full items-center gap-3 break-all border-b-4 pb-2 text-xl font-bold text-[var(--text-main)] transition-colors hover:text-[var(--accent)] md:text-3xl"
+        className="mx-auto mt-10 inline-flex max-w-full items-center gap-2 border-b-4 pb-2 text-[clamp(0.8rem,4.2vw,1.25rem)] font-bold sm:gap-3 sm:text-xl text-[var(--text-main)] transition-colors hover:text-[var(--accent)] md:text-3xl"
         style={{ borderColor: ACCENT }}
       >
         <FiMail aria-hidden="true" className="shrink-0" style={{ color: ACCENT }} />
