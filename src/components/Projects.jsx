@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { FiArrowUpRight, FiX } from "react-icons/fi";
 import { PROJECT_CATEGORIES } from "../data/projects";
 import { applyControls, demoUrl, languagesOf, repoUrl } from "../lib/mergeProjects";
@@ -255,6 +255,129 @@ function Showcase({ featured, onOpen }) {
   );
 }
 
+/* ---------- All projects as flip tiles: each tile turns over to show its details ---------- */
+function FlipTile({ project: p, index, cols, onOpen, reduce }) {
+  const [flipped, setFlipped] = useState(false);
+  const ref = useRef(null);
+
+  // A light that follows the mouse across the front of the tile
+  const glare = (e) => {
+    const el = ref.current;
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    el.style.setProperty("--gx", `${(((e.clientX - r.left) / r.width) * 100).toFixed(1)}%`);
+    el.style.setProperty("--gy", `${(((e.clientY - r.top) / r.height) * 100).toFixed(1)}%`);
+  };
+
+  // The tiles stand up one diagonal at a time
+  const wave = ((index % cols) + Math.floor(index / cols)) * 0.09;
+
+  return (
+    <motion.li
+      initial={reduce ? false : { opacity: 0, rotateX: -80, y: 40 }}
+      whileInView={{ opacity: 1, rotateX: 0, y: 0 }}
+      viewport={{ once: true, margin: "-40px" }}
+      transition={{ duration: 0.8, delay: wave, ease: [0.16, 1, 0.3, 1] }}
+      className="min-w-0 list-none"
+      style={{ perspective: "1200px", transformOrigin: "50% 100%" }}
+    >
+      <button
+        ref={ref}
+        type="button"
+        onMouseEnter={() => window.matchMedia("(hover: hover)").matches && setFlipped(true)}
+        onMouseLeave={() => setFlipped(false)}
+        onMouseMove={glare}
+        onFocus={() => setFlipped(true)}
+        onBlur={() => setFlipped(false)}
+        onClick={() => (flipped ? onOpen(p) : setFlipped(true))}
+        aria-label={`Open ${p.title}`}
+        className="relative block aspect-[4/3] w-full rounded-2xl text-left outline-none focus-visible:ring-2 focus-visible:ring-white/70"
+        style={{ perspective: "1200px" }}
+      >
+        {/* The button itself never moves, so the mouse cannot flicker between "inside" and "outside" as the tile turns */}
+        <span
+          className="absolute inset-0 block"
+          style={{ transformStyle: "preserve-3d", transform: `rotateY(${flipped ? 180 : 0}deg)`, transition: reduce ? "none" : "transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)", willChange: "transform" }}
+        >
+        {/* Front: the screenshot */}
+        <span className="absolute inset-0 block overflow-hidden rounded-2xl border border-white/15 bg-[#1f1f23]" style={{ backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden" }}>
+          <Cover project={p} className="object-top" />
+          <span aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/10 to-transparent" />
+          <span aria-hidden="true" className="absolute inset-0" style={{ background: "radial-gradient(260px circle at var(--gx,50%) var(--gy,50%), rgba(255,255,255,0.16), transparent 60%)" }} />
+          {p.featured && (
+            <span className="absolute right-3 top-3 rounded-full px-2.5 py-1 text-[11px] font-bold text-black" style={{ backgroundColor: ACCENT }}>
+              Featured
+            </span>
+          )}
+          <span className="absolute inset-x-4 bottom-3 block">
+            <span className="block font-mono text-[10px] uppercase tracking-[0.2em] text-white/65">
+              {kind(p)} · {yearOf(p)}
+            </span>
+            <span className="mt-1 block truncate text-xl font-black uppercase leading-tight tracking-tight text-white" style={heading}>
+              {p.title}
+            </span>
+          </span>
+        </span>
+
+        {/* Back: the details */}
+        <span
+          className="absolute inset-0 flex flex-col justify-between overflow-hidden rounded-2xl p-5 text-[#1a1a1a]"
+          style={{ backgroundColor: ACCENT, transform: "rotateY(180deg)", backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden" }}
+        >
+          <span className="block">
+            <span className="block font-mono text-[10px] uppercase tracking-[0.2em] text-black/60">
+              {String(index + 1).padStart(2, "0")} · {kind(p)} · {yearOf(p)}
+            </span>
+            <span className="mt-2 block text-xl font-black uppercase leading-tight tracking-tight" style={heading}>
+              {p.title}
+            </span>
+            <span className="mt-2 line-clamp-4 block text-[14px] leading-relaxed text-black/75">{p.description}</span>
+          </span>
+          <span className="flex flex-wrap items-center gap-1.5">
+            {tagsOf(p, 3).map((t) => (
+              <span key={t} className="rounded-full bg-black/10 px-2.5 py-1 text-xs text-black/80">
+                {t}
+              </span>
+            ))}
+            <span className="ml-auto inline-flex h-9 items-center gap-1.5 rounded-full bg-[#1a1a1a] px-4 text-xs font-bold text-white">
+              Open <FiArrowUpRight aria-hidden="true" />
+            </span>
+          </span>
+        </span>
+        </span>
+      </button>
+    </motion.li>
+  );
+}
+
+function ProjectFlip({ projects, onOpen }) {
+  const reduce = useReducedMotion();
+  const gridRef = useRef(null);
+  const [cols, setCols] = useState(3);
+
+  // Columns, for timing the wave
+  useEffect(() => {
+    const el = gridRef.current;
+    if (!el) return undefined;
+    const measure = () => setCols(el.clientWidth >= 1100 ? 3 : el.clientWidth >= 640 ? 2 : 1);
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
+  return (
+    <div className="mt-10">
+      <p className="m-0 mb-4 font-mono text-[11px] uppercase tracking-[0.25em] text-white/40">Hover or tap a tile to turn it over · click again to open the project</p>
+      <ul ref={gridRef} className="m-0 grid list-none grid-cols-1 gap-6 p-0 sm:grid-cols-2 xl:grid-cols-3">
+        {projects.map((p, i) => (
+          <FlipTile key={p.id} project={p} index={i} cols={cols} onOpen={onOpen} reduce={reduce} />
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 /* ---------- Browse every project, with filters ---------- */
 function Browser({ list, onOpen }) {
   const [category, setCategory] = useState(PROJECT_CATEGORIES.ALL);
@@ -331,36 +454,7 @@ function Browser({ list, onOpen }) {
           </button>
         </div>
       ) : (
-        <div className="mt-10 grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 xl:grid-cols-3">
-          {shown.map((p) => (
-            <article key={p.id} className="min-w-0" style={{ contentVisibility: "auto", containIntrinsicSize: "auto 440px" }}>
-              <button type="button" onClick={() => onOpen(p)} className="group block w-full rounded-xl text-left outline-none focus-visible:ring-2 focus-visible:ring-white/40">
-                <div className="relative aspect-[16/10] w-full overflow-hidden rounded-xl border border-white/15 bg-[#1f1f23] transition-colors group-hover:border-[#ffc933]/70">
-                  <Cover project={p} className="object-top transition-transform duration-500 ease-out group-hover:scale-[1.03] motion-reduce:transition-none" />
-                  {p.featured && (
-                    <span className="absolute right-3 top-3 rounded-full px-2.5 py-1 text-[11px] font-bold text-black" style={{ backgroundColor: ACCENT }}>
-                      Featured
-                    </span>
-                  )}
-                </div>
-                <p className="m-0 mt-4 text-sm text-white/50">
-                  {kind(p)} · {yearOf(p)}
-                </p>
-                <h3 className="m-0 mt-1 text-xl font-bold leading-snug tracking-tight text-white" style={heading}>
-                  {p.title}
-                </h3>
-                <p className="m-0 mt-2 line-clamp-2 text-[15px] leading-relaxed text-white/65">{p.description}</p>
-                <ul className="m-0 mt-3 flex list-none flex-wrap gap-1.5 p-0">
-                  {tagsOf(p, 3).map((t) => (
-                    <li key={t} className="rounded-full border border-white/15 px-2.5 py-1 text-xs text-white/65">
-                      {t}
-                    </li>
-                  ))}
-                </ul>
-              </button>
-            </article>
-          ))}
-        </div>
+        <ProjectFlip key={shown.map((x) => x.id).join("|")} projects={shown} onOpen={onOpen} />
       )}
 
       {!showAll && !filtering && matches.length > PAGE && (
