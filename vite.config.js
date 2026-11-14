@@ -29,6 +29,7 @@ export default defineConfig(({ mode }) => {
           manualChunks(id) {
             if (!id.includes('node_modules')) return
             if (id.includes('framer-motion') || id.includes('/motion')) return 'motion'
+            if (id.includes('/three/')) return 'three'
             if (id.includes('react-router')) return 'router'
             if (id.includes('react-icons')) return 'icons'
             if (id.includes('/react/') || id.includes('/react-dom/') || id.includes('/scheduler/')) return 'react'

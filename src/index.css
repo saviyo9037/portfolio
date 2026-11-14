@@ -1090,3 +1090,41 @@ html.lenis body {
 :root.light .text-white.font-medium {
   color: #FFFFFF !important;
 }
+/* Occasional horizontal glitch on the big name in the hero */
+@keyframes world-glitch {
+  0%, 92%, 100% { transform: translate(0, 0); clip-path: none; }
+  93% { transform: translate(-6px, 0); clip-path: inset(18% 0 52% 0); }
+  95% { transform: translate(7px, 0); clip-path: inset(58% 0 12% 0); }
+  97% { transform: translate(-3px, 0); clip-path: inset(30% 0 36% 0); }
+}
+.world-glitch { animation: world-glitch 4.5s steps(1, end) infinite; }
+@media (prefers-reduced-motion: reduce) { .world-glitch { animation: none; } }
+
+/* Tech stack strip in the hero: slides left forever */
+@keyframes hero-marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.hero-marquee { animation: hero-marquee 32s linear infinite; }
+.hero-marquee:hover { animation-play-state: paused; }
+@media (prefers-reduced-motion: reduce) { .hero-marquee { animation: none; } }
+
+/* Hero: drifting lights, a shine that sweeps over the main button, and the scroll cue */
+@keyframes hero-drift-a { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(40px, 30px); } }
+@keyframes hero-drift-b { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(-36px, -28px); } }
+@keyframes hero-scroll-dot { 0% { transform: translateY(0); opacity: 1; } 70% { transform: translateY(12px); opacity: 0; } 100% { transform: translateY(0); opacity: 0; } }
+@keyframes hero-shine { from { transform: translateX(-120%) skewX(-20deg); } to { transform: translateX(320%) skewX(-20deg); } }
+.hero-shine::after {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 40%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+  transform: translateX(-120%) skewX(-20deg);
+}
+.hero-shine:hover::after { animation: hero-shine 0.8s ease-out; }
+@media (prefers-reduced-motion: reduce) {
+  .hero-shine:hover::after { animation: none; }
+}
+
+/* Second tech row, sliding the other way */
+@keyframes hero-marquee-rev { from { transform: translateX(-50%); } to { transform: translateX(0); } }
+.hero-marquee-rev { animation: hero-marquee-rev 40s linear infinite; }
+@media (prefers-reduced-motion: reduce) { .hero-marquee-rev { animation: none; } }
