@@ -124,64 +124,90 @@ const CARD_TONES = [
   { bg: "#efbad6", ink: "#a02266" },
 ];
 
-function StackCard({ project: p, index, count, progress, onOpen, stacked }) {
-  const tone = CARD_TONES[index % CARD_TONES.length];
-  // Each card shrinks and dims a little as the next one slides over it
-  const scale = useTransform(progress, [index / count, 1], [1, stacked ? 1 - (count - index) * 0.03 : 1]);
-  const shade = useTransform(progress, [index / count, 1], [0, stacked ? Math.min(0.45, (count - index) * 0.09) : 0]);
+const clamp01 = (v) => Math.min(1, Math.max(0, v));
 
+// Card number `index` arrives (slides up over the previous one) while the scroll is between these two points
+const arrival = (index, count) => {
+  const span = 1 / (count - 1);
+  const start = (index - 1) * span;
+  return [start, start + span];
+};
+
+function CardBody({ project: p, index, tone, onOpen }) {
   return (
-    <div className={stacked ? "h-[92svh]" : ""} style={stacked && index === count - 1 ? { height: "auto" } : undefined}>
-      <motion.article
-        style={{ scale, backgroundColor: tone.bg, top: stacked ? `calc(5.5rem + ${index} * 1.1rem)` : undefined, transformOrigin: "50% 0%" }}
-        className={`relative overflow-hidden rounded-[2rem] text-[#1a1a1a] shadow-[0_-24px_50px_-28px_rgba(0,0,0,0.8)] sm:rounded-[2.5rem] ${stacked ? "sticky" : ""}`}
-      >
-        <div className="grid gap-8 p-6 sm:p-10 lg:min-h-[30rem] lg:grid-cols-2 lg:gap-12">
-          <div className="flex flex-col">
-            <div className="flex items-center justify-between gap-4 text-sm text-black/60">
-              <span>{String(index + 1).padStart(2, "0")}</span>
-              <span>{yearOf(p)}</span>
-            </div>
+    <div className="grid gap-8 p-6 sm:p-10 lg:min-h-[28rem] lg:grid-cols-2 lg:gap-12">
+      <div className="flex flex-col">
+        <div className="flex items-center justify-between gap-4 text-sm text-black/60">
+          <span>{String(index + 1).padStart(2, "0")}</span>
+          <span>{yearOf(p)}</span>
+        </div>
 
-            <h3 className="m-0 mt-6 text-3xl font-black uppercase leading-[0.95] tracking-tight sm:text-5xl lg:text-6xl" style={heading}>
-              {p.title}
-            </h3>
-            <p className="m-0 mt-3 text-lg font-medium sm:text-xl" style={{ color: tone.ink }}>
-              {kind(p)}
-            </p>
-            <p className="m-0 mt-5 line-clamp-5 max-w-[46ch] text-[15px] leading-relaxed text-black/70 sm:text-base">{p.description}</p>
+        <h3 className="m-0 mt-5 text-3xl font-black uppercase leading-[0.95] tracking-tight sm:text-5xl lg:text-6xl" style={heading}>
+          {p.title}
+        </h3>
+        <p className="m-0 mt-3 text-lg font-medium sm:text-xl" style={{ color: tone.ink }}>
+          {kind(p)}
+        </p>
+        <p className="m-0 mt-4 line-clamp-4 max-w-[46ch] text-[15px] leading-relaxed text-black/70 sm:text-base">{p.description}</p>
 
-            <div className="mt-auto pt-8">
-              <ul className="m-0 flex list-none flex-wrap gap-2 p-0">
-                {tagsOf(p, 4).map((t) => (
-                  <li key={t} className="rounded-full bg-white/55 px-4 py-1.5 text-sm text-black/80">
-                    {t}
-                  </li>
-                ))}
-              </ul>
-              <button
-                type="button"
-                onClick={() => onOpen(p)}
-                className="mt-5 inline-flex h-11 items-center gap-2 rounded-full bg-[#1a1a1a] px-6 text-sm font-bold text-white transition-transform hover:scale-[1.03]"
-              >
-                Open project <FiArrowUpRight aria-hidden="true" />
-              </button>
-            </div>
-          </div>
-
+        <div className="mt-auto pt-6">
+          <ul className="m-0 flex list-none flex-wrap gap-2 p-0">
+            {tagsOf(p, 4).map((t) => (
+              <li key={t} className="rounded-full bg-white/55 px-4 py-1.5 text-sm text-black/80">
+                {t}
+              </li>
+            ))}
+          </ul>
           <button
             type="button"
             onClick={() => onOpen(p)}
-            aria-label={`Open ${p.title}`}
-            className="group relative block aspect-[16/10] w-full self-center overflow-hidden rounded-3xl bg-black/10 shadow-xl outline-none focus-visible:ring-2 focus-visible:ring-black/60"
+            className="mt-5 inline-flex h-11 items-center gap-2 rounded-full bg-[#1a1a1a] px-6 text-sm font-bold text-white transition-transform hover:scale-[1.03]"
           >
-            <Cover project={p} className="object-top transition-transform duration-700 ease-out group-hover:scale-[1.04] motion-reduce:transition-none" />
+            Open project <FiArrowUpRight aria-hidden="true" />
           </button>
         </div>
-        {/* Dims as later cards cover this one */}
-        <motion.div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-black" style={{ opacity: shade }} />
-      </motion.article>
+      </div>
+
+      <button
+        type="button"
+        onClick={() => onOpen(p)}
+        aria-label={`Open ${p.title}`}
+        className="group relative block aspect-[16/10] w-full self-center overflow-hidden rounded-3xl bg-black/10 shadow-xl outline-none focus-visible:ring-2 focus-visible:ring-black/60"
+      >
+        <Cover project={p} className="object-top transition-transform duration-700 ease-out group-hover:scale-[1.04] motion-reduce:transition-none" />
+      </button>
     </div>
+  );
+}
+
+// A card in the pinned stack: card 1 is there at the start, the others rise from below and cover the one before
+function StackCard({ project: p, index, count, progress, onOpen }) {
+  const tone = CARD_TONES[index % CARD_TONES.length];
+
+  // How far each later card has arrived, added up: this card shrinks and dims as more cards cover it
+  const covered = useTransform(progress, (v) => {
+    let sum = 0;
+    for (let j = index + 1; j < count; j += 1) {
+      const [s, e] = arrival(j, count);
+      sum += clamp01((v - s) / (e - s));
+    }
+    return sum;
+  });
+  const scale = useTransform(covered, (c) => 1 - c * 0.04);
+  const shade = useTransform(covered, (c) => Math.min(0.5, c * 0.12));
+
+  // Card 1 never moves in. Later cards slide up from below the screen.
+  const [s0, e0] = index > 0 ? arrival(index, count) : [0, 1];
+  const rise = useTransform(progress, [s0, e0], [index > 0 ? "105vh" : "0vh", "0vh"], { clamp: true });
+
+  return (
+    <motion.article
+      style={{ y: rise, scale, backgroundColor: tone.bg, top: `calc(${index} * 1.4rem)`, zIndex: index + 1, transformOrigin: "50% 0%" }}
+      className="absolute inset-x-0 overflow-hidden rounded-[2rem] text-[#1a1a1a] shadow-[0_-24px_50px_-28px_rgba(0,0,0,0.8)] sm:rounded-[2.5rem]"
+    >
+      <CardBody project={p} index={index} tone={tone} onOpen={onOpen} />
+      <motion.div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-black" style={{ opacity: shade }} />
+    </motion.article>
   );
 }
 
@@ -191,6 +217,7 @@ function Showcase({ featured, onOpen }) {
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
   const count = featured.length;
   if (!count) return null;
+  const stacked = !plain && count > 1;
 
   return (
     <div className="px-5 pb-10 pt-10 sm:px-10">
@@ -202,11 +229,27 @@ function Showcase({ featured, onOpen }) {
           Featured work
         </h2>
 
-        <div ref={ref} className={`mt-10 ${plain ? "flex flex-col gap-8" : ""}`}>
-          {featured.map((p, i) => (
-            <StackCard key={p.id} project={p} index={i} count={count} progress={scrollYProgress} onOpen={onOpen} stacked={!plain} />
-          ))}
-        </div>
+        {stacked ? (
+          // The section is tall; the stage stays pinned while you scroll through it
+          <div ref={ref} className="relative mt-8" style={{ height: `${count * 100}svh` }}>
+            <div className="sticky top-24 h-[calc(100svh-7rem)]">
+              {featured.map((p, i) => (
+                <StackCard key={p.id} project={p} index={i} count={count} progress={scrollYProgress} onOpen={onOpen} />
+              ))}
+            </div>
+          </div>
+        ) : (
+          <div className="mt-10 flex flex-col gap-8">
+            {featured.map((p, i) => {
+              const tone = CARD_TONES[i % CARD_TONES.length];
+              return (
+                <article key={p.id} className="overflow-hidden rounded-[2rem] text-[#1a1a1a]" style={{ backgroundColor: tone.bg }}>
+                  <CardBody project={p} index={i} tone={tone} onOpen={onOpen} />
+                </article>
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );
