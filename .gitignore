@@ -25,3 +25,8 @@ dist-ssr
 components
 assets
 pages
+
+# Environment files (keep tokens out of git)
+.env
+.env.*
+!.env.example

@@ -1,32 +1,30 @@
-@import url('https://fonts.googleapis.com/css2?family=Anton&family=Caveat:wght@600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=UnifrakturCook:wght@700&display=swap');
-
 @import "tailwindcss";
 
 :root, [data-theme="dark"], .dark {
-  --bg-base: #000000;
-  --bg-surface: #0a0a0c;
-  --bg-elevated: #121216;
-  --text-main: #FFFFFF;
-  --text-muted: #cbd5e1;
-  --text-dim: #94a3b8;
+  --bg-base: #222222;
+  --bg-surface: #2b2b2b;
+  --bg-elevated: #343434;
+  --text-main: #f5f5f5;
+  --text-muted: #c4c4c4;
+  --text-dim: #8e8e8e;
   --border-subtle: rgba(255, 255, 255, 0.1);
-  --border-hover: rgba(16, 185, 129, 0.5);
-  --accent: #10b981;
-  --accent-alt: #0ea5e9;
-  --accent-warm: #f59e0b;
-  --accent-pink: #ec4899;
-  --accent-glow: rgba(16, 185, 129, 0.25);
-  --glass-bg: rgba(18, 18, 22, 0.85);
+  --border-hover: rgba(255, 201, 51, 0.5);
+  --accent: #ffc933;
+  --accent-alt: #c4c4c4;
+  --accent-warm: #ffc933;
+  --accent-pink: #8e8e8e;
+  --accent-glow: rgba(255, 201, 51, 0.25);
+  --glass-bg: rgba(43, 43, 43, 0.85);
   --glass-border: rgba(255, 255, 255, 0.12);
-  --card-bg: rgba(18, 18, 22, 0.92);
+  --card-bg: rgba(43, 43, 43, 0.92);
   --card-border: rgba(255, 255, 255, 0.12);
   --hero-title-solid: #FFFFFF;
   --hero-title-stroke: rgba(255, 255, 255, 0.45);
-  --hero-ticker-bg: rgba(0, 0, 0, 0.9);
-  --hero-card-bg: rgba(12, 12, 16, 0.95);
-  --nav-bg: rgba(0, 0, 0, 0.88);
+  --hero-ticker-bg: rgba(34, 34, 34, 0.9);
+  --hero-card-bg: rgba(43, 43, 43, 0.95);
+  --nav-bg: rgba(34, 34, 34, 0.88);
   --nav-text: #FFFFFF;
-  --nav-muted: #94a3b8;
+  --nav-muted: #8e8e8e;
   --nav-pill-bg: rgba(255, 255, 255, 0.1);
   --nav-pill-border: rgba(255, 255, 255, 0.2);
   --btn-cta-bg: #FFFFFF;
@@ -36,11 +34,11 @@
   --btn-sec-border: rgba(255, 255, 255, 0.25);
   /* Gradient palette */
   --grad-violet: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-  --grad-emerald: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+  --grad-emerald: linear-gradient(135deg, #ffc933 0%, #fbbf24 100%);
   --grad-amber: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
   --grad-rose: linear-gradient(135deg, #f43f5e 0%, #ec4899 100%);
   --grad-cyan: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
-  --grad-main: linear-gradient(135deg, #10b981 0%, #0ea5e9 50%, #3b82f6 100%);
+  --grad-main: linear-gradient(135deg, #ffc933 0%, #f97316 50%, #ea580c 100%);
 }
 
 [data-theme="light"], .light {
@@ -51,8 +49,8 @@
   --text-muted: #475569;
   --text-dim: #64748b;
   --border-subtle: rgba(0, 0, 0, 0.1);
-  --border-hover: rgba(16, 185, 129, 0.6);
-  --accent: #059669;
+  --border-hover: rgba(234, 88, 12, 0.6);
+  --accent: #ea580c;
   --accent-alt: #0284c7;
   --accent-warm: #d97706;
   --accent-pink: #db2777;
@@ -77,11 +75,11 @@
   --btn-sec-border: rgba(0, 0, 0, 0.15);
   /* Gradient palette */
   --grad-violet: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
-  --grad-emerald: linear-gradient(135deg, #059669 0%, #10b981 100%);
+  --grad-emerald: linear-gradient(135deg, #ea580c 0%, #f97316 100%);
   --grad-amber: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
   --grad-rose: linear-gradient(135deg, #e11d48 0%, #db2777 100%);
   --grad-cyan: linear-gradient(135deg, #0891b2 0%, #2563eb 100%);
-  --grad-main: linear-gradient(135deg, #059669 0%, #0284c7 50%, #2563eb 100%);
+  --grad-main: linear-gradient(135deg, #ea580c 0%, #f97316 50%, #fb923c 100%);
 }
 
 @keyframes fadeIn {
@@ -129,7 +127,7 @@ body {
 #root {
   background-color: transparent;
   color: var(--text-main);
-  min-height: 100vh;
+  min-height: 100dvh;
   position: relative;
 }
 
@@ -158,8 +156,8 @@ h6 {
 }
 
 ::selection {
-  background: #6366f1;
-  color: #ffffff;
+  background: #ffc933;
+  color: #000000;
 }
 
 /* ===== VIBRANT LIGHT THEME TYPOGRAPHY ===== */
@@ -291,7 +289,7 @@ h6 {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #39ff88;
+  background: #ffc933;
 }
 
 /* ===== LAYOUT ===== */
@@ -1021,74 +1019,112 @@ html.lenis body {
    ============================================================== */
 
 /* Overriding hardcoded dark backgrounds to light alternatives */
-.bg-\[\#0A0A0A\],
-.bg-\[\#121216\],
-.bg-\[\#111116\],
-.bg-\[\#181820\],
-.bg-\[\#050508\],
-.bg-\[\#0f0f13\],
-.bg-\[\#0b0b14\],
-.bg-\[\#0a0a0c\],
-.bg-black {
+:root.light .bg-\[\#0A0A0A\],
+:root.light .bg-\[\#121216\],
+:root.light .bg-\[\#111116\],
+:root.light .bg-\[\#181820\],
+:root.light .bg-\[\#050508\],
+:root.light .bg-\[\#0f0f13\],
+:root.light .bg-\[\#0b0b14\],
+:root.light .bg-\[\#0a0a0c\],
+:root.light .bg-black {
   background-color: #FFFFFF !important;
 }
 
 /* Overriding hardcoded text colors */
-.text-white {
+:root.light .text-white {
   color: #0F172A !important;
 }
 
-.text-[#F0F0F0],
-.text-\[\#F0F0F0\] {
+:root.light .text-[#F0F0F0],
+:root.light .text-\[\#F0F0F0\] {
   color: #1E293B !important;
 }
 
-.text-slate-400 {
+:root.light .text-slate-400 {
   color: #475569 !important;
 }
 
-.text-slate-300 {
+:root.light .text-slate-300 {
   color: #334155 !important;
 }
 
-.text-white\/50,
-.text-white\/60,
-.text-white\/80 {
+:root.light .text-white\/50,
+:root.light .text-white\/60,
+:root.light .text-white\/80 {
   color: #64748B !important;
 }
 
-.text-white\/10,
-.text-white\/20,
-.text-white\/5 {
+:root.light .text-white\/10,
+:root.light .text-white\/20,
+:root.light .text-white\/5 {
   color: rgba(0, 0, 0, 0.15) !important;
 }
 
 /* Overriding borders */
-.border-white\/10,
-.border-white\/15,
-.border-white\/20,
-.border-white\/30 {
+:root.light .border-white\/10,
+:root.light .border-white\/15,
+:root.light .border-white\/20,
+:root.light .border-white\/30 {
   border-color: rgba(0, 0, 0, 0.1) !important;
 }
 
 /* Overriding semi-transparent backgrounds */
-.bg-white\/5,
-.bg-white\/10,
-.bg-white\/15,
-.bg-white\/20 {
+:root.light .bg-white\/5,
+:root.light .bg-white\/10,
+:root.light .bg-white\/15,
+:root.light .bg-white\/20 {
   background-color: rgba(0, 0, 0, 0.03) !important;
 }
 
 /* Adjusting the gradient mesh (BackgroundAnimation) to be subtle in light mode */
-canvas {
+:root.light canvas {
   filter: invert(1) hue-rotate(180deg) opacity(0.2) contrast(1.5) !important;
 }
 
 /* Exception for terminal modal so it stays authentic/dark */
-.bg-\[\#121216\]\/95 {
+:root.light .bg-\[\#121216\]\/95 {
   background-color: rgba(18, 18, 22, 0.95) !important;
 }
 
-.text-white.font-medium {
+:root.light .text-white.font-medium {
   color: #FFFFFF !important;
 }
+/* Occasional horizontal glitch on the big name in the hero */
+@keyframes world-glitch {
+  0%, 92%, 100% { transform: translate(0, 0); clip-path: none; }
+  93% { transform: translate(-6px, 0); clip-path: inset(18% 0 52% 0); }
+  95% { transform: translate(7px, 0); clip-path: inset(58% 0 12% 0); }
+  97% { transform: translate(-3px, 0); clip-path: inset(30% 0 36% 0); }
+}
+.world-glitch { animation: world-glitch 4.5s steps(1, end) infinite; }
+@media (prefers-reduced-motion: reduce) { .world-glitch { animation: none; } }
+
+/* Tech stack strip in the hero: slides left forever */
+@keyframes hero-marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.hero-marquee { animation: hero-marquee 32s linear infinite; }
+.hero-marquee:hover { animation-play-state: paused; }
+@media (prefers-reduced-motion: reduce) { .hero-marquee { animation: none; } }
+
+/* Hero: drifting lights, a shine that sweeps over the main button, and the scroll cue */
+@keyframes hero-drift-a { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(40px, 30px); } }
+@keyframes hero-drift-b { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(-36px, -28px); } }
+@keyframes hero-scroll-dot { 0% { transform: translateY(0); opacity: 1; } 70% { transform: translateY(12px); opacity: 0; } 100% { transform: translateY(0); opacity: 0; } }
+@keyframes hero-shine { from { transform: translateX(-120%) skewX(-20deg); } to { transform: translateX(320%) skewX(-20deg); } }
+.hero-shine::after {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 40%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+  transform: translateX(-120%) skewX(-20deg);
+}
+.hero-shine:hover::after { animation: hero-shine 0.8s ease-out; }
+@media (prefers-reduced-motion: reduce) {
+  .hero-shine:hover::after { animation: none; }
+}
+
+/* Second tech row, sliding the other way */
+@keyframes hero-marquee-rev { from { transform: translateX(-50%); } to { transform: translateX(0); } }
+.hero-marquee-rev { animation: hero-marquee-rev 40s linear infinite; }
+@media (prefers-reduced-motion: reduce) { .hero-marquee-rev { animation: none; } }

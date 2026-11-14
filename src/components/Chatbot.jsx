@@ -38,6 +38,14 @@ function Chatbot() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
+  // The floating button is gone, but the assistant still works. Anything on the page can open it with:
+  //   window.dispatchEvent(new CustomEvent("open-chatbot"))
+  useEffect(() => {
+    const open = () => setIsOpen(true);
+    window.addEventListener("open-chatbot", open);
+    return () => window.removeEventListener("open-chatbot", open);
+  }, []);
+
   useEffect(() => {
     if (isOpen) {
       scrollToBottom();
@@ -150,32 +158,6 @@ function Chatbot() {
 
   return (
     <>
-      {/* Floating Action Button */}
-      <div className="fixed bottom-6 right-6 z-50 flex items-center">
-        <AnimatePresence>
-          {!isOpen && (
-            <motion.button
-              onClick={() => setIsOpen(true)}
-              initial={{ scale: 0, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0, opacity: 0 }}
-              whileHover={{ scale: 1.06 }}
-              whileTap={{ scale: 0.94 }}
-              className="relative flex items-center gap-2.5 bg-[var(--bg-surface)] text-[var(--text-main)] border border-[var(--border-subtle)] hover:border-[var(--text-main)] shadow-2xl px-4 py-3 rounded-full cursor-pointer transition-colors duration-300 group"
-              aria-label="Open Saviyo AI Chat"
-            >
-              <div className="relative">
-                <BsStars className="text-base text-[var(--text-main)] animate-pulse" />
-                <span className="absolute -top-1 -right-1 w-2 h-2 bg-green-400 rounded-full animate-ping" />
-              </div>
-              <span className="text-xs uppercase tracking-widest font-medium hidden sm:inline-block">
-                Ask Saviyo AI
-              </span>
-            </motion.button>
-          )}
-        </AnimatePresence>
-      </div>
-
       {/* Chat Window Modal */}
       <AnimatePresence>
         {isOpen && (
@@ -184,7 +166,7 @@ function Chatbot() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-            className="fixed bottom-6 right-4 sm:right-6 z-50 w-[92vw] sm:w-[400px] h-[540px] max-h-[85vh] bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-2xl shadow-2xl flex flex-col overflow-hidden backdrop-blur-xl"
+            className="fixed bottom-6 right-4 sm:right-6 z-50 w-[92vw] sm:w-[400px] h-[540px] max-h-[85dvh] bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-2xl shadow-2xl flex flex-col overflow-hidden backdrop-blur-xl"
           >
             {/* Chat Header */}
             <div className="px-5 py-4 border-b border-[var(--border-subtle)] flex items-center justify-between bg-[var(--bg-base)]/60">

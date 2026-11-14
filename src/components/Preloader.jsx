@@ -6,7 +6,7 @@ function Preloader({ onComplete }) {
 
   useEffect(() => {
     // Fast & smooth loading process
-    const duration = 1100; // 1.1 seconds loading time
+    const duration = 500; // short, so content appears quickly
     const intervalTime = 20;
     const steps = duration / intervalTime;
     let currentStep = 0;
@@ -20,7 +20,7 @@ function Preloader({ onComplete }) {
         clearInterval(timer);
         setTimeout(() => {
           onComplete();
-        }, 150);
+        }, 80);
       }
     }, intervalTime);
 
@@ -32,7 +32,7 @@ function Preloader({ onComplete }) {
       className="fixed inset-0 z-[1000] flex flex-col items-center justify-center bg-[var(--bg-base)] overflow-hidden"
       initial={{ y: "0%" }}
       exit={{ y: "-100%" }}
-      transition={{ duration: 1.2, ease: [0.76, 0, 0.24, 1] }}
+      transition={{ duration: 0.6, ease: [0.76, 0, 0.24, 1] }}
     >
       {/* Decorative background grid */}
       <div

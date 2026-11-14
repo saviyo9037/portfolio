@@ -26,7 +26,7 @@ function ThemeSwitcher({ compact = false, className = "" }) {
           animate={{ rotate: 0, scale: 1, opacity: 1 }}
           transition={{ duration: 0.25 }}
         >
-          {isDark ? <FiMoon className="text-sm text-emerald-400" /> : <FiSun className="text-sm text-amber-500" />}
+          {isDark ? <FiMoon className="text-sm text-yellow-400" /> : <FiSun className="text-sm text-yellow-400" />}
         </motion.div>
         <span className="font-mono text-[11px] font-bold tracking-wider uppercase">
           {isDark ? "DARK" : "LIGHT"}

@@ -1,5 +1,5 @@
 import React from "react";
-import Navbar from "../components/Navbar";
+import { Reveal } from "../components/motion/effects";
 import Introduction from "../components/Introduction";
 import About from "../components/About";
 import Skills from "../components/Skills";
@@ -12,8 +12,7 @@ import { CurvedDivider } from "../components/CurvedDivider";
 
 function Home() {
   return (
-    <div className="bg-transparent text-[var(--text-main)] min-h-screen relative selection:bg-[#39ff88] selection:text-[#0A0A0A]">
-      <Navbar />
+    <div className="bg-transparent text-[var(--text-main)] min-h-dvh relative selection:bg-[#ffc933] selection:text-black">
 
       <main className="relative bg-transparent">
         <section id="introduction" className="relative bg-transparent">
@@ -21,19 +20,19 @@ function Home() {
         </section>
 
         <section id="about" className="relative bg-transparent">
-          <About />
+          <Reveal><About /></Reveal>
         </section>
 
         <section id="experience" className="relative bg-transparent">
-          <Experiences />
+          <Reveal><Experiences /></Reveal>
         </section>
 
         <section id="skills" className="relative bg-transparent">
-          <Skills />
+          <Reveal><Skills /></Reveal>
         </section>
 
         <section id="education" className="relative bg-transparent">
-          <Education />
+          <Reveal><Education /></Reveal>
         </section>
 
         {/* Horizontal Project Ticker removed to fix duplicate projects */}
@@ -42,11 +41,11 @@ function Home() {
           id="projects"
           className="relative bg-transparent"
         >
-          <Projects />
+          <Reveal><Projects /></Reveal>
         </div>
 
         <section id="contact" className="relative bg-transparent">
-          <Contact />
+          <Reveal><Contact /></Reveal>
         </section>
       </main>
     </div>

@@ -21,7 +21,7 @@ const CARDS_DATA = [
     features: ["UI/UX Design", "Wireframing", "Interactive Prototypes"],
     color: "bg-zinc-950",
     border: "border-zinc-800",
-    accent: "text-emerald-400",
+    accent: "text-yellow-400",
   },
   {
     id: 3,
@@ -41,7 +41,7 @@ const CARDS_DATA = [
     features: ["Seamless Deployment", "A/B Testing", "Continuous Integration"],
     color: "bg-zinc-950",
     border: "border-zinc-800",
-    accent: "text-amber-400",
+    accent: "text-yellow-400",
   },
 ];
 

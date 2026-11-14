@@ -3,13 +3,8 @@ import React, { createContext, useState, useEffect, useMemo } from "react";
 export const ThemeContext = createContext();
 
 export function ThemeProvider({ children }) {
-  const [theme, setTheme] = useState(() => {
-    if (typeof window !== "undefined") {
-      const saved = localStorage.getItem("portfolio-theme");
-      if (saved === "light" || saved === "dark") return saved;
-    }
-    return "dark"; // Default to dark as requested
-  });
+  // The site is dark only. Any "light" choice saved by the old toggle is ignored.
+  const [theme, setTheme] = useState("dark");
 
   useEffect(() => {
     const root = document.documentElement;
