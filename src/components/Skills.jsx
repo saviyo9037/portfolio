@@ -6,7 +6,7 @@ import { FALLBACK_ICON, TECH_ICONS } from "./tech/techIcons";
 
 const WORD = "CAPABILITIES";
 const GLOW = { color: "#ffffff" };
-
+//...................................
 // Tools shown as glass tiles, three rows of eight on a wide screen
 const TILE_IDS = [
   "react", "nextjs", "typescript", "javascript", "redux", "tailwind", "nodejs", "express",
