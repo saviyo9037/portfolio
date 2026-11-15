@@ -9,7 +9,6 @@ const FACTS = [
   { k: "Degree", v: "Bachelor of Computer Applications" },
   { k: "College", v: "Sree Sabareesa College" },
   { k: "University", v: "MG University, Kerala" },
-  { k: "Result", v: "First Class Distinction", accent: true },
 ];
 
 // The degree on one compact plate: a big BCA on the left, and on the right the years with a line that draws between them as you
@@ -23,7 +22,7 @@ export default function Education() {
 
   return (
     <section ref={ref} id="education" className="mx-auto w-full max-w-5xl px-5 py-12 md:px-8 md:py-20">
-      <p className="m-0 text-xs font-semibold uppercase tracking-[0.32em]" style={{ color: ACCENT }}>
+      <p className="m-0 text-sm font-semibold uppercase tracking-[0.32em]" style={{ color: ACCENT }}>
         Education <span className="text-[var(--text-dim)]">·</span> <span className="text-[var(--text-muted)]">Academic Background</span>
       </p>
 
@@ -48,30 +47,32 @@ export default function Education() {
         <div className="md:border-l md:border-white/15 md:pl-10">
           {/* 2021 ——— 2024 */}
           <div className="flex items-center gap-3" role="img" aria-label="2021 to 2024">
-            <span aria-hidden="true" className="font-mono text-lg tabular-nums text-[var(--text-main)] md:text-xl">
+            <span aria-hidden="true" className="text-3xl font-bold tabular-nums md:text-5xl" style={{ fontFamily: "'Inter', sans-serif", letterSpacing: "-0.04em", color: ACCENT }}>
               2021
             </span>
             <span aria-hidden="true" className="relative h-px flex-1 bg-white/20">
               <motion.span className="absolute inset-y-0 left-0 block h-px w-full origin-left" style={{ backgroundColor: ACCENT, scaleX: line }} />
             </span>
-            <span aria-hidden="true" className="font-mono text-lg tabular-nums text-[var(--text-main)] md:text-xl">
+            <span aria-hidden="true" className="text-3xl font-bold tabular-nums text-[var(--text-main)] md:text-5xl" style={{ fontFamily: "'Inter', sans-serif", letterSpacing: "-0.04em" }}>
               2024
             </span>
           </div>
 
           {/* The facts, in tight rows */}
-          <dl className="m-0 mt-3">
+          <dl className="m-0 mt-5">
             {FACTS.map((f, i) => (
               <motion.div
                 key={f.k}
-                className="flex items-baseline justify-between gap-4 border-t border-white/10 py-2"
+                className="group relative flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 border-t border-white/10 py-3.5 transition-colors duration-300 md:hover:bg-white/[0.03]"
                 initial={reduce ? false : { opacity: 0, x: 24 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: false, margin: "-5% 0px" }}
                 transition={{ duration: 0.55, delay: 0.3 + i * 0.1, ease: EASE }}
               >
-                <dt className="font-mono text-[11px] uppercase tracking-[0.22em] text-[var(--text-dim)]">{f.k}</dt>
-                <dd className="m-0 text-right text-sm font-semibold md:text-base" style={{ color: f.accent ? ACCENT : "var(--text-main)" }}>
+                {/* A light-blue bar that grows in on the left when you point at a row */}
+                <span aria-hidden="true" className="absolute inset-y-2 left-0 w-0.5 origin-center scale-y-0 rounded-full transition-transform duration-300 group-hover:scale-y-100" style={{ backgroundColor: ACCENT }} />
+                <dt className="font-mono text-xs uppercase tracking-[0.22em] text-[var(--text-dim)] transition-colors duration-300 group-hover:text-[var(--text-muted)] md:pl-2">{f.k}</dt>
+                <dd className="m-0 text-right text-lg font-semibold transition-transform duration-300 md:text-2xl md:group-hover:-translate-x-1" style={{ color: "var(--text-main)", fontFamily: "'Inter', sans-serif", letterSpacing: "-0.02em" }}>
                   {f.v}
                 </dd>
               </motion.div>
