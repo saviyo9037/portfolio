@@ -6,6 +6,7 @@ import './App.css'
 import Home from './pages/Home'
 import { scrollToId, scrollToTop } from './lib/scroll'
 import CustomCursor from './components/CustomCursor'
+import StarfieldBackground from './components/StarfieldBackground'
 import Navbar from './components/Navbar'
 // Loaded only when needed, so they stay out of the first download
 const TechnologiesPage = lazy(() => import('./pages/TechnologiesPage'))
@@ -100,6 +101,7 @@ function App() {
 
   return (
     <div className="grain-overlay">
+      <StarfieldBackground />
       <CustomCursor />
 
       {/* Top Reading Progress Bar with Neon Gradient */}

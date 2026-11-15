@@ -1097,50 +1097,8 @@ html.lenis body {
 
 /* ===== Look: deep violet-black with a violet glow on the left and an orange glow on the right ===== */
 body { background-color: transparent; }
-/* The background palette lives in these four values; change them to change the whole background.
-   rgb triplets, so the same colour can be used at different strengths. */
-:root {
-  --bgl-base: 0, 0, 0;         /* base: black */
-  --bgl-a: 125, 211, 252;      /* main light, top left (light blue) */
-  --bgl-b: 255, 255, 255;      /* second light, right (white) */
-  --bgl-c: 186, 230, 253;      /* third light, bottom (pale blue) */
-}
-html { background-color: rgb(var(--bgl-base)); }
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background:
-    radial-gradient(60rem 52rem at -6% 14%, rgba(var(--bgl-a), 0.30), transparent 62%),
-    radial-gradient(54rem 46rem at 108% 60%, rgba(var(--bgl-b), 0.13), transparent 62%),
-    radial-gradient(42rem 32rem at 50% 108%, rgba(var(--bgl-c), 0.16), transparent 65%),
-    rgb(var(--bgl-base));
-}
-
-/* Living background: slow lights drifting behind everything.
-   Only transform is animated, so it runs on the GPU and never repaints the page. */
-body::after {
-  content: "";
-  position: fixed;
-  inset: -25%;
-  z-index: -1;
-  pointer-events: none;
-  background:
-    radial-gradient(32rem 28rem at 24% 28%, rgba(var(--bgl-a), 0.22), transparent 65%),
-    radial-gradient(30rem 26rem at 80% 64%, rgba(var(--bgl-b), 0.12), transparent 65%),
-    radial-gradient(26rem 24rem at 52% 88%, rgba(var(--bgl-c), 0.14), transparent 65%);
-  animation: bg-aurora 28s ease-in-out infinite alternate;
-  will-change: transform;
-}
-@keyframes bg-aurora {
-  0%   { transform: translate3d(-4%, -3%, 0) rotate(0deg) scale(1); }
-  50%  { transform: translate3d(5%, 4%, 0) rotate(7deg) scale(1.1); }
-  100% { transform: translate3d(-2%, 6%, 0) rotate(-6deg) scale(1); }
-}
-@media (max-width: 767px) { body::after { inset: -10%; animation-duration: 44s; } }
-@media (prefers-reduced-motion: reduce) { body::after { animation: none; } }
+/* ===== Background: black. The stars are drawn by src/components/StarfieldBackground.jsx ===== */
+html { background-color: #000000; }
 
 /* Big headings: medium weight, sentence case, tight spacing */
 h1, h2 {
