@@ -3,7 +3,7 @@ import { AnimatePresence, motion, useMotionValueEvent, useReducedMotion, useScro
 import { FiAward, FiMapPin } from "react-icons/fi";
 import { experience } from "../data/experience";
 
-const ACCENT = "#ff4d00";
+const ACCENT = "#7DD3FC";
 const EASE = [0.16, 1, 0.3, 1];
 const RADIUS = 84;
 const CIRC = 2 * Math.PI * RADIUS;
@@ -23,7 +23,7 @@ const onRing = (t, r = RADIUS) => {
 const CONFETTI = Array.from({ length: 30 }, (_, i) => {
   const a = (i / 30) * Math.PI * 2 + (i % 3) * 0.2;
   const d = 130 + ((i * 37) % 90);
-  return { x: Math.cos(a) * d, y: Math.sin(a) * d - 30, r: (i * 53) % 360, c: ["#ff4d00", "#c4b5fd", "#f4f0ff", "#ffb08a"][i % 4], w: 6 + (i % 3) * 3 };
+  return { x: Math.cos(a) * d, y: Math.sin(a) * d - 30, r: (i * 53) % 360, c: ["#7DD3FC", "#BAE6FD", "#FFFFFF", "#BAE6FD"][i % 4], w: 6 + (i % 3) * 3 };
 });
 
 function Confetti({ fire }) {
@@ -183,7 +183,7 @@ export default function Education() {
               cy="100"
               r={RADIUS}
               fill="none"
-              stroke="rgba(255,77,0,0.28)"
+              stroke="rgba(125, 211, 252,0.28)"
               strokeWidth="16"
               strokeLinecap="round"
               strokeDasharray={CIRC}
@@ -212,7 +212,7 @@ export default function Education() {
               const lit = p >= t && (p > 0 || reduce);
               return (
                 <g key={s.label}>
-                  <circle cx={pt.x} cy={pt.y} r="7" fill="#14121d" stroke={lit ? ACCENT : "rgba(255,255,255,0.3)"} strokeWidth="2" style={{ transition: "stroke 0.2s" }} />
+                  <circle cx={pt.x} cy={pt.y} r="7" fill="#0B0B0B" stroke={lit ? ACCENT : "rgba(255,255,255,0.3)"} strokeWidth="2" style={{ transition: "stroke 0.2s" }} />
                   <text x={pt.x} y={pt.y + 2.6} textAnchor="middle" fontSize="7" fontWeight="700" fill={lit ? ACCENT : "rgba(255,255,255,0.5)"} style={{ fontFamily: "'JetBrains Mono', monospace" }}>
                     {i + 1}
                   </text>
@@ -221,7 +221,7 @@ export default function Education() {
             })}
 
             {/* The head of the ring */}
-            {p > 0 && p < 1 && <circle cx={onRing(p).x} cy={onRing(p).y} r="5" fill="#fff" style={{ filter: "drop-shadow(0 0 6px rgba(255,77,0,1))" }} />}
+            {p > 0 && p < 1 && <circle cx={onRing(p).x} cy={onRing(p).y} r="5" fill="#fff" style={{ filter: "drop-shadow(0 0 6px rgba(125, 211, 252,1))" }} />}
           </svg>
 
           {/* In the middle: the year and the stage */}
@@ -271,8 +271,8 @@ export default function Education() {
               return (
                 <li
                   key={s.label}
-                  className="relative overflow-hidden rounded-2xl border p-4 transition-[opacity,border-color,background-color,transform] duration-500 sm:p-5"
-                  style={{ opacity: lit ? 1 : 0.35, borderColor: current ? ACCENT : "var(--border-subtle)", backgroundColor: current ? "rgba(255,77,0,0.07)" : "var(--bg-surface)", transform: current ? "translateX(10px)" : "none" }}
+                  className="glass relative overflow-hidden rounded-2xl border p-4 transition-[opacity,border-color,background-color,transform] duration-500 sm:p-5"
+                  style={{ opacity: lit ? 1 : 0.35, borderColor: current ? ACCENT : "var(--border-subtle)", backgroundColor: current ? "rgba(125, 211, 252,0.12)" : undefined, transform: current ? "translateX(10px)" : "none" }}
                 >
                   <span aria-hidden="true" className="absolute inset-y-0 left-0 w-1 transition-opacity duration-500" style={{ backgroundColor: ACCENT, opacity: lit ? 1 : 0 }} />
                   <p className="m-0 font-mono text-xs" style={{ color: lit ? ACCENT : "var(--text-dim)" }}>
@@ -290,8 +290,8 @@ export default function Education() {
               initial={reduce ? false : { opacity: 0, scale: 0.7 }}
               animate={done || reduce ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.7 }}
               transition={{ type: "spring", stiffness: 300, damping: 14 }}
-              className="rounded-full px-5 py-2 text-sm font-semibold text-white"
-              style={{ backgroundColor: ACCENT, boxShadow: "0 0 30px rgba(255,77,0,0.45)" }}
+              className="rounded-full px-5 py-2 text-sm font-semibold text-black"
+              style={{ backgroundColor: ACCENT, boxShadow: "0 0 30px rgba(125, 211, 252,0.45)" }}
             >
               First Class Distinction · 2021 — 2024
             </motion.span>

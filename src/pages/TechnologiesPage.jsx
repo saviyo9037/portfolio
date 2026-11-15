@@ -10,9 +10,9 @@ import { mergeProjects } from "../lib/mergeProjects";
 import { buildEvidence, languageCounts } from "../lib/techEvidence";
 import { scrollToId } from "../lib/scroll";
 
-const ACCENT = "#ff4d00";
+const ACCENT = "#7DD3FC";
 const focusRing =
-  "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#ff4d00]";
+  "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#7DD3FC]";
 
 export default function TechnologiesPage() {
   const { projects: githubProjects, status, error } = useGithubProjects();
@@ -95,7 +95,7 @@ export default function TechnologiesPage() {
                       aria-current={on ? "true" : undefined}
                       className={`flex items-center justify-between gap-3 whitespace-nowrap rounded-lg lg:whitespace-normal px-3 py-2 text-sm font-semibold transition-colors ${focusRing} ${
                         on
-                          ? "bg-[#ff4d00]/10 text-[#ff4d00]"
+                          ? "bg-[#7DD3FC]/10 text-[#7DD3FC]"
                           : "text-[var(--text-muted)] hover:text-[var(--text-main)]"
                       }`}
                     >

@@ -2,7 +2,7 @@ import React, { useRef } from "react";
 import { motion, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
 import { experience } from "../data/experience";
 
-const ACCENT = "#ff4d00";
+const ACCENT = "#7DD3FC";
 
 const jobs = experience.filter((item) => item.type === "work");
 
@@ -11,10 +11,10 @@ const E = [0.16, 1, 0.3, 1];
 // Phones: only the basics (when, what and where), as a deck of cards. The stage stays pinned; scrolling slides the next
 // role up over the last, and the ones underneath shrink and sink back. Scrolling up peels them off again.
 const CARD_TONES = [
-  { bg: "linear-gradient(150deg, #5b43b8, #2a1d55)", ink: "#f4f0ff", soft: "rgba(244,240,255,0.7)" },
-  { bg: "linear-gradient(150deg, #ff7a3d, #c2410c)", ink: "#ffffff", soft: "rgba(255,255,255,0.8)" },
-  { bg: "linear-gradient(150deg, #c4b5fd, #8b78d8)", ink: "#1a1030", soft: "rgba(26,16,48,0.7)" },
-  { bg: "linear-gradient(150deg, #7cffb2, #1f9d63)", ink: "#06281a", soft: "rgba(6,40,26,0.7)" },
+  { bg: "linear-gradient(150deg, #0B1220, #000000)", ink: "#FFFFFF", soft: "rgba(255,255,255,0.7)" },
+  { bg: "linear-gradient(150deg, #BAE6FD, #7DD3FC)", ink: "#000000", soft: "rgba(0,0,0,0.65)" },
+  { bg: "linear-gradient(150deg, #FFFFFF, #BAE6FD)", ink: "#000000", soft: "rgba(0,0,0,0.65)" },
+  { bg: "linear-gradient(150deg, #7DD3FC, #38BDF8)", ink: "#000000", soft: "rgba(0,0,0,0.65)" },
 ];
 const clamp01 = (v) => Math.min(1, Math.max(0, v));
 const arrival = (i, n) => {

@@ -3,7 +3,7 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import avatar from "../assets/saviyo-avatar.webp";
 import { FiArrowUpRight, FiCheck, FiCopy, FiGithub, FiLinkedin, FiMail, FiMapPin, FiPhone, FiSend } from "react-icons/fi";
 
-const ACCENT = "#ff4d00";
+const ACCENT = "#7DD3FC";
 const EASE = [0.16, 1, 0.3, 1];
 const EMAIL = "saviyogeorge903734@gmail.com";
 const PHONE = "+91 9037 348 073";
@@ -39,9 +39,9 @@ function ContactRow({ icon, label, value, href, copy, delay, reduce }) {
     >
       <a
         href={href}
-        className="group flex items-center gap-3 rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-3.5 transition-[border-color,transform,background-color] duration-300 active:scale-[0.98] sm:gap-4 sm:p-4 md:hover:translate-x-2 hover:border-[#ff4d00]/70 hover:bg-[#ff4d00]/[0.06] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#ff4d00]"
+        className="group flex items-center gap-3 rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-3.5 transition-[border-color,transform,background-color] duration-300 active:scale-[0.98] sm:gap-4 sm:p-4 md:hover:translate-x-2 hover:border-[#7DD3FC]/70 hover:bg-[#7DD3FC]/[0.06] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#7DD3FC]"
       >
-        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-lg text-white sm:h-12 sm:w-12 sm:text-xl transition-transform duration-300 group-hover:rotate-[-8deg] group-hover:scale-110" style={{ backgroundColor: ACCENT }}>
+        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-lg text-black sm:h-12 sm:w-12 sm:text-xl transition-transform duration-300 group-hover:rotate-[-8deg] group-hover:scale-110" style={{ backgroundColor: ACCENT }}>
           {icon}
         </span>
         <span className="min-w-0 flex-1">
@@ -53,13 +53,13 @@ function ContactRow({ icon, label, value, href, copy, delay, reduce }) {
             type="button"
             onClick={doCopy}
             aria-label={`Copy ${label}`}
-            className="inline-flex h-11 w-11 shrink-0 items-center justify-center gap-2 rounded-full border border-[var(--border-subtle)] text-sm sm:h-10 sm:w-auto sm:px-4 text-[var(--text-main)] transition-colors hover:border-[#ff4d00]"
+            className="inline-flex h-11 w-11 shrink-0 items-center justify-center gap-2 rounded-full border border-[var(--border-subtle)] text-sm sm:h-10 sm:w-auto sm:px-4 text-[var(--text-main)] transition-colors hover:border-[#7DD3FC]"
           >
             {copied ? <FiCheck aria-hidden="true" style={{ color: ACCENT }} /> : <FiCopy aria-hidden="true" />}
             <span className="hidden sm:inline">{copied ? "Copied" : "Copy"}</span>
           </button>
         ) : (
-          <FiArrowUpRight aria-hidden="true" className="shrink-0 text-2xl text-[var(--text-dim)] transition-transform duration-300 group-hover:rotate-45 group-hover:text-[#ff4d00]" />
+          <FiArrowUpRight aria-hidden="true" className="shrink-0 text-2xl text-[var(--text-dim)] transition-transform duration-300 group-hover:rotate-45 group-hover:text-[#7DD3FC]" />
         )}
       </a>
     </motion.li>
@@ -89,8 +89,8 @@ function ContactForm({ reduce }) {
   };
 
   const field =
-    "w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-base)]/60 px-4 py-3.5 text-base text-[var(--text-main)] outline-none transition-[border-color,box-shadow] placeholder:text-[var(--text-dim)] focus:border-[#ff4d00] focus:shadow-[0_0_0_4px_rgba(255,77,0,0.15)]";
-  const bad = (cond) => (touched && cond ? "border-red-400/70" : "");
+    "w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-base)]/60 px-4 py-3.5 text-base text-[var(--text-main)] outline-none transition-[border-color,box-shadow] placeholder:text-[var(--text-dim)] focus:border-[#7DD3FC] focus:shadow-[0_0_0_4px_rgba(125, 211, 252,0.15)]";
+  const bad = (cond) => (touched && cond ? "border-sky-300" : "");
 
   return (
     <motion.form
@@ -102,7 +102,7 @@ function ContactForm({ reduce }) {
       transition={{ duration: 0.8, ease: EASE }}
       className="relative min-w-0 overflow-hidden rounded-3xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-5 sm:p-9"
     >
-      <div aria-hidden="true" className="pointer-events-none absolute -right-20 -top-20 h-60 w-60 rounded-full" style={{ background: "radial-gradient(circle, rgba(255,77,0,0.22), transparent 65%)" }} />
+      <div aria-hidden="true" className="pointer-events-none absolute -right-20 -top-20 h-60 w-60 rounded-full" style={{ background: "radial-gradient(circle, rgba(125, 211, 252,0.22), transparent 65%)" }} />
 
       <h3 className="relative m-0 text-2xl text-[var(--text-main)] sm:text-3xl" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 600, letterSpacing: "-0.03em" }}>
         Tell me about your <span className="serif-accent">idea</span>
@@ -120,7 +120,7 @@ function ContactForm({ reduce }) {
                 aria-pressed={on}
                 onClick={() => setTopic(t)}
                 className="shrink-0 snap-start whitespace-nowrap rounded-full px-4 py-2.5 text-sm font-semibold transition-all duration-200 active:scale-95 md:hover:-translate-y-0.5"
-                style={on ? { backgroundColor: ACCENT, color: "#fff" } : { backgroundColor: "#c4b5fd", color: "#1a1030", opacity: 0.8 }}
+                style={on ? { backgroundColor: ACCENT, color: "#000000" } : { backgroundColor: "#BAE6FD", color: "#000000", opacity: 0.8 }}
               >
                 {t}
               </button>
@@ -147,12 +147,12 @@ function ContactForm({ reduce }) {
       <div className="relative mt-6 flex flex-wrap items-center gap-4">
         <button
           type="submit"
-          className="hero-shine relative inline-flex h-14 w-full items-center justify-center gap-2 overflow-hidden rounded-full px-7 text-base font-semibold text-[#0b0a12] transition-colors hover:bg-[#ff4d00] hover:text-white active:scale-[0.98] sm:h-12 sm:w-auto"
-          style={{ backgroundColor: "#f4f0ff" }}
+          className="hero-shine relative inline-flex h-14 w-full items-center justify-center gap-2 overflow-hidden rounded-full px-7 text-base font-semibold text-[#000000] transition-colors hover:bg-[#7DD3FC] hover:text-black active:scale-[0.98] sm:h-12 sm:w-auto"
+          style={{ backgroundColor: "#FFFFFF" }}
         >
           Send message <FiSend aria-hidden="true" />
         </button>
-        <p className="m-0 text-sm" role="status" aria-live="polite" style={{ color: touched && !valid ? "#ff8a7a" : "var(--text-dim)" }}>
+        <p className="m-0 text-sm" role="status" aria-live="polite" style={{ color: touched && !valid ? "#BAE6FD" : "var(--text-dim)" }}>
           {sent ? "Your email app should open with the message ready to send." : touched && !valid ? "Please fill in your name, a valid email and a few lines." : "This opens your email app with everything filled in."}
         </p>
       </div>
@@ -200,9 +200,9 @@ function MobileContact({ reduce }) {
     viewport: { once: true, margin: "-4% 0px" },
     transition: { type: "spring", stiffness: 320, damping: 22, delay: i * 0.12 },
   });
-  const bubble = "max-w-[86%] rounded-2xl rounded-bl-md bg-[#26213a] px-4 py-2.5 text-[15px] leading-snug text-[var(--text-main)]";
-  const field = "w-full rounded-2xl border border-white/12 bg-[var(--bg-base)]/70 px-4 py-3.5 text-base text-[var(--text-main)] outline-none placeholder:text-[var(--text-dim)] focus:border-[#ff4d00]";
-  const bad = (cond) => (touched && cond ? "border-red-400/70" : "");
+  const bubble = "glass max-w-[86%] rounded-2xl rounded-bl-md px-4 py-2.5 text-[15px] leading-snug text-[var(--text-main)]";
+  const field = "w-full rounded-2xl border border-white/12 bg-[var(--bg-base)]/70 px-4 py-3.5 text-base text-[var(--text-main)] outline-none placeholder:text-[var(--text-dim)] focus:border-[#7DD3FC]";
+  const bad = (cond) => (touched && cond ? "border-sky-300" : "");
 
   const actions = [
     { label: "Call", sub: PHONE, href: `tel:${PHONE.replace(/\s+/g, "")}`, icon: <FiPhone aria-hidden="true" /> },
@@ -214,15 +214,15 @@ function MobileContact({ reduce }) {
     <div className="mx-auto w-full max-w-md px-4 md:hidden">
       {/* Chat header */}
       <motion.header {...pop(0)} className="flex items-center gap-3 rounded-3xl border border-white/12 bg-[var(--bg-surface)] p-3">
-        <span className="relative h-12 w-12 shrink-0 overflow-hidden rounded-full" style={{ background: "radial-gradient(80% 80% at 50% 30%, #7c5cd6, #2a1d55)" }}>
+        <span className="relative h-12 w-12 shrink-0 overflow-hidden rounded-full" style={{ background: "radial-gradient(80% 80% at 50% 30%, #7DD3FC, #05080D)" }}>
           <img src={avatar} alt="" aria-hidden="true" width="768" height="1024" className="absolute inset-x-0 bottom-0 h-[130%] w-full max-w-none object-cover object-top" />
         </span>
         <span className="min-w-0 flex-1">
           <span className="block text-base font-bold text-[var(--text-main)]">Saviyo George</span>
           <span className="flex items-center gap-1.5 text-xs text-[var(--text-muted)]">
             <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-sky-300 opacity-60" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-sky-300" />
             </span>
             Online · replies within a day
           </span>
@@ -254,7 +254,7 @@ function MobileContact({ reduce }) {
                   aria-pressed={on}
                   onClick={() => setTopic(t)}
                   className="rounded-full border px-4 py-2 text-sm font-semibold transition-colors active:scale-95"
-                  style={on ? { backgroundColor: ACCENT, borderColor: ACCENT, color: "#fff" } : { borderColor: "rgba(196,181,253,0.5)", color: "#c4b5fd" }}
+                  style={on ? { backgroundColor: ACCENT, borderColor: ACCENT, color: "#000000" } : { borderColor: "rgba(186, 230, 253,0.5)", color: "#BAE6FD" }}
                 >
                   {t}
                 </button>
@@ -308,10 +308,10 @@ function MobileContact({ reduce }) {
           <span className="mb-1.5 block text-xs text-[var(--text-muted)]">Your message</span>
           <textarea className={`${field} min-h-[7.5rem] resize-none ${bad(message.trim().length < 10)}`} value={message} onChange={(e) => setMessage(e.target.value)} placeholder="A few lines about the project and the timeline." />
         </label>
-        <button type="submit" className="hero-shine relative flex h-14 w-full items-center justify-center gap-2 overflow-hidden rounded-full text-base font-semibold text-[#0b0a12] active:scale-[0.98]" style={{ backgroundColor: "#f4f0ff" }}>
+        <button type="submit" className="hero-shine relative flex h-14 w-full items-center justify-center gap-2 overflow-hidden rounded-full text-base font-semibold text-[#000000] active:scale-[0.98]" style={{ backgroundColor: "#FFFFFF" }}>
           Send message <FiSend aria-hidden="true" />
         </button>
-        <p className="m-0 text-center text-xs" role="status" aria-live="polite" style={{ color: touched && !valid ? "#ff8a7a" : "var(--text-dim)" }}>
+        <p className="m-0 text-center text-xs" role="status" aria-live="polite" style={{ color: touched && !valid ? "#BAE6FD" : "var(--text-dim)" }}>
           {sent ? "Your email app should open with the message ready to send." : touched && !valid ? "Please fill in your name, a valid email and a few lines." : "This opens your email app with everything filled in."}
         </p>
       </motion.form>
@@ -322,7 +322,7 @@ function MobileContact({ reduce }) {
         {actions.map((a, i) => (
           <motion.li key={a.label} {...pop(i * 0.5, i % 2 === 1)}>
             <a href={a.href} className="flex h-full flex-col gap-3 rounded-2xl border border-white/12 bg-[var(--bg-surface)] p-4 active:scale-[0.97]">
-              <span className="flex h-10 w-10 items-center justify-center rounded-full text-lg text-white" style={{ backgroundColor: ACCENT }}>
+              <span className="flex h-10 w-10 items-center justify-center rounded-full text-lg text-black" style={{ backgroundColor: ACCENT }}>
                 {a.icon}
               </span>
               <span>
@@ -334,7 +334,7 @@ function MobileContact({ reduce }) {
         ))}
         <motion.li {...pop(1.5, true)}>
           <button type="button" onClick={copyEmail} className="flex h-full w-full flex-col gap-3 rounded-2xl border border-white/12 bg-[var(--bg-surface)] p-4 text-left active:scale-[0.97]">
-            <span className="flex h-10 w-10 items-center justify-center rounded-full text-lg text-white" style={{ backgroundColor: ACCENT }}>
+            <span className="flex h-10 w-10 items-center justify-center rounded-full text-lg text-black" style={{ backgroundColor: ACCENT }}>
               {copied ? <FiCheck aria-hidden="true" /> : <FiCopy aria-hidden="true" />}
             </span>
             <span>
@@ -377,8 +377,8 @@ export default function Contact() {
             className="m-0 inline-flex items-center gap-2 rounded-full border border-[var(--border-subtle)] px-4 py-1.5 text-sm text-[var(--text-muted)]"
           >
             <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-sky-300 opacity-60" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-sky-300" />
             </span>
             Available for new opportunities
           </motion.p>
@@ -404,7 +404,7 @@ export default function Contact() {
                 href={s.href}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-[var(--border-subtle)] px-4 text-sm font-semibold active:scale-[0.98] sm:h-11 sm:px-5 text-[var(--text-main)] transition-colors hover:border-[#ff4d00] hover:text-[#ff4d00]"
+                className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-[var(--border-subtle)] px-4 text-sm font-semibold active:scale-[0.98] sm:h-11 sm:px-5 text-[var(--text-main)] transition-colors hover:border-[#7DD3FC] hover:text-[#7DD3FC]"
               >
                 <s.Icon aria-hidden="true" /> {s.label} <FiArrowUpRight aria-hidden="true" className="text-[var(--text-dim)]" />
               </a>

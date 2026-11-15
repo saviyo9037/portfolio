@@ -56,7 +56,7 @@ const StackedCards = () => {
   return (
     <section className="bg-[#09090B] py-20">
       <div className="max-w-7xl mx-auto px-4 md:px-8 mb-20 text-center">
-        <h2 className="text-4xl md:text-5xl font-bold text-[#FAFAFA] tracking-tight mb-6">
+        <h2 className="text-4xl md:text-5xl font-bold text-[#FFFFFF] tracking-tight mb-6">
           Our Proven Process
         </h2>
         <p className="text-zinc-400 text-lg md:text-xl max-w-2xl mx-auto">

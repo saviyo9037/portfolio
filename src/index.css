@@ -1,86 +1,47 @@
 @import "tailwindcss";
 
 :root, [data-theme="dark"], .dark {
-  --bg-base: #0b0a12;
-  --bg-surface: #14121d;
-  --bg-elevated: #1c1928;
-  --text-main: #f4f0ff;
-  --text-muted: #b2a8c9;
-  --text-dim: #81789b;
-  --border-subtle: rgba(255, 255, 255, 0.1);
-  --border-hover: rgba(255, 77, 0, 0.5);
-  --accent: #ff4d00;
-  --accent-alt: #b9a8ff;
-  --accent-warm: #ff4d00;
-  --accent-pink: #b9a8ff;
-  --accent-glow: rgba(255, 77, 0, 0.25);
-  --glass-bg: rgba(20, 18, 29, 0.85);
-  --glass-border: rgba(255, 255, 255, 0.12);
-  --card-bg: rgba(20, 18, 29, 0.92);
-  --card-border: rgba(255, 255, 255, 0.12);
+  /* Three colours only: black, light blue and white (white also at lower strength for quieter text and lines) */
+  --bg-base: #000000;
+  --bg-surface: #0B0B0B;
+  --bg-elevated: #121212;
+  --text-main: #FFFFFF;
+  --text-muted: rgba(255, 255, 255, 0.72);
+  --text-dim: rgba(255, 255, 255, 0.5);
+  --border-subtle: rgba(255, 255, 255, 0.16);
+  --border-hover: rgba(125, 211, 252, 0.5);
+  --accent: #7DD3FC;
+  --accent-alt: #BAE6FD;
+  --accent-warm: #7DD3FC;
+  --accent-pink: #BAE6FD;
+  --accent-glow: rgba(125, 211, 252, 0.25);
+  --glass-bg: rgba(11, 11, 11, 0.85);
+  --glass-border: rgba(255, 255, 255, 0.16);
+  --card-bg: rgba(11, 11, 11, 0.92);
+  --card-border: rgba(255, 255, 255, 0.16);
   --hero-title-solid: #FFFFFF;
   --hero-title-stroke: rgba(255, 255, 255, 0.45);
-  --hero-ticker-bg: rgba(11, 10, 18, 0.9);
-  --hero-card-bg: rgba(20, 18, 29, 0.95);
-  --nav-bg: rgba(11, 10, 18, 0.88);
+  --hero-ticker-bg: rgba(0, 0, 0, 0.9);
+  --hero-card-bg: rgba(11, 11, 11, 0.95);
+  --nav-bg: rgba(0, 0, 0, 0.88);
   --nav-text: #FFFFFF;
-  --nav-muted: #81789b;
+  --nav-muted: rgba(255,255,255,0.5);
   --nav-pill-bg: rgba(255, 255, 255, 0.1);
   --nav-pill-border: rgba(255, 255, 255, 0.2);
-  --btn-cta-bg: #f4f0ff;
+  --btn-cta-bg: #FFFFFF;
   --btn-cta-text: #000000;
   --btn-sec-bg: rgba(255, 255, 255, 0.1);
   --btn-sec-text: #FFFFFF;
   --btn-sec-border: rgba(255, 255, 255, 0.25);
   /* Gradient palette */
-  --grad-violet: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-  --grad-emerald: linear-gradient(135deg, #ff4d00 0%, #fbbf24 100%);
-  --grad-amber: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
-  --grad-rose: linear-gradient(135deg, #f43f5e 0%, #ec4899 100%);
-  --grad-cyan: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
-  --grad-main: linear-gradient(135deg, #ff4d00 0%, #f97316 50%, #ea580c 100%);
+  --grad-violet: linear-gradient(135deg, #7DD3FC 0%, #BAE6FD 100%);
+  --grad-emerald: linear-gradient(135deg, #7DD3FC 0%, #BAE6FD 100%);
+  --grad-amber: linear-gradient(135deg, #BAE6FD 0%, #FFFFFF 100%);
+  --grad-rose: linear-gradient(135deg, #7DD3FC 0%, #BAE6FD 100%);
+  --grad-cyan: linear-gradient(135deg, #38BDF8 0%, #BAE6FD 100%);
+  --grad-main: linear-gradient(135deg, #7DD3FC 0%, #BAE6FD 100%);
 }
 
-[data-theme="light"], .light {
-  --bg-base: #FFFFFF;
-  --bg-surface: #F8FAFC;
-  --bg-elevated: #F1F5F9;
-  --text-main: #0A0A0A;
-  --text-muted: #475569;
-  --text-dim: #64748b;
-  --border-subtle: rgba(0, 0, 0, 0.1);
-  --border-hover: rgba(234, 88, 12, 0.6);
-  --accent: #ea580c;
-  --accent-alt: #0284c7;
-  --accent-warm: #d97706;
-  --accent-pink: #db2777;
-  --accent-glow: rgba(5, 150, 105, 0.2);
-  --glass-bg: rgba(255, 255, 255, 0.92);
-  --glass-border: rgba(0, 0, 0, 0.08);
-  --card-bg: rgba(255, 255, 255, 0.95);
-  --card-border: rgba(0, 0, 0, 0.08);
-  --hero-title-solid: #0A0A0A;
-  --hero-title-stroke: rgba(0, 0, 0, 0.4);
-  --hero-ticker-bg: rgba(248, 250, 252, 0.95);
-  --hero-card-bg: rgba(255, 255, 255, 0.95);
-  --nav-bg: rgba(255, 255, 255, 0.9);
-  --nav-text: #0A0A0A;
-  --nav-muted: #64748b;
-  --nav-pill-bg: rgba(0, 0, 0, 0.05);
-  --nav-pill-border: rgba(0, 0, 0, 0.12);
-  --btn-cta-bg: #0A0A0A;
-  --btn-cta-text: #FFFFFF;
-  --btn-sec-bg: rgba(0, 0, 0, 0.05);
-  --btn-sec-text: #0A0A0A;
-  --btn-sec-border: rgba(0, 0, 0, 0.15);
-  /* Gradient palette */
-  --grad-violet: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
-  --grad-emerald: linear-gradient(135deg, #ea580c 0%, #f97316 100%);
-  --grad-amber: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
-  --grad-rose: linear-gradient(135deg, #e11d48 0%, #db2777 100%);
-  --grad-cyan: linear-gradient(135deg, #0891b2 0%, #2563eb 100%);
-  --grad-main: linear-gradient(135deg, #ea580c 0%, #f97316 50%, #fb923c 100%);
-}
 
 @keyframes fadeIn {
   from {
@@ -156,7 +117,7 @@ h6 {
 }
 
 ::selection {
-  background: #ff4d00;
+  background: #7DD3FC;
   color: #000000;
 }
 
@@ -280,7 +241,7 @@ h6 {
 }
 
 ::-webkit-scrollbar-track {
-  background: #0A0A0A;
+  background: #000000;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -289,7 +250,7 @@ h6 {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #ff4d00;
+  background: #7DD3FC;
 }
 
 /* ===== LAYOUT ===== */
@@ -1019,7 +980,7 @@ html.lenis body {
    ============================================================== */
 
 /* Overriding hardcoded dark backgrounds to light alternatives */
-:root.light .bg-\[\#0A0A0A\],
+:root.light .bg-\[\#000000\],
 :root.light .bg-\[\#121216\],
 :root.light .bg-\[\#111116\],
 :root.light .bg-\[\#181820\],
@@ -1135,8 +1096,16 @@ html.lenis body {
 @media (prefers-reduced-motion: reduce) { .journey-ping { animation: none; } }
 
 /* ===== Look: deep violet-black with a violet glow on the left and an orange glow on the right ===== */
-html { background-color: #0b0a12; }
 body { background-color: transparent; }
+/* The background palette lives in these four values; change them to change the whole background.
+   rgb triplets, so the same colour can be used at different strengths. */
+:root {
+  --bgl-base: 0, 0, 0;         /* base: black */
+  --bgl-a: 125, 211, 252;      /* main light, top left (light blue) */
+  --bgl-b: 255, 255, 255;      /* second light, right (white) */
+  --bgl-c: 186, 230, 253;      /* third light, bottom (pale blue) */
+}
+html { background-color: rgb(var(--bgl-base)); }
 body::before {
   content: "";
   position: fixed;
@@ -1144,11 +1113,34 @@ body::before {
   z-index: -1;
   pointer-events: none;
   background:
-    radial-gradient(62rem 56rem at -8% 18%, rgba(98, 64, 181, 0.42), transparent 62%),
-    radial-gradient(52rem 44rem at 108% 52%, rgba(255, 77, 0, 0.16), transparent 62%),
-    radial-gradient(40rem 30rem at 55% 105%, rgba(98, 64, 181, 0.2), transparent 65%),
-    #0b0a12;
+    radial-gradient(60rem 52rem at -6% 14%, rgba(var(--bgl-a), 0.30), transparent 62%),
+    radial-gradient(54rem 46rem at 108% 60%, rgba(var(--bgl-b), 0.13), transparent 62%),
+    radial-gradient(42rem 32rem at 50% 108%, rgba(var(--bgl-c), 0.16), transparent 65%),
+    rgb(var(--bgl-base));
 }
+
+/* Living background: slow lights drifting behind everything.
+   Only transform is animated, so it runs on the GPU and never repaints the page. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: -25%;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(32rem 28rem at 24% 28%, rgba(var(--bgl-a), 0.22), transparent 65%),
+    radial-gradient(30rem 26rem at 80% 64%, rgba(var(--bgl-b), 0.12), transparent 65%),
+    radial-gradient(26rem 24rem at 52% 88%, rgba(var(--bgl-c), 0.14), transparent 65%);
+  animation: bg-aurora 28s ease-in-out infinite alternate;
+  will-change: transform;
+}
+@keyframes bg-aurora {
+  0%   { transform: translate3d(-4%, -3%, 0) rotate(0deg) scale(1); }
+  50%  { transform: translate3d(5%, 4%, 0) rotate(7deg) scale(1.1); }
+  100% { transform: translate3d(-2%, 6%, 0) rotate(-6deg) scale(1); }
+}
+@media (max-width: 767px) { body::after { inset: -10%; animation-duration: 44s; } }
+@media (prefers-reduced-motion: reduce) { body::after { animation: none; } }
 
 /* Big headings: medium weight, sentence case, tight spacing */
 h1, h2 {
@@ -1162,11 +1154,11 @@ h1, h2 {
   font-family: 'Instrument Serif', 'Times New Roman', serif !important;
   font-style: italic;
   font-weight: 400 !important;
-  color: #ff4d00;
+  color: #7DD3FC;
   letter-spacing: -0.02em;
 }
 /* Small lavender chips, like the tags in the reference */
-.chip-lilac { background: #c4b5fd; color: #1a1030; }
+.chip-lilac { background: #BAE6FD; color: #000000; }
 
 /* Education dial: a slow turning ring inside it, and a ring that spreads out when the degree is complete */
 @keyframes edu-spin { to { transform: rotate(360deg); } }
@@ -1183,11 +1175,11 @@ body {
 }
 p { text-wrap: pretty; }
 h1, h2, h3 { text-wrap: balance; }
-::selection { background: #ff4d00; color: #fff; }
+::selection { background: #7DD3FC; color: #fff; }
 /* Small all-caps labels read better with a little more air */
 .font-mono { letter-spacing: 0.02em; }
 /* Links inside running text get a thin orange underline that thickens on hover */
-p a { text-decoration: underline; text-decoration-color: rgba(255, 77, 0, 0.6); text-underline-offset: 4px; text-decoration-thickness: 1px; transition: text-decoration-thickness 0.2s, color 0.2s; }
+p a { text-decoration: underline; text-decoration-color: rgba(125, 211, 252, 0.6); text-underline-offset: 4px; text-decoration-thickness: 1px; transition: text-decoration-thickness 0.2s, color 0.2s; }
 p a:hover { text-decoration-thickness: 2px; color: #fff; }
 
 /* Hero: spinning badge text */
@@ -1196,7 +1188,7 @@ p a:hover { text-decoration-thickness: 2px; color: #fff; }
 
 /* Hero: light sweeping across the orange serif word */
 .hero-shimmer {
-  background-image: linear-gradient(100deg, #ff4d00 35%, #ffd2b3 50%, #ff4d00 65%);
+  background-image: linear-gradient(100deg, #7DD3FC 35%, #ffd2b3 50%, #7DD3FC 65%);
   background-size: 250% 100%;
   -webkit-background-clip: text;
   background-clip: text;
@@ -1204,7 +1196,7 @@ p a:hover { text-decoration-thickness: 2px; color: #fff; }
   animation: hero-shimmer 3.6s linear infinite;
 }
 @keyframes hero-shimmer { from { background-position: 120% 0; } to { background-position: -120% 0; } }
-@media (prefers-reduced-motion: reduce) { .hero-shimmer { animation: none; color: #ff4d00; background-image: none; } }
+@media (prefers-reduced-motion: reduce) { .hero-shimmer { animation: none; color: #7DD3FC; background-image: none; } }
 
 /* Hero: sparks rising from the bottom, and a light travelling along a card edge */
 @keyframes hero-rise { 0% { transform: translateY(0); opacity: 0; } 15% { opacity: 0.7; } 100% { transform: translateY(-90vh); opacity: 0; } }
@@ -1218,3 +1210,39 @@ p a:hover { text-decoration-thickness: 2px; color: #fff; }
 /* Hero: a ring that spreads from a click */
 @keyframes hero-ripple { from { transform: translate(-50%, -50%) scale(0.1); opacity: 0.8; } to { transform: translate(-50%, -50%) scale(1.6); opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { [class*="hero-ripple"], [class*="hero-spin_40s"] { animation: none !important; } }
+
+/* ===== Glass: cards and panels become frosted glass over the moving background =====
+   Translucent fill, a bright top edge and a soft sheen. The real blur behind the glass is only used on larger screens,
+   where it is cheap enough; phones get the same look without it. */
+:root:not([data-theme="light"]) {
+  --bg-surface: rgba(255, 255, 255, 0.055);
+  --bg-elevated: rgba(255, 255, 255, 0.085);
+  --border-subtle: rgba(255, 255, 255, 0.14);
+}
+:root:not([data-theme="light"]) [class*="bg-[var(--bg-surface)]"],
+:root:not([data-theme="light"]) [class*="bg-[#0B0B0B]/"],
+:root:not([data-theme="light"]) [class*="bg-[#0B0B0B]/"] {
+  background-color: rgba(255, 255, 255, 0.055) !important;
+  background-image: linear-gradient(145deg, rgba(255, 255, 255, 0.11), rgba(255, 255, 255, 0.02) 45%, rgba(255, 255, 255, 0.045));
+  border-color: rgba(255, 255, 255, 0.15) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), inset 0 -1px 0 rgba(255, 255, 255, 0.04), 0 12px 32px rgba(0, 0, 0, 0.28);
+}
+@media (min-width: 768px) {
+  :root:not([data-theme="light"]) [class*="bg-[var(--bg-surface)]"],
+  :root:not([data-theme="light"]) [class*="bg-[#0B0B0B]/"],
+  :root:not([data-theme="light"]) [class*="bg-[#0B0B0B]/"] {
+    -webkit-backdrop-filter: blur(12px) saturate(1.3);
+    backdrop-filter: blur(12px) saturate(1.3);
+  }
+}
+
+/* A glass card you can add anywhere: <div class="glass ..."> */
+:root:not([data-theme="light"]) .glass {
+  background-color: rgba(255, 255, 255, 0.055);
+  background-image: linear-gradient(145deg, rgba(255, 255, 255, 0.11), rgba(255, 255, 255, 0.02) 45%, rgba(255, 255, 255, 0.045));
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), inset 0 -1px 0 rgba(255, 255, 255, 0.04), 0 12px 32px rgba(0, 0, 0, 0.28);
+}
+@media (min-width: 768px) {
+  :root:not([data-theme="light"]) .glass { -webkit-backdrop-filter: blur(12px) saturate(1.3); backdrop-filter: blur(12px) saturate(1.3); }
+}

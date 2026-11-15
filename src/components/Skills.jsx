@@ -26,7 +26,7 @@ function TileBody({ tile }) {
   return (
     <div
       className="flex aspect-square w-full flex-col items-center justify-center rounded-xl border p-2"
-      style={{ borderColor: `${tile.color}99`, background: `linear-gradient(135deg, ${tile.color}38, rgba(255,255,255,0.06)), #14121d` }}
+      style={{ borderColor: `${tile.color}99`, background: `linear-gradient(135deg, ${tile.color}38, rgba(255,255,255,0.05)), rgba(11, 11, 11,0.4)` }}
     >
       <span className="text-[1.7rem] sm:text-[2.1rem]" style={{ color: tile.color }}>
         <tile.Icon aria-hidden="true" />

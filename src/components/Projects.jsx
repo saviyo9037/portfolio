@@ -8,7 +8,7 @@ import ProjectControls from "./ProjectControls";
 import { useStaticLayout } from "../hooks/useStaticLayout";
 import { useIsPhone } from "../hooks/useIsPhone";
 
-const ACCENT = "#ff4d00";
+const ACCENT = "#7DD3FC";
 const FEATURED_MAX = 6;
 const PAGE = 9;
 const heading = { fontFamily: "'Inter', sans-serif" };
@@ -66,9 +66,9 @@ function Details({ project: p, onClose }) {
         aria-modal="true"
         aria-label={p.title}
         onClick={(e) => e.stopPropagation()}
-        className="max-h-[92vh] w-full max-w-3xl overflow-y-auto rounded-t-xl border border-white/15 bg-[#14121d] sm:rounded-xl"
+        className="max-h-[92vh] w-full max-w-3xl overflow-y-auto rounded-t-xl border border-white/15 bg-[#0B0B0B] sm:rounded-xl"
       >
-        <div className="relative aspect-[16/10] w-full overflow-hidden border-b border-white/10 bg-[#161320]">
+        <div className="relative aspect-[16/10] w-full overflow-hidden border-b border-white/10 bg-[#0B0B0B]">
           <Cover project={p} className="object-top" />
           <button
             ref={closeRef}
@@ -117,12 +117,12 @@ function Details({ project: p, onClose }) {
 /* ---------- Showcase: cards stack on top of each other as you scroll ---------- */
 // Soft card colours, each with a darker tone for the small heading. Text on them is always dark.
 const CARD_TONES = [
-  { bg: "#ffb59a", ink: "#6b4de6" },
-  { bg: "#cfc9f5", ink: "#4b3bb5" },
-  { bg: "#b7dcc2", ink: "#166a3d" },
-  { bg: "#f3e3a2", ink: "#8a5a00" },
-  { bg: "#a9d0ee", ink: "#1b5a96" },
-  { bg: "#efbad6", ink: "#a02266" },
+  { bg: "#BAE6FD", ink: "#000000" },
+  { bg: "#FFFFFF", ink: "#000000" },
+  { bg: "#7DD3FC", ink: "#000000" },
+  { bg: "#E0F2FE", ink: "#000000" },
+  { bg: "#BAE6FD", ink: "#000000" },
+  { bg: "#FFFFFF", ink: "#000000" },
 ];
 
 const clamp01 = (v) => Math.min(1, Math.max(0, v));
@@ -406,9 +406,9 @@ function JourneyCard({ project: p, index, left, reduce, onOpen }) {
         onMouseMove={tilt}
         onMouseLeave={untilt}
         aria-label={`Open ${p.title}`}
-        className="group block w-full overflow-hidden rounded-2xl border border-white/15 bg-[#1a1726]/90 text-left outline-none transition-[transform,border-color] duration-200 ease-out hover:border-[#ff4d00] focus-visible:ring-2 focus-visible:ring-white/70 sm:flex"
+        className="group block w-full overflow-hidden rounded-2xl border border-white/15 bg-[#0B0B0B]/90 text-left outline-none transition-[transform,border-color] duration-200 ease-out hover:border-[#7DD3FC] focus-visible:ring-2 focus-visible:ring-white/70 sm:flex"
       >
-        <motion.span variants={wipe} className="relative block aspect-[16/8] w-full overflow-hidden bg-[#161320] sm:aspect-auto sm:min-h-[10.5rem] sm:w-[38%] sm:shrink-0">
+        <motion.span variants={wipe} className="relative block aspect-[16/8] w-full overflow-hidden bg-[#0B0B0B] sm:aspect-auto sm:min-h-[10.5rem] sm:w-[38%] sm:shrink-0">
           <motion.span className="absolute inset-0 block scale-[1.2]" style={{ y: drift }}>
             <Cover project={p} className="object-top" />
           </motion.span>
@@ -475,7 +475,7 @@ function ProjectJourney({ projects, onOpen }) {
       <motion.div
         aria-hidden="true"
         className="absolute bottom-0 left-4 top-0 w-[3px] origin-top -translate-x-[1px] rounded-full lg:hidden"
-        style={{ backgroundColor: ACCENT, scaleY: reduce ? 1 : grow, boxShadow: "0 0 14px rgba(255, 77, 0,0.6)" }}
+        style={{ backgroundColor: ACCENT, scaleY: reduce ? 1 : grow, boxShadow: "0 0 14px rgba(125, 211, 252,0.6)" }}
       />
 
       {/* Wide screens: the glowing zigzag. It is drawn once; scrolling only uncovers it from the top, which is cheap. */}
@@ -485,7 +485,7 @@ function ProjectJourney({ projects, onOpen }) {
       <motion.div aria-hidden="true" className="pointer-events-none absolute inset-0 hidden lg:block" style={{ clipPath: reduce ? "none" : reveal, willChange: "clip-path", transform: "translateZ(0)" }}>
         <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="h-full w-full overflow-visible">
           {/* a wide soft stroke under the bright one gives the neon glow without a costly filter */}
-          <path d={d} fill="none" stroke="rgba(255, 77, 0,0.28)" strokeWidth="12" strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
+          <path d={d} fill="none" stroke="rgba(125, 211, 252,0.28)" strokeWidth="12" strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
           <path d={d} fill="none" stroke={ACCENT} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
         </svg>
       </motion.div>
@@ -507,13 +507,13 @@ function ProjectJourney({ projects, onOpen }) {
               <motion.span
                 aria-hidden="true"
                 className="absolute top-1/2 z-10 hidden h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-[3px] border-white lg:block"
-                style={{ left: `${xs[i]}%`, backgroundColor: ACCENT, boxShadow: "0 0 0 6px rgba(255, 77, 0,0.22), 0 0 22px rgba(255, 77, 0,0.95)" }}
+                style={{ left: `${xs[i]}%`, backgroundColor: ACCENT, boxShadow: "0 0 0 6px rgba(125, 211, 252,0.22), 0 0 22px rgba(125, 211, 252,0.95)" }}
                 initial={reduce ? false : { scale: 0 }}
                 whileInView={{ scale: 1 }}
                 viewport={{ once: false, margin: "-15% 0px" }}
                 transition={{ type: "spring", stiffness: 380, damping: 16 }}
               >
-                {!reduce && <span className="journey-ping absolute -inset-[3px] rounded-full border-2 border-[#ff4d00]" />}
+                {!reduce && <span className="journey-ping absolute -inset-[3px] rounded-full border-2 border-[#7DD3FC]" />}
               </motion.span>
               <JourneyCard project={p} index={i} left={left} reduce={reduce} onOpen={onOpen} />
             </li>
@@ -567,7 +567,7 @@ function Browser({ list, onOpen }) {
                   setCategory(f.key);
                   setShowAll(false);
                 }}
-                className={`relative rounded-lg px-4 py-2 text-sm font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ff4d00] ${on ? "text-black" : "text-white/65 hover:text-white"}`}
+                className={`relative rounded-lg px-4 py-2 text-sm font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7DD3FC] ${on ? "text-black" : "text-white/65 hover:text-white"}`}
               >
                 {on && (
                   <motion.span layoutId="projects-filter-thumb" className="absolute inset-0 rounded-lg" style={{ backgroundColor: ACCENT }} transition={{ type: "spring", stiffness: 450, damping: 36 }} />
@@ -608,7 +608,7 @@ function Browser({ list, onOpen }) {
           <button
             type="button"
             onClick={() => setShowAll(true)}
-            className="inline-flex items-center gap-2 rounded-full border border-white/25 px-7 py-3 text-sm font-semibold text-white transition-colors hover:border-[#ff4d00] hover:text-[#ff4d00]"
+            className="inline-flex items-center gap-2 rounded-full border border-white/25 px-7 py-3 text-sm font-semibold text-white transition-colors hover:border-[#7DD3FC] hover:text-[#7DD3FC]"
           >
             Show all {matches.length} projects <FiArrowUpRight aria-hidden="true" />
           </button>

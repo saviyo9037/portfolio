@@ -6,7 +6,7 @@ import { scrollToId } from "../lib/scroll";
 import { useStaticLayout } from "../hooks/useStaticLayout";
 import { CountUp, Magnetic } from "./motion/effects";
 
-const ACCENT = "#ff4d00";
+const ACCENT = "#7DD3FC";
 const EASE = [0.16, 1, 0.3, 1];
 
 const STATS = [
@@ -21,7 +21,7 @@ const INTRO_TEXT =
   "I design and develop production-ready web applications, ERP & POS systems, CRM/LMS platforms and AI-powered tools that solve real business problems.";
 
 const focusRing =
-  "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#ff4d00]";
+  "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#7DD3FC]";
 
 // Local time in Kerala, updated every second
 function useKeralaTime() {
@@ -124,8 +124,8 @@ const sideFade = "linear-gradient(to right, transparent 0%, #000 18%, #000 82%, 
 function Glow() {
   return (
     <div aria-hidden="true" className="pointer-events-none absolute inset-0">
-      <div className="absolute -left-32 top-10 h-[36rem] w-[36rem] rounded-full bg-[radial-gradient(circle,rgba(98,64,181,0.32),transparent_65%)] [animation:hero-drift-a_14s_ease-in-out_infinite]" />
-      <div className="absolute -right-24 bottom-0 h-[34rem] w-[34rem] rounded-full bg-[radial-gradient(circle,rgba(124,92,214,0.24),transparent_65%)] [animation:hero-drift-b_17s_ease-in-out_infinite]" />
+      <div className="absolute -left-32 top-10 h-[36rem] w-[36rem] rounded-full bg-[radial-gradient(circle,rgba(125, 211, 252,0.32),transparent_65%)] [animation:hero-drift-a_14s_ease-in-out_infinite]" />
+      <div className="absolute -right-24 bottom-0 h-[34rem] w-[34rem] rounded-full bg-[radial-gradient(circle,rgba(125, 211, 252,0.24),transparent_65%)] [animation:hero-drift-b_17s_ease-in-out_infinite]" />
       <div
         className="absolute inset-0 opacity-[0.05]"
         style={{
@@ -146,8 +146,8 @@ function Buttons({ goTo }) {
         <a
           href="#projects"
           onClick={goTo("projects")}
-          className={`hero-shine relative inline-flex h-12 items-center gap-2 overflow-hidden rounded-full px-7 text-base font-semibold text-[#0b0a12] transition-colors hover:bg-[#ff4d00] hover:text-white ${focusRing}`}
-          style={{ backgroundColor: "#f4f0ff" }}
+          className={`hero-shine relative inline-flex h-12 items-center gap-2 overflow-hidden rounded-full px-7 text-base font-semibold text-[#000000] transition-colors hover:bg-[#7DD3FC] hover:text-black ${focusRing}`}
+          style={{ backgroundColor: "#FFFFFF" }}
         >
           View Projects <FiArrowRight aria-hidden="true" />
         </a>
@@ -156,7 +156,7 @@ function Buttons({ goTo }) {
         <a
           href="/Saviyo_George_Resume.pdf"
           download
-          className={`inline-flex h-12 items-center gap-2 rounded-full border border-[var(--text-dim)] px-7 text-base font-semibold text-[var(--text-main)] transition-colors hover:border-[#ff4d00] hover:text-[#ff4d00] ${focusRing}`}
+          className={`inline-flex h-12 items-center gap-2 rounded-full border border-[var(--text-dim)] px-7 text-base font-semibold text-[var(--text-main)] transition-colors hover:border-[#7DD3FC] hover:text-[#7DD3FC] ${focusRing}`}
         >
           <FiDownload aria-hidden="true" /> Download Resume
         </a>
@@ -192,7 +192,7 @@ function Stacked({ goTo, time, reduce }) {
       <Glow />
       <div className="relative mx-auto flex max-w-3xl flex-col items-center text-center">
         <motion.span {...fade(0.05)} className="inline-flex items-center gap-2.5 rounded-full border border-[var(--border-subtle)] bg-[var(--bg-surface)]/80 py-2 pl-3 pr-4 text-sm text-[var(--text-muted)]">
-          <span className="h-2.5 w-2.5 rounded-full bg-emerald-500" />
+          <span className="h-2.5 w-2.5 rounded-full bg-sky-300" />
           <RotatingStatus />
         </motion.span>
         <h1 className="m-0 mt-6 font-black uppercase leading-[0.9] text-[var(--text-main)]" style={{ fontFamily: "'Inter', sans-serif", letterSpacing: "-0.05em", fontSize: "clamp(3.4rem, 17vw, 8rem)" }}>
@@ -269,7 +269,7 @@ function Highlighted({ text, run, className = "" }) {
           >
             <span
               className={key ? "text-[var(--text-main)]" : ""}
-              style={key ? { backgroundImage: "linear-gradient(#ff4d00, #ff4d00)", backgroundRepeat: "no-repeat", backgroundPosition: "0 100%", backgroundSize: run ? "100% 2px" : "0% 2px", transition: `background-size 0.7s ease ${0.6 + i * 0.03}s` } : undefined}
+              style={key ? { backgroundImage: "linear-gradient(#7DD3FC, #7DD3FC)", backgroundRepeat: "no-repeat", backgroundPosition: "0 100%", backgroundSize: run ? "100% 2px" : "0% 2px", transition: `background-size 0.7s ease ${0.6 + i * 0.03}s` } : undefined}
             >
               {w}
             </span>
@@ -306,7 +306,7 @@ function FlyLetter({ ch, i, count, dir, p, rise }) {
           className="inline-block cursor-default"
           initial={{ y: "110%" }}
           animate={{ y: "0%" }}
-          whileHover={{ y: "-6%", scale: 1.08, color: "#ff4d00", transition: { type: "spring", stiffness: 400, damping: 14 } }}
+          whileHover={{ y: "-6%", scale: 1.08, color: "#7DD3FC", transition: { type: "spring", stiffness: 400, damping: 14 } }}
           transition={{ duration: 0.9, delay: rise + i * 0.06, ease: EASE }}
         >
           {ch}
@@ -369,13 +369,13 @@ function Pinned({ goTo, time }) {
     <div ref={ref} className="relative -mb-[14vh] h-[240vh]">
       <motion.div ref={stageRef} onPointerMove={lean} onPointerDown={ripple} className="sticky top-0 h-screen overflow-hidden" style={{ "--tx": 0, "--ty": 0, opacity: sceneOpacity }}>
         <Glow />
-        <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0" style={{ background: "radial-gradient(420px circle at var(--mx, 50%) var(--my, 45%), rgba(196,181,253,0.16), transparent 65%)" }} />
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0" style={{ background: "radial-gradient(420px circle at var(--mx, 50%) var(--my, 45%), rgba(186, 230, 253,0.16), transparent 65%)" }} />
 
         {/* An outlined copy of the full name that keeps drifting behind everything */}
         <motion.p
           aria-hidden="true"
           className="pointer-events-none absolute left-0 top-[16%] z-0 m-0 select-none whitespace-nowrap font-black uppercase leading-none"
-          style={{ x: echoX, opacity: echoOpacity, fontFamily: "'Inter', sans-serif", fontSize: "clamp(8rem, 24vw, 26rem)", letterSpacing: "-0.06em", color: "transparent", WebkitTextStroke: "1.5px rgba(196,181,253,0.16)" }}
+          style={{ x: echoX, opacity: echoOpacity, fontFamily: "'Inter', sans-serif", fontSize: "clamp(8rem, 24vw, 26rem)", letterSpacing: "-0.06em", color: "transparent", WebkitTextStroke: "1.5px rgba(186, 230, 253,0.16)" }}
         >
           Saviyo George · Saviyo George
         </motion.p>
@@ -384,8 +384,8 @@ function Pinned({ goTo, time }) {
         <motion.div initial={{ opacity: 0, y: -16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.1, ease: EASE }} className="absolute inset-x-0 top-24 z-20 flex justify-center">
           <span className="inline-flex items-center gap-2.5 rounded-full border border-[var(--border-subtle)] bg-[var(--bg-surface)]/80 py-2 pl-3 pr-4 text-sm text-[var(--text-muted)]">
             <span className="relative flex h-2.5 w-2.5">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-              <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-500" />
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-sky-300 opacity-75" />
+              <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-sky-300" />
             </span>
             <RotatingStatus />
           </span>
@@ -398,7 +398,7 @@ function Pinned({ goTo, time }) {
           style={{ scale: ringScale, rotate: ringRotate }}
         >
           <div className="h-full w-full rounded-full border border-dashed border-white/20" />
-          <span className="absolute left-1/2 top-0 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#ff4d00] shadow-[0_0_18px_#ff4d00]" />
+          <span className="absolute left-1/2 top-0 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#7DD3FC] shadow-[0_0_18px_#7DD3FC]" />
         </motion.div>
         <motion.div
           aria-hidden="true"
@@ -406,24 +406,24 @@ function Pinned({ goTo, time }) {
           style={{ scale: ringScale, rotate: ringRotateBack }}
         >
           <div className="h-full w-full rounded-full border border-white/10" />
-          <span className="absolute bottom-0 left-1/2 h-2 w-2 -translate-x-1/2 translate-y-1/2 rounded-full bg-[#c4b5fd] shadow-[0_0_14px_#c4b5fd]" />
+          <span className="absolute bottom-0 left-1/2 h-2 w-2 -translate-x-1/2 translate-y-1/2 rounded-full bg-[#BAE6FD] shadow-[0_0_14px_#BAE6FD]" />
         </motion.div>
         {SPARKS.map((sp) => (
           <span
             key={sp.left}
             aria-hidden="true"
-            className="pointer-events-none absolute bottom-0 z-0 rounded-full bg-[#c4b5fd]"
+            className="pointer-events-none absolute bottom-0 z-0 rounded-full bg-[#BAE6FD]"
             style={{ left: sp.left, width: sp.size, height: sp.size, opacity: 0, animation: `hero-rise ${sp.dur}s ease-in ${sp.delay}s infinite` }}
           />
         ))}
-        <motion.div aria-hidden="true" className="pointer-events-none absolute left-1/2 top-[60%] z-0 h-[40vw] w-[40vw] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(124,92,214,0.4),transparent_65%)]" animate={{ scale: [1, 1.1, 1], opacity: [0.8, 1, 0.8] }} transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }} />
+        <motion.div aria-hidden="true" className="pointer-events-none absolute left-1/2 top-[60%] z-0 h-[40vw] w-[40vw] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(125, 211, 252,0.4),transparent_65%)]" animate={{ scale: [1, 1.1, 1], opacity: [0.8, 1, 0.8] }} transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }} />
 
         {/* Click ripples */}
         {ripples.map((r) => (
           <span
             key={r.id}
             aria-hidden="true"
-            className="pointer-events-none absolute z-30 h-24 w-24 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-[#c4b5fd] [animation:hero-ripple_0.9s_ease-out_forwards]"
+            className="pointer-events-none absolute z-30 h-24 w-24 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-[#BAE6FD] [animation:hero-ripple_0.9s_ease-out_forwards]"
             style={{ left: r.x, top: r.y }}
             onAnimationEnd={() => setRipples((list) => list.filter((x) => x.id !== r.id))}
           />
@@ -465,15 +465,15 @@ function Pinned({ goTo, time }) {
         </motion.div>
 
         {/* Cards that slide in from the sides as the name leaves */}
-        <motion.div className="absolute left-[4vw] top-[28%] z-20 w-[min(24rem,26vw)] overflow-hidden rounded-3xl border border-white/12 bg-[#14121d]/85 p-6 shadow-2xl" style={{ opacity: cardOpacity, x: leftCardX }}>
-          <span aria-hidden="true" className="absolute inset-x-6 top-0 h-px overflow-hidden"><span className="block h-full w-1/3 [animation:hero-sweep_3.2s_ease-in-out_infinite]" style={{ background: "linear-gradient(to right, transparent, #c4b5fd, transparent)" }} /></span>
+        <motion.div className="absolute left-[4vw] top-[28%] z-20 w-[min(24rem,26vw)] overflow-hidden rounded-3xl border border-white/12 bg-[#0B0B0B]/85 p-6 shadow-2xl" style={{ opacity: cardOpacity, x: leftCardX }}>
+          <span aria-hidden="true" className="absolute inset-x-6 top-0 h-px overflow-hidden"><span className="block h-full w-1/3 [animation:hero-sweep_3.2s_ease-in-out_infinite]" style={{ background: "linear-gradient(to right, transparent, #BAE6FD, transparent)" }} /></span>
           <p className="m-0 font-mono text-[11px] uppercase tracking-[0.25em] text-[var(--text-dim)]"><Scramble text="About me" run={shown} /></p>
           <Highlighted text={INTRO_TEXT} run={shown} className="m-0 mt-3 text-base leading-relaxed text-[var(--text-muted)]" />
           <TypedRole />
         </motion.div>
 
-        <motion.div className="absolute right-[4vw] top-[28%] z-20 w-[min(16rem,20vw)] overflow-hidden rounded-3xl border border-white/12 bg-[#14121d]/85 p-6 shadow-2xl" style={{ opacity: cardOpacity, x: rightCardX }}>
-          <span aria-hidden="true" className="absolute inset-x-6 top-0 h-px overflow-hidden"><span className="block h-full w-1/3 [animation:hero-sweep_3.2s_ease-in-out_infinite]" style={{ background: "linear-gradient(to right, transparent, #c4b5fd, transparent)" }} /></span>
+        <motion.div className="absolute right-[4vw] top-[28%] z-20 w-[min(16rem,20vw)] overflow-hidden rounded-3xl border border-white/12 bg-[#0B0B0B]/85 p-6 shadow-2xl" style={{ opacity: cardOpacity, x: rightCardX }}>
+          <span aria-hidden="true" className="absolute inset-x-6 top-0 h-px overflow-hidden"><span className="block h-full w-1/3 [animation:hero-sweep_3.2s_ease-in-out_infinite]" style={{ background: "linear-gradient(to right, transparent, #BAE6FD, transparent)" }} /></span>
           <p className="m-0 mb-4 text-right font-mono text-[11px] uppercase tracking-[0.25em] text-[var(--text-dim)]"><Scramble text="In numbers" run={shown} /></p>
           <Stats align="right" delay={0.9} />
         </motion.div>
@@ -492,7 +492,7 @@ function Pinned({ goTo, time }) {
             Scroll
           </motion.span>
           <span className="relative h-24 w-px bg-white/15">
-            <motion.span className="absolute inset-x-0 top-0 h-full origin-top bg-[#c4b5fd]" style={{ scaleY: railFill }} />
+            <motion.span className="absolute inset-x-0 top-0 h-full origin-top bg-[#BAE6FD]" style={{ scaleY: railFill }} />
           </span>
         </div>
       </motion.div>
