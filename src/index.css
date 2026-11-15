@@ -1097,7 +1097,7 @@ html.lenis body {
 
 /* ===== Look: deep violet-black with a violet glow on the left and an orange glow on the right ===== */
 body { background-color: transparent; }
-/* ===== Background: black. The dots are drawn by src/components/MorphBackground.jsx ===== */
+/* ===== Background: plain black (no animated background) ===== */
 html { background-color: #000000; }
 
 /* Big headings: medium weight, sentence case, tight spacing */

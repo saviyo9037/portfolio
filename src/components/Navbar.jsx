@@ -11,14 +11,14 @@ const NAV_ITEMS = [
   { id: "introduction", label: "Home" },
   { id: "about", label: "About" },
   { id: "experience", label: "Experience" },
+  { id: "education", label: "Education" },
   { id: "skills", label: "Skills" },
   { id: "projects", label: "Projects" },
-  { id: "education", label: "Education" },
   { id: "contact", label: "Contact" },
   { id: "technologies", label: "Tech & Skills", route: "/skills" },
 ];
 
-const SECTION_IDS = ["introduction", "about", "experience", "skills", "projects", "education", "contact"];
+const SECTION_IDS = ["introduction", "about", "experience", "education", "skills", "projects", "contact"];
 
 // Two lines that turn into a cross
 function MenuIcon({ open }) {

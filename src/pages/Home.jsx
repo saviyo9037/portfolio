@@ -27,12 +27,12 @@ function Home() {
           <Reveal><Experiences /></Reveal>
         </section>
 
-        <section id="skills" className="relative bg-transparent">
-          <Reveal><Skills /></Reveal>
-        </section>
-
         <section id="education" className="relative bg-transparent">
           <Reveal><Education /></Reveal>
+        </section>
+
+        <section id="skills" className="relative bg-transparent">
+          <Reveal><Skills /></Reveal>
         </section>
 
         {/* Horizontal Project Ticker removed to fix duplicate projects */}
