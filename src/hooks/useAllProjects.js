@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { projects as manualProjects, PROJECT_CATEGORIES } from "../data/projects";
 import { useGithubProjects } from "./useGithubProjects";
 import { mergeProjects } from "../lib/mergeProjects";
+import { GITHUB } from "../config/github";
 
 // D3innovatives work first, then other company work, then personal. Featured first inside each group.
 const rank = (p) => {
@@ -20,6 +21,9 @@ export function useAllProjects() {
 }
 
 export const imageSrc = (image) => (image.startsWith("/") || image.startsWith("http") ? image : `/${image}`);
-export const yearOf = (p) => (p.updatedAt ? new Date(p.updatedAt).getFullYear() : 2026);
+export const yearOf = (p) => {
+  const set = GITHUB.years?.[String(p.id ?? "").replace(/^gh-/, "").toLowerCase()];
+  return set ?? (p.updatedAt ? new Date(p.updatedAt).getFullYear() : 2026);
+};
 export const tagsOf = (p, max = 3) =>
   (p.tags?.length ? p.tags : (p.tech || "").split(",").map((t) => t.trim()).filter(Boolean)).slice(0, max);

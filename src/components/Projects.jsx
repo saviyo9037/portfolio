@@ -7,9 +7,10 @@ import { imageSrc, tagsOf, useAllProjects, yearOf } from "../hooks/useAllProject
 import ProjectControls from "./ProjectControls";
 import { useStaticLayout } from "../hooks/useStaticLayout";
 import { useIsPhone } from "../hooks/useIsPhone";
+import { DETAIL_IMAGES } from "../data/screenshots";
 
 const ACCENT = "#7DD3FC";
-const FEATURED_MAX = 6;
+const FEATURED_MAX = 7;
 const PAGE = 9;
 const heading = { fontFamily: "'Inter', sans-serif" };
 
@@ -44,8 +45,13 @@ function Cover({ project: p, className = "", style }) {
 function Details({ project: p, onClose }) {
   const closeRef = useRef(null);
   const company = p.category === PROJECT_CATEGORIES.COMPANY;
-  const demo = company ? null : demoUrl(p);
+  // A company project normally shows no links. One with a public website (publicUrl) shows just that link.
+  const demo = p.publicUrl ?? (company ? null : demoUrl(p));
   const repo = company ? null : repoUrl(p);
+  // A project can have its own full-size picture for this page (a tall phone screenshot, say); otherwise the cover is shown in full
+  const own = DETAIL_IMAGES[String(p.id).replace(/^gh-/, "").toLowerCase()];
+  const cover = p.image || p.previewImage;
+  const picture = own ?? (cover ? imageSrc(cover) : null);
 
   useEffect(() => {
     closeRef.current?.focus();
@@ -68,8 +74,13 @@ function Details({ project: p, onClose }) {
         onClick={(e) => e.stopPropagation()}
         className="max-h-[92vh] w-full max-w-3xl overflow-y-auto rounded-t-xl border border-white/15 bg-[#0B0B0B] sm:rounded-xl"
       >
-        <div className="relative aspect-[16/10] w-full overflow-hidden border-b border-white/10 bg-[#0B0B0B]">
-          <Cover project={p} className="object-top" />
+        <div className={`relative w-full overflow-hidden border-b border-white/10 bg-[#0B0B0B] ${picture ? "flex justify-center p-3 sm:p-5" : "aspect-[16/10]"}`}>
+          {picture ? (
+            // The whole picture, never cropped: as wide as it can be, and no taller than most of the screen
+            <img src={picture} alt={`${p.title} screenshot`} className="block h-auto max-h-[72vh] w-auto max-w-full rounded-lg object-contain" />
+          ) : (
+            <Cover project={p} className="object-top" />
+          )}
           <button
             ref={closeRef}
             type="button"
@@ -98,7 +109,7 @@ function Details({ project: p, onClose }) {
           <div className="mt-7 flex flex-wrap items-center gap-3">
             {demo && (
               <a href={demo} target="_blank" rel="noreferrer" className="inline-flex h-10 items-center gap-2 rounded-full px-6 text-sm font-semibold text-black transition-colors hover:bg-white" style={{ backgroundColor: ACCENT }}>
-                Live demo <FiArrowUpRight aria-hidden="true" />
+                {p.publicUrl ? "Visit website" : "Live demo"} <FiArrowUpRight aria-hidden="true" />
               </a>
             )}
             {repo && (
@@ -455,17 +466,30 @@ function JourneyCard({ project: p, index, left, reduce, onOpen }) {
   );
 }
 
-function ProjectJourney({ projects, onOpen }) {
+// `items` is the whole list in order: a year marker ({ year, count }) before each year's projects, and the projects ({ project }).
+// One glowing zigzag runs through all of it, bending in toward every project and passing straight through every year marker.
+const PROJECT_REM = 15.5;
+const YEAR_REM = 7;
+
+function ProjectJourney({ items, onOpen }) {
   const reduce = useReducedMotion();
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start 70%", "end 55%"] });
   const grow = useTransform(scrollYProgress, [0, 1], [0, 1]);
   const reveal = useTransform(grow, (v) => `inset(-20px -20px ${((1 - v) * 100).toFixed(2)}% -20px)`);
-  const n = projects.length;
 
-  // The zigzag: it starts and ends in the middle and bends in toward each card
-  const xs = projects.map((_, i) => (i % 2 === 0 ? 47 : 53));
-  const ys = projects.map((_, i) => ((i + 0.5) / n) * 100);
+  // The zigzag: it starts and ends in the middle and bends in toward each card. The height of each row (years are shorter) decides where its bend sits.
+  const rows = items.map((it, i) => ({
+    ...it,
+    pi: it.project ? items.slice(0, i).filter((x) => x.project).length : -1, // this project's number among the projects
+    rem: it.project ? PROJECT_REM : YEAR_REM,
+  }));
+  const totalRem = rows.reduce((sum, r) => sum + r.rem, 0);
+  const xs = rows.map((r) => (r.project ? (r.pi % 2 === 0 ? 47 : 53) : 50));
+  const ys = rows.map((r, i) => {
+    const before = rows.slice(0, i).reduce((sum, x) => sum + x.rem, 0); // height of everything above this row
+    return ((before + r.rem / 2) / totalRem) * 100;
+  });
   const d = `M 50 0 ${xs.map((x, i) => `L ${x} ${ys[i]}`).join(" ")} L 50 100`;
 
   return (
@@ -491,8 +515,34 @@ function ProjectJourney({ projects, onOpen }) {
       </motion.div>
 
       <ol className="m-0 list-none p-0">
-        {projects.map((p, i) => {
-          const left = i % 2 === 0;
+        {rows.map((r, i) => {
+          // A year marker: it sits on the line, with the year very large and faint behind it
+          if (!r.project) {
+            return (
+              <li key={`year-${r.year}`} className="relative pb-5 pl-12 pt-2 lg:flex lg:h-[7rem] lg:items-center lg:justify-center lg:pb-0 lg:pl-0 lg:pt-0" aria-label={`${r.year}, ${r.count} projects`}>
+                <span aria-hidden="true" className="pointer-events-none absolute inset-y-0 left-10 flex select-none items-center text-[clamp(4.5rem,18vw,7rem)] font-black leading-none tracking-[-0.06em] text-white/[0.05] lg:inset-x-0 lg:left-0 lg:justify-center" style={heading}>
+                  {r.year}
+                </span>
+                <span aria-hidden="true" className="absolute left-4 top-5 z-10 h-4 w-4 -translate-x-1/2 rounded-full border-[3px] border-white lg:hidden" style={{ backgroundColor: ACCENT, boxShadow: "0 0 0 5px rgba(125, 211, 252,0.22), 0 0 18px rgba(125, 211, 252,0.9)" }} />
+                <motion.div
+                  className="relative z-10 flex items-baseline gap-3 lg:rounded-full lg:border lg:border-white/20 lg:bg-black lg:px-8 lg:py-2"
+                  initial={reduce ? false : { opacity: 0, scale: 0.9 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: false, margin: "-10% 0px" }}
+                  transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                >
+                  <span className="text-3xl font-black leading-none tracking-tight md:text-5xl" style={{ ...heading, color: ACCENT }}>
+                    {r.year}
+                  </span>
+                  <span className="font-mono text-xs uppercase tracking-[0.22em] text-white/50">
+                    {r.count} {r.count === 1 ? "project" : "projects"}
+                  </span>
+                </motion.div>
+              </li>
+            );
+          }
+          const p = r.project;
+          const left = r.pi % 2 === 0;
           return (
             <li
               key={p.id}
@@ -501,7 +551,7 @@ function ProjectJourney({ projects, onOpen }) {
             >
               {/* Mobile stop on the line */}
               <span aria-hidden="true" className="absolute left-4 top-4 z-10 flex h-8 w-8 -translate-x-1/2 items-center justify-center rounded-full border-2 bg-[#222] font-mono text-[11px] font-bold lg:hidden" style={{ borderColor: ACCENT, color: ACCENT }}>
-                {String(i + 1).padStart(2, "0")}
+                {String(r.pi + 1).padStart(2, "0")}
               </span>
               {/* Wide-screen stop: sits on the bend of the zigzag */}
               <motion.span
@@ -515,7 +565,7 @@ function ProjectJourney({ projects, onOpen }) {
               >
                 {!reduce && <span className="journey-ping absolute -inset-[3px] rounded-full border-2 border-[#7DD3FC]" />}
               </motion.span>
-              <JourneyCard project={p} index={i} left={left} reduce={reduce} onOpen={onOpen} />
+              <JourneyCard project={p} index={r.pi} left={left} reduce={reduce} onOpen={onOpen} />
             </li>
           );
         })}
@@ -541,6 +591,17 @@ function Browser({ list, onOpen }) {
 
   const filtering = Boolean(query.trim() || language);
   const shown = showAll || filtering ? matches : matches.slice(0, PAGE);
+
+  // One list, year by year, newest year first: a year marker, then that year's projects, so a single line can run through all of it
+  const items = useMemo(() => {
+    const groups = new Map();
+    shown.forEach((p) => {
+      const y = yearOf(p);
+      if (!groups.has(y)) groups.set(y, []);
+      groups.get(y).push(p);
+    });
+    return [...groups.entries()].sort((a, b) => b[0] - a[0]).flatMap(([year, list]) => [{ year, count: list.length }, ...list.map((project) => ({ project }))]);
+  }, [shown]);
 
   return (
     <div className="mx-auto max-w-[1500px] px-5 pb-14 pt-8 sm:px-10 md:pb-28 md:pt-16">
@@ -600,7 +661,7 @@ function Browser({ list, onOpen }) {
           </button>
         </div>
       ) : (
-        <ProjectJourney key={shown.map((x) => x.id).join("|")} projects={shown} onOpen={onOpen} />
+        <ProjectJourney key={shown.map((x) => x.id).join("|")} items={items} onOpen={onOpen} />
       )}
 
       {!showAll && !filtering && matches.length > PAGE && (

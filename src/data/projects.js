@@ -90,11 +90,12 @@ export const projects = [
     tech: "Next.js, React, Tailwind CSS, LMS Architecture",
     tags: ["Next.js", "React", "Tailwind CSS", "LMS"],
     liveUrl: "https://betterinu-admin-v1-jj9b.vercel.app/admin/loginext",
+    publicUrl: "https://betterinu.com", // the public website: the only link shown for this company project
     githubUrl: null,
     cta: "Live Demo",
-    image: "/lms.jpeg",
+    image: "/betterinu-website.webp",
     gradient: "from-lime-400 to-teal-500",
-    featured: false,
+    featured: true,
   },
   {
     id: "crm-live",

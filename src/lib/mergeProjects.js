@@ -58,7 +58,12 @@ export const repoUrl = (p) =>
 export function mergeProjects(manualProjects, allGithubProjects = []) {
   // Hidden repos are dropped here too, so an older cached or server copy of the list cannot bring them back
   const githubProjects = allGithubProjects.filter(
-    (g) => !GITHUB.exclude.some((n) => n.toLowerCase() === String(g.repo).toLowerCase())
+    (g) => {
+      const repo = String(g.repo).toLowerCase();
+      const title = String(g.title ?? "").toLowerCase();
+      const words = GITHUB.excludeMatching ?? [];
+      return !GITHUB.exclude.some((n) => n.toLowerCase() === repo) && !words.some((w) => repo.includes(w.toLowerCase()) || title.includes(w.toLowerCase()));
+    }
   );
   const matched = new Set();
 

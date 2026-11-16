@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+cimport React, { useContext } from "react";
 import { ThemeContext } from "../context/ThemeContext";
 import { FiSun, FiMoon } from "react-icons/fi";
 import { motion } from "framer-motion";

@@ -1204,3 +1204,7 @@ p a:hover { text-decoration-thickness: 2px; color: #fff; }
 @media (min-width: 768px) {
   :root:not([data-theme="light"]) .glass { -webkit-backdrop-filter: blur(12px) saturate(1.3); backdrop-filter: blur(12px) saturate(1.3); }
 }
+
+/* Skills (phones): the logo tiles drift up and down a hair, each at its own pace */
+@keyframes skills-drift { 0%, 100% { translate: 0 0; } 50% { translate: 0 -3px; } }
+@media (prefers-reduced-motion: reduce) { [class*="skills-drift"] { animation: none !important; } }
