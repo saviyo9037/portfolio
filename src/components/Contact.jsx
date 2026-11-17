@@ -132,15 +132,15 @@ function ContactForm({ reduce }) {
       <div className="relative mt-6 grid gap-4 sm:grid-cols-2">
         <label className="block">
           <span className="mb-2 block text-sm text-[var(--text-muted)]">Your name</span>
-          <input className={`${field} ${bad(name.trim().length < 2)}`} value={name} onChange={(e) => setName(e.target.value)} placeholder="Jane Doe" autoComplete="name" enterKeyHint="next" />
+          <input className={`${field} ${bad(name.trim().length < 2)}`} value={name} onChange={(e) => setName(e.target.value)} placeholder="Type your full name" autoComplete="name" enterKeyHint="next" />
         </label>
         <label className="block">
           <span className="mb-2 block text-sm text-[var(--text-muted)]">Your email</span>
-          <input className={`${field} ${bad(!emailOk)}`} value={from} onChange={(e) => setFrom(e.target.value)} placeholder="jane@company.com" type="email" inputMode="email" autoComplete="email" enterKeyHint="next" />
+          <input className={`${field} ${bad(!emailOk)}`} value={from} onChange={(e) => setFrom(e.target.value)} placeholder="Type your email address" type="email" inputMode="email" autoComplete="email" enterKeyHint="next" />
         </label>
         <label className="block sm:col-span-2">
           <span className="mb-2 block text-sm text-[var(--text-muted)]">What are you building?</span>
-          <textarea className={`${field} min-h-[8.5rem] resize-y ${bad(message.trim().length < 10)}`} value={message} onChange={(e) => setMessage(e.target.value)} placeholder="A few lines about the project, the timeline and who it is for." />
+          <textarea className={`${field} min-h-[8.5rem] resize-y ${bad(message.trim().length < 10)}`} value={message} onChange={(e) => setMessage(e.target.value)} placeholder="Tell me what you want to build, when you need it and who it is for" />
         </label>
       </div>
 
@@ -298,15 +298,15 @@ function MobileContact({ reduce }) {
       <motion.form {...pop(0)} onSubmit={submit} noValidate className="mt-6 space-y-3 rounded-3xl border border-white/12 bg-[var(--bg-surface)] p-4">
         <label className="block">
           <span className="mb-1.5 block text-xs text-[var(--text-muted)]">Your name</span>
-          <input className={`${field} ${bad(name.trim().length < 2)}`} value={name} onChange={(e) => setName(e.target.value)} placeholder="Jane Doe" autoComplete="name" enterKeyHint="next" />
+          <input className={`${field} ${bad(name.trim().length < 2)}`} value={name} onChange={(e) => setName(e.target.value)} placeholder="Type your full name" autoComplete="name" enterKeyHint="next" />
         </label>
         <label className="block">
           <span className="mb-1.5 block text-xs text-[var(--text-muted)]">Your email</span>
-          <input className={`${field} ${bad(!emailOk)}`} value={from} onChange={(e) => setFrom(e.target.value)} placeholder="jane@company.com" type="email" inputMode="email" autoComplete="email" enterKeyHint="next" />
+          <input className={`${field} ${bad(!emailOk)}`} value={from} onChange={(e) => setFrom(e.target.value)} placeholder="Type your email address" type="email" inputMode="email" autoComplete="email" enterKeyHint="next" />
         </label>
         <label className="block">
           <span className="mb-1.5 block text-xs text-[var(--text-muted)]">Your message</span>
-          <textarea className={`${field} min-h-[7.5rem] resize-none ${bad(message.trim().length < 10)}`} value={message} onChange={(e) => setMessage(e.target.value)} placeholder="A few lines about the project and the timeline." />
+          <textarea className={`${field} min-h-[7.5rem] resize-none ${bad(message.trim().length < 10)}`} value={message} onChange={(e) => setMessage(e.target.value)} placeholder="Tell me what you want to build and when you need it" />
         </label>
         <button type="submit" className="hero-shine relative flex h-14 w-full items-center justify-center gap-2 overflow-hidden rounded-full text-base font-semibold text-[#000000] active:scale-[0.98]" style={{ backgroundColor: "#FFFFFF" }}>
           Send message <FiSend aria-hidden="true" />

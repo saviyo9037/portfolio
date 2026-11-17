@@ -10,7 +10,7 @@ import { useIsPhone } from "../hooks/useIsPhone";
 import { DETAIL_IMAGES } from "../data/screenshots";
 
 const ACCENT = "#7DD3FC";
-const FEATURED_MAX = 7;
+const FEATURED_MAX = 8;
 const PAGE = 9;
 const heading = { fontFamily: "'Inter', sans-serif" };
 
@@ -105,7 +105,7 @@ function Details({ project: p, onClose }) {
               </li>
             ))}
           </ul>
-          <p className="m-0 mt-5 text-base leading-relaxed text-white/75">{p.description}</p>
+          <p className="m-0 mt-5 whitespace-pre-line text-base leading-relaxed text-white/75">{p.description}</p>
           <div className="mt-7 flex flex-wrap items-center gap-3">
             {demo && (
               <a href={demo} target="_blank" rel="noreferrer" className="inline-flex h-10 items-center gap-2 rounded-full px-6 text-sm font-semibold text-black transition-colors hover:bg-white" style={{ backgroundColor: ACCENT }}>

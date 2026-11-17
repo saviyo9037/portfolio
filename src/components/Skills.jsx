@@ -1,4 +1,4 @@
-import React, { useRef, useSyncExternalStore } from "react";
+import React, { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { backOut, motion, useScroll, useTransform } from "framer-motion";
 import { useStaticLayout } from "../hooks/useStaticLayout";
 import { SiTypescript } from "react-icons/si";
@@ -142,6 +142,7 @@ const GROUPS = skills.flatMap((g) => {
   }
   return [make(g.category, g.items, GROUP_ICONS[g.category] ?? FiZap)];
 });
+const chipDense = "cursor-default rounded-full border border-white/25 bg-white/[0.1] px-2.5 py-[3px] text-[12px] font-medium leading-tight text-white transition-[background-color,border-color,transform] duration-200 hover:-translate-y-px hover:border-[#7DD3FC]/70 hover:bg-[#7DD3FC]/15";
 const chipClass = "cursor-default rounded-full border border-white/25 bg-white/[0.1] px-3 py-1 text-[13px] font-medium leading-tight text-white transition-[background-color,border-color,transform] duration-200 hover:-translate-y-px hover:border-[#7DD3FC]/70 hover:bg-[#7DD3FC]/15";
 const clamp01 = (v) => Math.min(1, Math.max(0, v));
 const seg = (v, a, b) => clamp01((v - a) / (b - a));
@@ -149,7 +150,7 @@ const easeIn = (t) => t * t;
 
 // A skill card: an icon tile, the title with a count, the chips, a faint big number behind, a light-blue spotlight that follows the
 // pointer, and a thin light-blue line along the bottom edge
-function CardShell({ number, title, Icon, total, children, className = "", style }) {
+function CardShell({ number, title, Icon, total, children, className = "", style, dense = false }) {
   const move = (e) => {
     const el = e.currentTarget;
     const r = el.getBoundingClientRect();
@@ -161,7 +162,7 @@ function CardShell({ number, title, Icon, total, children, className = "", style
     <motion.article
       onPointerMove={move}
       onPointerLeave={(e) => e.currentTarget.style.setProperty("--spot", "0")}
-      className={`group/card relative flex flex-col overflow-hidden rounded-[1.5rem] border border-white/15 p-5 transition-[border-color,box-shadow] duration-300 hover:border-[#7DD3FC]/45 hover:shadow-[0_18px_50px_-18px_rgba(125,211,252,0.35)] ${className}`}
+      className={`group/card relative flex flex-col overflow-hidden rounded-[1.5rem] border border-white/15 p-5 transition-[border-color,box-shadow] duration-300 hover:border-[#7DD3FC]/45 hover:shadow-[0_18px_50px_-18px_rgba(125,211,252,0.35)] ${dense ? "!p-4" : ""} ${className}`}
       style={{ background: "linear-gradient(165deg, rgba(46,46,50,0.97), rgba(16,16,18,0.99) 70%)", boxShadow: "inset 0 1px 1px rgba(255,255,255,0.12)", ...style }}
     >
       <span aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-[var(--spot,0)] transition-opacity duration-300" style={{ background: "radial-gradient(260px circle at var(--mx, 50%) var(--my, 0%), rgba(125,211,252,0.2), transparent 70%)" }} />
@@ -170,7 +171,7 @@ function CardShell({ number, title, Icon, total, children, className = "", style
       </span>
 
       <header className="relative flex items-center gap-3">
-        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[#7DD3FC]/30 bg-[#7DD3FC]/10 text-lg text-[#7DD3FC] transition-colors duration-300 group-hover/card:bg-[#7DD3FC] group-hover/card:text-black">
+        <span className={`flex ${dense ? "h-9 w-9 text-base" : "h-10 w-10 text-lg"} shrink-0 items-center justify-center rounded-xl border border-[#7DD3FC]/30 bg-[#7DD3FC]/10 text-[#7DD3FC] transition-colors duration-300 group-hover/card:bg-[#7DD3FC] group-hover/card:text-black`}>
           {Icon && <Icon aria-hidden="true" />}
         </span>
         <div className="min-w-0">
@@ -183,7 +184,7 @@ function CardShell({ number, title, Icon, total, children, className = "", style
         </div>
       </header>
 
-      <ul className="relative m-0 mt-4 flex list-none flex-wrap content-start gap-2 p-0">{children}</ul>
+      <ul className={`relative m-0 flex list-none flex-wrap content-start p-0 ${dense ? "mt-3 gap-1.5" : "mt-4 gap-2"}`}>{children}</ul>
       <span aria-hidden="true" className="absolute inset-x-5 bottom-0 h-px" style={{ background: "linear-gradient(to right, transparent, rgba(125,211,252,0.55), transparent)" }} />
     </motion.article>
   );
@@ -200,7 +201,7 @@ function Chip({ label, progress, at }) {
     return `translateY(${(1 - t) * 14}px) scale(${0.7 + 0.3 * t})`;
   });
   return (
-    <motion.li className={chipClass} style={{ opacity, transform }}>
+    <motion.li className={chipDense} style={{ opacity, transform }}>
       {label}
     </motion.li>
   );
@@ -219,7 +220,7 @@ function DealtCard({ group, i, progress, from }) {
   });
   const opacity = useTransform(progress, (p) => seg(p, start, start + 0.03) * (1 - seg(p, exitStart + 0.03, exitStart + 0.06)));
   return (
-    <CardShell number={i + 1} title={group.title} Icon={group.Icon} total={group.total} className={`h-full ${i < 4 ? "col-span-3" : "col-span-4"}`} style={{ transform, opacity, zIndex: i + 1, transformOrigin: "50% 50%", backfaceVisibility: "hidden" }}>
+    <CardShell dense number={i + 1} title={group.title} Icon={group.Icon} total={group.total} className={`h-full ${i < 4 ? "col-span-3" : "col-span-4"}`} style={{ transform, opacity, zIndex: i + 1, transformOrigin: "50% 50%", backfaceVisibility: "hidden" }}>
       {group.chips.map((c, j) => (
         <Chip key={c} label={c} progress={progress} at={end - 0.01 + j * step} />
       ))}
@@ -234,6 +235,34 @@ function ToolkitStage({ progress, from }) {
   // on the way out the heading fades up and away with the cards (no blur anywhere)
   const outFade = useTransform(progress, (p) => 1 - seg(p, 0.9, 0.96));
   const headShown = useTransform([headOpacity, outFade], ([a, b]) => a * b);
+
+  // How much the grid has to shrink (never below 0.6) to sit inside the free space, and how far down to move it to be centred.
+  // Only the picture shrinks, not the layout, so the measuring never feeds back into itself.
+  const areaRef = useRef(null);
+  const gridRef = useRef(null);
+  const [fit, setFit] = useState({ scale: 1, offset: 0 });
+  useEffect(() => {
+    const measure = () => {
+      const area = areaRef.current;
+      const grid = gridRef.current;
+      if (!area || !grid) return;
+      const free = area.clientHeight;
+      const natural = grid.offsetHeight;
+      const scale = Math.max(0.6, Math.min(1, free / Math.max(natural, 1)));
+      const offset = Math.max(0, (free - natural * scale) / 2);
+      setFit((f) => (Math.abs(f.scale - scale) < 0.004 && Math.abs(f.offset - offset) < 1 ? f : { scale, offset }));
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    if (areaRef.current) ro.observe(areaRef.current);
+    if (gridRef.current) ro.observe(gridRef.current);
+    window.addEventListener("resize", measure);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", measure);
+    };
+  }, []);
+
   return (
     <div className="absolute inset-x-0 bottom-0 top-[104px] flex flex-col px-6 pb-6 lg:px-12">
       <motion.div className="mx-auto w-full max-w-[1400px] shrink-0 text-center" style={{ opacity: headShown, y: headY }}>
@@ -245,8 +274,12 @@ function ToolkitStage({ progress, from }) {
         </span>
         <p className="mb-0 mt-2 font-mono text-[11px] uppercase tracking-[0.3em] text-white/65">Seven areas · one stack</p>
       </motion.div>
-      <div className="relative mx-auto mt-4 min-h-0 w-full max-w-[1400px] flex-1">
-        <div className="absolute inset-0 grid grid-cols-12 grid-rows-[auto_auto] content-center gap-4 [perspective:1400px]">
+      <div ref={areaRef} className="relative mx-auto mt-4 min-h-0 w-full max-w-[1400px] flex-1">
+        <div
+          ref={gridRef}
+          className="absolute inset-x-0 top-0 grid grid-cols-12 grid-rows-[auto_auto] gap-4 [perspective:1400px]"
+          style={{ transform: `translateY(${fit.offset}px) scale(${fit.scale})`, transformOrigin: "50% 0" }}
+        >
           {GROUPS.map((g, i) => (
             <DealtCard key={g.title} group={g} i={i} progress={progress} from={from} />
           ))}
