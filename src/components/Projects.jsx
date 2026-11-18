@@ -20,7 +20,7 @@ const FILTERS = [
   { key: PROJECT_CATEGORIES.PERSONAL, label: "Personal" },
 ];
 
-const kind = (p) => (p.category === PROJECT_CATEGORIES.COMPANY ? p.company || "Company work" : p.language || "Personal project");
+const kind = (p) => p.statusLabel || (p.category === PROJECT_CATEGORIES.COMPANY ? p.company || "Company work" : p.language || "Personal project");
 
 function Cover({ project: p, className = "", style }) {
   const [failed, setFailed] = useState(false);
