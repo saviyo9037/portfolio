@@ -1208,3 +1208,12 @@ p a:hover { text-decoration-thickness: 2px; color: #fff; }
 /* Skills (phones): the logo tiles drift up and down a hair, each at its own pace */
 @keyframes skills-drift { 0%, 100% { translate: 0 0; } 50% { translate: 0 -3px; } }
 @media (prefers-reduced-motion: reduce) { [class*="skills-drift"] { animation: none !important; } }
+
+/* Tech page: the map turns slowly, and each logo turns the opposite way so it stays upright */
+@keyframes tech-orbit { to { transform: rotate(360deg); } }
+@keyframes tech-orbit-back { to { transform: rotate(-360deg); } }
+@media (prefers-reduced-motion: reduce) { [class*="tech-orbit"] { animation: none !important; } }
+
+/* Tech page: shelves of cards slide past on a loop (the strip holds two identical halves, so -50% joins up seamlessly) */
+@keyframes tech-shelf { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(-50%, 0, 0); } }
+@keyframes tech-shelf-rev { from { transform: translate3d(-50%, 0, 0); } to { transform: translate3d(0, 0, 0); } }
