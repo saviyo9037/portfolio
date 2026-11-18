@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback, useRef, lazy, Suspense } from 'react'
 import { motion, AnimatePresence, useScroll, useSpring } from 'framer-motion'
 import { Routes, Route, useLocation } from 'react-router-dom'
+import { Analytics } from '@vercel/analytics/react'
 import Lenis from 'lenis'
 import './App.css'
 import Home from './pages/Home'
@@ -125,6 +126,7 @@ function App() {
           </Suspense>
         </motion.div>
       )}
+      <Analytics />
     </div>
   )
 }
