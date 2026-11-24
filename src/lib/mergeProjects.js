@@ -74,7 +74,7 @@ export function mergeProjects(manualProjects, allGithubProjects = []) {
         ...m,
         source: "manual",
         language: m.language || inferLanguage(m),
-        updatedAt: null,
+        updatedAt: m.updatedAt || null,
         related: [],
         featured: Boolean(m.featured),
       };
@@ -105,7 +105,7 @@ export function mergeProjects(manualProjects, allGithubProjects = []) {
       type: g.language ? `${g.language} project` : "GitHub project",
       description: g.description || PROJECT_DESCRIPTIONS[g.repo] || `${g.language || "Code"} project on GitHub.`,
       tech: g.tags.join(", "),
-      cta: g.liveUrl ? "Live Demo" : "GitHub",
+      cta: (g.hideLinks || g.private) ? "Private Project" : (g.liveUrl ? "Live Demo" : "GitHub"),
       image: "",
       // Generated cover per repo (public/covers); the gradient is the fallback if a cover is missing.
       previewImage: g.private
@@ -132,7 +132,11 @@ export function applyControls(projects, { query = "", language = "", sort = "upd
       (!language || p.language === language) &&
       (!q || p.title.toLowerCase().includes(q) || p.repo?.toLowerCase().includes(q))
   );
-  const time = (p) => (p.updatedAt ? new Date(p.updatedAt).getTime() : -1);
+  const time = (p) => {
+    if (p.updatedAt) return new Date(p.updatedAt).getTime();
+    const y = GITHUB.years?.[String(p.id ?? "").replace(/^gh-/, "").toLowerCase()] || 2026;
+    return new Date(y, 11, 31).getTime();
+  };
   return sort === "name"
     ? list.sort((a, b) => a.title.localeCompare(b.title))
     : list.sort((a, b) => time(b) - time(a));

@@ -20,7 +20,7 @@ const FILTERS = [
   { key: PROJECT_CATEGORIES.PERSONAL, label: "Personal" },
 ];
 
-const kind = (p) => (p.category === PROJECT_CATEGORIES.COMPANY ? p.company || "Company work" : p.language || "Personal project");
+const kind = (p) => (p.category === PROJECT_CATEGORIES.COMPANY ? p.company || "Company work" : p.type || p.language || "Personal project");
 
 function Cover({ project: p, className = "", style }) {
   const [failed, setFailed] = useState(false);
@@ -109,7 +109,7 @@ function Details({ project: p, onClose }) {
           <div className="mt-7 flex flex-wrap items-center gap-3">
             {demo && (
               <a href={demo} target="_blank" rel="noreferrer" className="inline-flex h-10 items-center gap-2 rounded-full px-6 text-sm font-semibold text-black transition-colors hover:bg-white" style={{ backgroundColor: ACCENT }}>
-                {p.publicUrl ? "Visit website" : "Live demo"} <FiArrowUpRight aria-hidden="true" />
+                {p.cta && /prototype/i.test(p.cta) ? p.cta : p.publicUrl ? "Visit website" : "Live demo"} <FiArrowUpRight aria-hidden="true" />
               </a>
             )}
             {repo && (
@@ -117,7 +117,11 @@ function Details({ project: p, onClose }) {
                 Source code <FiArrowUpRight aria-hidden="true" />
               </a>
             )}
-            {!demo && !repo && <span className="text-sm text-white/50">Private company project</span>}
+            {!demo && !repo && (
+              <span className="text-sm text-white/50">
+                {p.cta || (company ? "Private company project" : "Private Freelance Project")}
+              </span>
+            )}
           </div>
         </div>
       </div>

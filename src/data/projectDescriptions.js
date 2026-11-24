@@ -27,4 +27,10 @@ export const PROJECT_DESCRIPTIONS = {
   "job-finder-frontend": "A job finder frontend built with React, TypeScript and Tailwind CSS, with client-side routing.",
   "Event-management-system":
     "An event management system with a React and Tailwind frontend and an Express, MongoDB and JWT backend.",
+  "testing-":
+    "BuildCraft Construction: a modern commercial construction and architectural portfolio platform with quote estimation and interactive service galleries.",
+  "Lab-clinic-Management":
+    "Lab Management System: a freelance diagnostic platform built with Next.js, React, TypeScript, Node.js and MongoDB to streamline patient registration, test bookings, sample tracking, test results, digital reports, billing and dashboard analytics.",
+  "Lap-clinic-Management":
+    "Healthcare and clinical laboratory management platform with role-based dashboards, appointment workflows, and patient record tracking.",
 };

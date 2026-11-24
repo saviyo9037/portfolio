@@ -111,25 +111,40 @@ function prettyName(name) {
   // "task-management-frontend" reads better as "Task Management"
   const core = words.filter((w) => !SPLIT_MARKERS.includes(w.toLowerCase()));
   return (core.length ? core : words)
-    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .map((w) => {
+      if (w.toLowerCase() === "lap") return "Lab";
+      return w.charAt(0).toUpperCase() + w.slice(1);
+    })
     .join(" ");
 }
 
 export function normalizeRepo(repo) {
   const isPrivate = Boolean(repo.private);
   const tags = [...new Set([...(repo.topics ?? []), repo.language].filter(Boolean))];
+  const nameLower = repo.name.toLowerCase();
+
+  let title = prettyName(repo.name);
+  if (nameLower.startsWith("testing")) {
+    title = "BuildCraft Construction";
+  } else if (/lab[\s_-]*clinic|lap[\s_-]*clinic/i.test(repo.name)) {
+    title = "Lab Clinic Management";
+  }
+
+  const isLabClinic = /lab[\s_-]*clinic|lap[\s_-]*clinic/i.test(repo.name);
+
   return {
     repo: repo.name,
-    title: prettyName(repo.name),
+    title,
     description: cleanDescription(repo.description),
     language: repo.language || null,
     tags,
-    // Private repos have no public page, so they get no link.
-    githubUrl: isPrivate ? null : repo.html_url,
-    liveUrl: validUrl(repo.homepage),
+    // Private repos or lab clinic management get no public links
+    githubUrl: isPrivate || isLabClinic ? null : repo.html_url,
+    liveUrl: isLabClinic ? null : validUrl(repo.homepage),
     updatedAt: repo.pushed_at || repo.updated_at || null,
     stars: repo.stargazers_count ?? 0,
-    private: isPrivate,
+    private: isPrivate || isLabClinic,
+    hideLinks: isLabClinic,
     related: [],
   };
 }

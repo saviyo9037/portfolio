@@ -160,6 +160,24 @@ export const SAVIYO_PROFILE = {
       tags: ["MERN", "E-commerce", "REST API"],
     },
     {
+      title: "LabCare Clinical OS (Prototype)",
+      category: "personal",
+      categoryLabel: "Personal Project",
+      liveUrl: "https://lab-clinic-management.vercel.app",
+      description:
+        "Automated diagnostic intelligence and laboratory clinical OS prototype featuring specimen tracking, automated technician queues, and live demo clinic workflows.",
+      tags: ["Prototype", "TypeScript", "React", "Laboratory", "Diagnostic", "Healthcare"],
+    },
+    {
+      title: "Lab Management System (Freelance)",
+      category: "personal",
+      categoryLabel: "Freelance Project",
+      liveUrl: null,
+      description:
+        "Freelance laboratory management system built with Next.js, React, TypeScript, Node.js, and MongoDB to streamline diagnostic lab operations—handling patient registration, test bookings, sample tracking, test results, digital report generation, billing, and dashboard analytics.",
+      tags: ["Freelance", "Next.js", "TypeScript", "React", "Node.js", "MongoDB"],
+    },
+    {
       title: "Hospital Management System",
       category: "personal",
       categoryLabel: "Personal Project",
@@ -327,7 +345,11 @@ export function getSaviyoAiResponse(inputQuery) {
       `5. **Rabbit-Ecommerce** ([Live Demo](https://rabbit-h7kc.vercel.app/))\n` +
       `   Full-stack e-commerce store with product filtering, cart, and order APIs.\n\n` +
       `6. **Hospital Management System** ([Live Demo](https://hospital-frontend-phi-sandy.vercel.app))\n` +
-      `   Role-based healthcare portal for doctors, patients, and admins.`;
+      `   Role-based healthcare portal for doctors, patients, and admins.\n\n` +
+      `7. **Lab Management System** (Freelance Project)\n` +
+      `   Next.js & TypeScript diagnostic lab platform for patient registration, sample tracking, test results, digital reports, and billing.\n\n` +
+      `8. **LabCare Clinical OS** ([Prototype Demo](https://lab-clinic-management.vercel.app))\n` +
+      `   Automated diagnostic intelligence and laboratory clinical OS prototype.`;
   }
 
   // 8. EDUCATION
