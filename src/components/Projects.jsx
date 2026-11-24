@@ -18,9 +18,10 @@ const FILTERS = [
   { key: PROJECT_CATEGORIES.ALL, label: "All" },
   { key: PROJECT_CATEGORIES.COMPANY, label: "Company" },
   { key: PROJECT_CATEGORIES.PERSONAL, label: "Personal" },
+  { key: "upcoming", label: "Upcoming" },
 ];
 
-const kind = (p) => (p.category === PROJECT_CATEGORIES.COMPANY ? p.company || "Company work" : p.type || p.language || "Personal project");
+const kind = (p) => p.statusLabel || (p.category === PROJECT_CATEGORIES.COMPANY ? p.company || "Company work" : p.type || p.language || "Personal project");
 
 function Cover({ project: p, className = "", style }) {
   const [failed, setFailed] = useState(false);
@@ -586,10 +587,19 @@ function Browser({ list, onOpen }) {
   const [sort, setSort] = useState("updated");
   const [showAll, setShowAll] = useState(false);
 
-  const count = (key) => (key === PROJECT_CATEGORIES.ALL ? list.length : list.filter((p) => p.category === key).length);
+  const count = (key) => {
+    if (key === PROJECT_CATEGORIES.ALL) return list.length;
+    if (key === "upcoming") return list.filter((p) => p.statusLabel === "Upcoming" || p.type === "Upcoming Project").length;
+    return list.filter((p) => p.category === key).length;
+  };
   const languages = useMemo(() => languagesOf(list), [list]);
   const matches = useMemo(() => {
-    const base = category === PROJECT_CATEGORIES.ALL ? list : list.filter((p) => p.category === category);
+    const base =
+      category === PROJECT_CATEGORIES.ALL
+        ? list
+        : category === "upcoming"
+          ? list.filter((p) => p.statusLabel === "Upcoming" || p.type === "Upcoming Project")
+          : list.filter((p) => p.category === category);
     return applyControls(base, { query, language, sort });
   }, [list, category, query, language, sort]);
 

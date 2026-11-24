@@ -290,4 +290,23 @@ export const projects = [
     gradient: "from-teal-400 to-emerald-600",
     featured: false,
   },
+  {
+    id: "buildcraft-construction",
+    title: "BuildCraft Construction Website",
+    category: "personal",
+    categoryLabel: "Upcoming",
+    statusLabel: "Upcoming",
+    company: null,
+    type: "Upcoming Project",
+    description:
+      "A minimal, responsive portfolio website concept for a construction company, featuring services, project showcases with status filters, a founder profile and video section, and contact calls to action. This is a frontend prototype; backend, database and admin features are not included.",
+    tech: "HTML, CSS, JavaScript, Responsive Web Design",
+    tags: ["HTML", "CSS", "JavaScript", "Responsive UI"],
+    liveUrl: "https://buildcraft-construction-rho.vercel.app",
+    githubUrl: "https://github.com/saviyo9037/testing-",
+    cta: "Preview",
+    image: "",
+    gradient: "from-stone-400 to-amber-700",
+    featured: true,
+  },
 ];
