@@ -124,9 +124,7 @@ export function normalizeRepo(repo) {
   const nameLower = repo.name.toLowerCase();
 
   let title = prettyName(repo.name);
-  if (nameLower.startsWith("testing")) {
-    title = "BuildCraft Construction";
-  } else if (/lab[\s_-]*clinic|lap[\s_-]*clinic/i.test(repo.name)) {
+  if (/lab[\s_-]*clinic|lap[\s_-]*clinic/i.test(repo.name)) {
     title = "Lab Clinic Management";
   }
 

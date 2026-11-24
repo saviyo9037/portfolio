@@ -28,6 +28,8 @@ export const GITHUB = {
     "rest-room",
     "restroom",
     "rest_room",
+    "testing-",
+    "testing",
   ],
 
   // Any repo whose name (or title) contains one of these words is hidden too, whatever its exact name
@@ -47,8 +49,6 @@ export const GITHUB = {
     "lab-clinic-management": 2026,
     "lab_clinic_management": 2026,
     "labcare-clinical-os": 2026,
-    "buildcraft-construction": 2026,
-    "testing-": 2026,
     "crm": 2025,
     "crm-live": 2025,
   },
